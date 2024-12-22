@@ -1,41 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
-            color: #fff;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-        a {
-            text-decoration: none;
-            color: #fff;
-            background: #ff6f61;
-            padding: 10px 20px;
-            border-radius: 5px;
-            margin: 10px;
-            display: inline-block;
-            font-size: 1.2em;
-        }
-        a:hover {
-            background: #ff3f2e;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Workout Tracker</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap"
+  />
+
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* BODY STYLES - DARK BACKGROUND WITH A SUBTLE GRADIENT */
+    body {
+      font-family: "Montserrat", sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #000000, #333333);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* HEADER */
+    h1 {
+      font-size: 2.8rem;
+      margin: 1rem 0;
+      font-weight: 700;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+      color: #FFD700; /* Gold accent for heading */
+    }
+
+    /* SUBTEXT / INTRO */
+    .subtitle {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      max-width: 600px;
+      line-height: 1.4;
+    }
+
+    /* QUOTE BOX */
+    .quote-container {
+      background: rgba(255, 215, 0, 0.1); /* Subtle gold overlay */
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem auto 2rem;
+      max-width: 600px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: all 0.5s ease;
+    }
+
+    .quote-text {
+      font-size: 1.4rem;
+      font-style: italic;
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+      color: #FFD700; /* Gold for the quote text */
+    }
+
+    .quote-author {
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: right;
+      color: #fff;
+    }
+
+    /* LINK BUTTONS */
+    a {
+      text-decoration: none;
+      color: #000; /* Black text on gold background */
+      background: #FFD700; /* Gold button */
+      padding: 12px 24px;
+      border-radius: 5px;
+      margin: 10px;
+      display: inline-block;
+      font-size: 1.2em;
+      transition: background 0.3s ease, color 0.3s ease;
+      font-weight: 600;
+    }
+    a:hover {
+      background: #FFC107; /* Slightly brighter gold on hover */
+      color: #000;
+    }
+
+    /* ANIMATION (simple fade-in) */
+    .fade-enter {
+      opacity: 0;
+    }
+
+    .fade-enter-active {
+      opacity: 1;
+      transition: opacity 1s;
+    }
+
+    /* MEDIA QUERIES */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .quote-text {
+        font-size: 1.2rem;
+      }
+      a {
+        font-size: 1.1em;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Workout Tracker</h1>
-    <p>Welcome to your workout tracker! Click on a set to view the details:</p>
-    <a href="set1.html">Set 1</a>
-    <a href="set2.html">Set 2</a>
-    <a href="set3.html">Set 3</a>
+  <h1>Workout Tracker</h1>
+  <div class="subtitle">
+    Fuel your ambition. Strengthen your mind. Become unstoppable!
+  </div>
+
+  <!-- QUOTE BOX -->
+  <div class="quote-container fade-enter" id="quote-container">
+    <div class="quote-text" id="quote-text"></div>
+    <div class="quote-author" id="quote-author"></div>
+  </div>
+
+  <p>Welcome to your workout tracker! Click on a set to view details:</p>
+  <a href="set1.html">Set 1</a>
+  <a href="set2.html">Set 2</a>
+  <a href="set3.html">Set 3</a>
+
+  <script>
+    // Array of quotes (Jordan Peterson, Joe Rogan, Marcus Aurelius)
+    const quotes = [
+      {
+        text: "Compare yourself to who you were yesterday, not to who someone else is today.",
+        author: "Jordan Peterson"
+      },
+      {
+        text: "Make one room in your house as beautiful as possible. Then see what happens.",
+        author: "Jordan Peterson"
+      },
+      {
+        text: "One of the greatest things you can do is start taking care of yourself.",
+        author: "Joe Rogan"
+      },
+      {
+        text: "Live your life like you're the hero in your own movie.",
+        author: "Joe Rogan"
+      },
+      {
+        text: "The impediment to action advances action. What stands in the way becomes the way.",
+        author: "Marcus Aurelius"
+      },
+      {
+        text: "You have power over your mind—not outside events. Realise this, and you will find strength.",
+        author: "Marcus Aurelius"
+      }
+    ];
+
+    // Select and display a random quote
+    function displayRandomQuote() {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      const quoteObj = quotes[randomIndex];
+      document.getElementById("quote-text").textContent = `"${quoteObj.text}"`;
+      document.getElementById("quote-author").textContent = `— ${quoteObj.author}`;
+    }
+
+    // Fade-in effect
+    function fadeIn(element) {
+      element.classList.add("fade-enter-active");
+    }
+
+    // On page load
+    window.addEventListener("DOMContentLoaded", () => {
+      displayRandomQuote(); 
+      const quoteContainer = document.getElementById("quote-container");
+      // Trigger fade in
+      requestAnimationFrame(() => {
+        quoteContainer.classList.remove("fade-enter");
+        fadeIn(quoteContainer);
+      });
+    });
+  </script>
 </body>
 </html>
