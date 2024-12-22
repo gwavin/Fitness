@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Workout Set 1 - Modernised with Individual Timers</title>
+  <title>Workout Set 1 - Rest Timers</title>
 
   <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -110,7 +110,6 @@
     .set {
       display: flex;
       align-items: center;
-      justify-content: space-between;  /* Spreads label & timer apart */
       margin: 0.5rem 0;
       font-size: 1rem;
       background: rgba(0, 0, 0, 0.2);
@@ -118,9 +117,11 @@
       border-radius: 5px;
     }
 
-    .set > .set-info {
+    /* Left side label and checkbox */
+    .set-info {
       display: flex;
       align-items: center;
+      flex: 1; 
     }
 
     .set input[type="checkbox"] {
@@ -134,11 +135,13 @@
       text-decoration: line-through;
     }
 
-    /* INDIVIDUAL SET TIMER */
-    .individual-set-timer {
+    /* Rest Timer Section */
+    .rest-timer {
       display: flex;
       align-items: center;
+      justify-content: flex-end; /* moves timer to the right */
       gap: 0.5rem;
+      flex: 0 0 auto;
     }
 
     .countdown-display {
@@ -218,13 +221,17 @@
           <input type="checkbox" onclick="toggleSet(this)" />
           Warm-up: Bar, 40kg, 60kg
         </div>
-       </div>
+      </div>
       <div class="set">
         <div class="set-info">
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 1: 75kg x 5 reps
         </div>
-        <div class="individual-set-timer">
+      </div>
+      <!-- Rest timer between Set 1 and Set 2 -->
+      <div class="set">
+        <div class="set-info" style="font-weight: 600;">Rest Before Set 2</div>
+        <div class="rest-timer">
           <span class="countdown-display">01:15</span>
           <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
@@ -234,7 +241,11 @@
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 2: 75kg x 5 reps
         </div>
-        <div class="individual-set-timer">
+      </div>
+      <!-- Rest timer between Set 2 and Set 3 -->
+      <div class="set">
+        <div class="set-info" style="font-weight: 600;">Rest Before Set 3</div>
+        <div class="rest-timer">
           <span class="countdown-display">01:15</span>
           <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
@@ -243,10 +254,6 @@
         <div class="set-info">
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 3: 75kg x 5 reps
-        </div>
-        <div class="individual-set-timer">
-          <span class="countdown-display">01:15</span>
-          <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
       </div>
     </div>
@@ -259,14 +266,17 @@
           <input type="checkbox" onclick="toggleSet(this)" />
           Warm-up: Bar, 50kg, 70kg
         </div>
-        
       </div>
       <div class="set">
         <div class="set-info">
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 1: 90kg x 5 reps
         </div>
-        <div class="individual-set-timer">
+      </div>
+      <!-- Rest timer -->
+      <div class="set">
+        <div class="set-info" style="font-weight: 600;">Rest Before Set 2</div>
+        <div class="rest-timer">
           <span class="countdown-display">01:15</span>
           <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
@@ -276,7 +286,11 @@
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 2: 90kg x 5 reps
         </div>
-        <div class="individual-set-timer">
+      </div>
+      <!-- Rest timer -->
+      <div class="set">
+        <div class="set-info" style="font-weight: 600;">Rest Before Set 3</div>
+        <div class="rest-timer">
           <span class="countdown-display">01:15</span>
           <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
@@ -286,12 +300,11 @@
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 3: 90kg x 5 reps
         </div>
-        <div class="individual-set-timer">
-          <span class="countdown-display">01:15</span>
-          <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
-        </div>
       </div>
     </div>
+
+
+
 
     <!-- Arnold Press -->
     <div class="exercise">
@@ -301,7 +314,11 @@
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 1: 11.5kg x 8 reps
         </div>
-        <div class="individual-set-timer">
+      </div>
+      <!-- Rest timer -->
+      <div class="set">
+        <div class="set-info" style="font-weight: 600;">Rest Before Set 2</div>
+        <div class="rest-timer">
           <span class="countdown-display">01:15</span>
           <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
@@ -311,7 +328,11 @@
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 2: 11.5kg x 8 reps
         </div>
-        <div class="individual-set-timer">
+      </div>
+      <!-- Rest timer -->
+      <div class="set">
+        <div class="set-info" style="font-weight: 600;">Rest Before Set 3</div>
+        <div class="rest-timer">
           <span class="countdown-display">01:15</span>
           <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
@@ -320,10 +341,6 @@
         <div class="set-info">
           <input type="checkbox" onclick="toggleSet(this)" />
           Set 3: 11.5kg x 8 reps
-        </div>
-        <div class="individual-set-timer">
-          <span class="countdown-display">01:15</span>
-          <button class="start-countdown-btn" onclick="startCountdown(this)">Start</button>
         </div>
       </div>
     </div>
@@ -356,11 +373,10 @@
     }
 
     /********************************************************
-     * Individual Set Timers (Count down from 1:15)
+     * Rest Timers (Count down from 1:15)
      ********************************************************/
     function startCountdown(button) {
       // If there's already a running timer, clear it
-      // (To prevent multiple intervals for the same set)
       if (button.intervalId) {
         clearInterval(button.intervalId);
       }
@@ -370,12 +386,11 @@
       let timeLeft = 75; // total seconds for 1:15
       countdownDisplay.textContent = "01:15";
 
-      // Prepare beep sound (Replace 'beep.mp3' with your own sound file)
+      // Prepare beep sound
       let beepSound = new Audio("beep.mp3");
 
       button.intervalId = setInterval(() => {
         timeLeft--;
-        // Calculate minutes and seconds
         let minutes = Math.floor(timeLeft / 60);
         let seconds = timeLeft % 60;
         countdownDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
@@ -384,7 +399,6 @@
         if (timeLeft <= 0) {
           clearInterval(button.intervalId);
           beepSound.play().catch(err => {
-            // Some browsers block auto-play; fallback if needed
             console.log("Beep sound was blocked or couldn't play automatically:", err);
             alert("Time is up!");
           });
