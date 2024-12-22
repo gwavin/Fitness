@@ -1,5 +1,5 @@
-# Updated HTML for set1.html with a cleaner layout and a simple timer feature
-set1_updated = """<!DOCTYPE html>
+# Updated HTML for set1.html with checkboxes that change the line color and additional exercises
+set1_updated_with_checkboxes = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,8 +8,8 @@ set1_updated = """<!DOCTYPE html>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f3f4f6;
-            color: #333;
+            background: #333;
+            color: #fff;
             margin: 0;
             padding: 0;
         }
@@ -27,28 +27,33 @@ set1_updated = """<!DOCTYPE html>
             padding: 20px;
             max-width: 600px;
             margin: 0 auto;
-            text-align: center;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
+        .exercise {
+            margin: 20px 0;
         }
-        li {
-            font-size: 1.2em;
-            margin: 15px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .exercise h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .set {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .set input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .set.completed {
+            color: #0f0;
+            text-decoration: line-through;
         }
         .timer {
             margin: 20px 0;
             padding: 10px;
             font-size: 1.5em;
-            background: #e3e4e8;
+            background: #444;
             border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         a {
             text-decoration: none;
@@ -69,10 +74,28 @@ set1_updated = """<!DOCTYPE html>
         <h1>Workout Set 1</h1>
     </header>
     <div class="content">
-        <ul>
-            <li><strong>Bench Press</strong>: Warm-up (Bar, 40kg, 60kg), 75kg x 5 reps x 3 sets</li>
-            <li><strong>Squats</strong>: Warm-up (Bar, 50kg, 70kg), 90kg x 5 reps x 3 sets</li>
-        </ul>
+        <div class="exercise">
+            <h2>Bench Press</h2>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: Warm-up (Bar, 40kg, 60kg)</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 75kg x 5 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 75kg x 5 reps</div>
+        </div>
+        <div class="exercise">
+            <h2>Squat</h2>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: Warm-up (Bar, 50kg, 70kg)</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 90kg x 5 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 90kg x 5 reps</div>
+        </div>
+        <div class="exercise">
+            <h2>Lateral Front Raise</h2>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 11.5kg x 12 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 11.5kg x 12 reps</div>
+        </div>
+        <div class="exercise">
+            <h2>Arnold Press</h2>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 11.5kg x 8 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 11.5kg x 8 reps</div>
+        </div>
         <div class="timer" id="timer">
             Rest Timer: 00:00
         </div>
@@ -94,6 +117,14 @@ set1_updated = """<!DOCTYPE html>
             }, 1000);
         }
 
+        function toggleSet(checkbox) {
+            if (checkbox.checked) {
+                checkbox.parentElement.classList.add('completed');
+            } else {
+                checkbox.parentElement.classList.remove('completed');
+            }
+        }
+
         startTimer(); // Start the timer when the page loads
     </script>
 </body>
@@ -101,8 +132,8 @@ set1_updated = """<!DOCTYPE html>
 """
 
 # Save the updated set1.html file to disk
-set1_file_path = "/mnt/data/set1.html"
-with open(set1_file_path, "w") as file:
-    file.write(set1_updated)
+set1_checkbox_file_path = "/mnt/data/set1_updated.html"
+with open(set1_checkbox_file_path, "w") as file:
+    file.write(set1_updated_with_checkboxes)
 
-set1_file_path
+set1_checkbox_file_path
