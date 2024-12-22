@@ -7,44 +7,178 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background: #00c6ff;
-            background: -webkit-linear-gradient(to right, #0072ff, #00c6ff);
+            background: #333;
             color: #fff;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-        ul {
-            list-style-type: none;
+            margin: 0;
             padding: 0;
         }
-        li {
+        header {
+            background: #6a11cb;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .timers {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .timer-container {
+            text-align: center;
+        }
+        .timer {
             font-size: 1.2em;
+            background: #444;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 0 auto;
+            display: inline-block;
+        }
+        .timer-buttons {
+            margin-top: 10px;
+        }
+        .timer-buttons button {
+            background: #6a11cb;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .timer-buttons button:hover {
+            background: #4e54c8;
+        }
+        .content {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .exercise {
+            margin: 20px 0;
+        }
+        .exercise h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .set {
+            display: flex;
+            align-items: center;
             margin: 10px 0;
+        }
+        .set input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .set.completed {
+            color: #0f0;
+            text-decoration: line-through;
         }
         a {
             text-decoration: none;
             color: #fff;
-            background: #007acc;
+            background: #6a11cb;
             padding: 10px 20px;
             border-radius: 5px;
-            margin-top: 20px;
             display: inline-block;
+            margin-top: 20px;
         }
         a:hover {
-            background: #005fa3;
+            background: #4e54c8;
         }
     </style>
 </head>
 <body>
-    <h1>Workout Set 2</h1>
-    <ul>
-        <li><strong>Shoulder Press</strong>: Warm-up (20kg, 30kg, 40kg), 55kg x 5 reps x 3 sets</li>
-        <li><strong>Deadlift</strong>: Warm-up (55kg, 80kg, 100kg), 120kg x 5 reps x 3 sets</li>
-    </ul>
-    <a href="index.html">Back to Home</a>
+    <header>
+        <h1>Workout Set 2</h1>
+        <div class="timers">
+            <div class="timer-container">
+                <div class="timer" id="workout-timer">Workout Timer: 00:00</div>
+                <div class="timer-buttons">
+                    <button onclick="startWorkoutTimer()">Start Workout Timer</button>
+                    <button onclick="resetWorkoutTimer()">Reset Workout Timer</button>
+                </div>
+            </div>
+            <div class="timer-container">
+                <div class="timer" id="set-timer">Set Timer: 00:00</div>
+                <div class="timer-buttons">
+                    <button onclick="startSetTimer()">Start Set Timer</button>
+                    <button onclick="resetSetTimer()">Reset Set Timer</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="content">
+        <div class="exercise">
+            <h2>Shoulder Press</h2>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Warm-up: Bar, 20kg, 30kg</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 55kg x 5 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 55kg x 5 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 55kg x 5 reps</div>
+        </div>
+        <div class="exercise">
+            <h2>Deadlift</h2>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Warm-up: 55kg, 80kg, 100kg</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 120kg x 5 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 120kg x 5 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 120kg x 5 reps</div>
+        </div>
+        <div class="exercise">
+            <h2>Arnold Press</h2>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 11.5kg x 8 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 11.5kg x 8 reps</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 11.5kg x 8 reps</div>
+        </div>
+        <a href="index.html">Back to Home</a>
+    </div>
+    <script>
+        let workoutTimerElement = document.getElementById('workout-timer');
+        let setTimerElement = document.getElementById('set-timer');
+        let workoutTimer, setTimer;
+        let workoutSeconds = 0, setSeconds = 0;
+
+        function startWorkoutTimer() {
+            if (workoutTimer) clearInterval(workoutTimer);
+            workoutTimer = setInterval(() => {
+                workoutSeconds++;
+                let minutes = Math.floor(workoutSeconds / 60);
+                let displaySeconds = workoutSeconds % 60;
+                workoutTimerElement.innerText = `Workout Timer: ${String(minutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function resetWorkoutTimer() {
+            if (workoutTimer) clearInterval(workoutTimer);
+            workoutSeconds = 0;
+            workoutTimerElement.innerText = "Workout Timer: 00:00";
+        }
+
+        function startSetTimer() {
+            if (setTimer) clearInterval(setTimer);
+            setTimer = setInterval(() => {
+                setSeconds++;
+                let minutes = Math.floor(setSeconds / 60);
+                let displaySeconds = setSeconds % 60;
+                setTimerElement.innerText = `Set Timer: ${String(minutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function resetSetTimer() {
+            if (setTimer) clearInterval(setTimer);
+            setSeconds = 0;
+            setTimerElement.innerText = "Set Timer: 00:00";
+        }
+
+        function toggleSet(checkbox) {
+            if (checkbox.checked) {
+                checkbox.parentElement.classList.add('completed');
+            } else {
+                checkbox.parentElement.classList.remove('completed');
+            }
+        }
+    </script>
 </body>
 </html>
