@@ -1,5 +1,4 @@
-# Updated HTML for set1.html with checkboxes that change the line color and additional exercises
-set1_updated_with_checkboxes = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,12 +15,43 @@ set1_updated_with_checkboxes = """<!DOCTYPE html>
         header {
             background: #6a11cb;
             color: #fff;
-            padding: 20px;
+            padding: 20px 0;
             text-align: center;
         }
         h1 {
             margin: 0;
             font-size: 2.5em;
+        }
+        .timers {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .timer-container {
+            text-align: center;
+        }
+        .timer {
+            font-size: 1.2em;
+            background: #444;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 0 auto;
+            display: inline-block;
+        }
+        .timer-buttons {
+            margin-top: 10px;
+        }
+        .timer-buttons button {
+            background: #6a11cb;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .timer-buttons button:hover {
+            background: #4e54c8;
         }
         .content {
             padding: 20px;
@@ -47,14 +77,6 @@ set1_updated_with_checkboxes = """<!DOCTYPE html>
             color: #0f0;
             text-decoration: line-through;
         }
-        .timer {
-            margin: 20px 0;
-            padding: 10px;
-            font-size: 1.5em;
-            background: #444;
-            border-radius: 5px;
-            text-align: center;
-        }
         a {
             text-decoration: none;
             color: #fff;
@@ -72,49 +94,82 @@ set1_updated_with_checkboxes = """<!DOCTYPE html>
 <body>
     <header>
         <h1>Workout Set 1</h1>
+        <div class="timers">
+            <div class="timer-container">
+                <div class="timer" id="workout-timer">Workout Timer: 00:00</div>
+                <div class="timer-buttons">
+                    <button onclick="startWorkoutTimer()">Start Workout Timer</button>
+                    <button onclick="resetWorkoutTimer()">Reset Workout Timer</button>
+                </div>
+            </div>
+            <div class="timer-container">
+                <div class="timer" id="set-timer">Set Timer: 00:00</div>
+                <div class="timer-buttons">
+                    <button onclick="startSetTimer()">Start Set Timer</button>
+                    <button onclick="resetSetTimer()">Reset Set Timer</button>
+                </div>
+            </div>
+        </div>
     </header>
     <div class="content">
         <div class="exercise">
             <h2>Bench Press</h2>
-            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: Warm-up (Bar, 40kg, 60kg)</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Warm-up: Bar, 40kg, 60kg</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 75kg x 5 reps</div>
             <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 75kg x 5 reps</div>
             <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 75kg x 5 reps</div>
         </div>
         <div class="exercise">
             <h2>Squat</h2>
-            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: Warm-up (Bar, 50kg, 70kg)</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Warm-up: Bar, 50kg, 70kg</div>
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 90kg x 5 reps</div>
             <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 90kg x 5 reps</div>
             <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 90kg x 5 reps</div>
-        </div>
-        <div class="exercise">
-            <h2>Lateral Front Raise</h2>
-            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 11.5kg x 12 reps</div>
-            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 11.5kg x 12 reps</div>
         </div>
         <div class="exercise">
             <h2>Arnold Press</h2>
             <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 1: 11.5kg x 8 reps</div>
             <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 2: 11.5kg x 8 reps</div>
-        </div>
-        <div class="timer" id="timer">
-            Rest Timer: 00:00
+            <div class="set"><input type="checkbox" onclick="toggleSet(this)"> Set 3: 11.5kg x 8 reps</div>
         </div>
         <a href="index.html">Back to Home</a>
     </div>
     <script>
-        let timerElement = document.getElementById('timer');
-        let timer;
-        let seconds = 0;
+        let workoutTimerElement = document.getElementById('workout-timer');
+        let setTimerElement = document.getElementById('set-timer');
+        let workoutTimer, setTimer;
+        let workoutSeconds = 0, setSeconds = 0;
 
-        function startTimer() {
-            seconds = 0;
-            if (timer) clearInterval(timer);
-            timer = setInterval(() => {
-                seconds++;
-                let minutes = Math.floor(seconds / 60);
-                let displaySeconds = seconds % 60;
-                timerElement.innerText = `Rest Timer: ${String(minutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
+        function startWorkoutTimer() {
+            if (workoutTimer) clearInterval(workoutTimer);
+            workoutTimer = setInterval(() => {
+                workoutSeconds++;
+                let minutes = Math.floor(workoutSeconds / 60);
+                let displaySeconds = workoutSeconds % 60;
+                workoutTimerElement.innerText = `Workout Timer: ${String(minutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
             }, 1000);
+        }
+
+        function resetWorkoutTimer() {
+            if (workoutTimer) clearInterval(workoutTimer);
+            workoutSeconds = 0;
+            workoutTimerElement.innerText = "Workout Timer: 00:00";
+        }
+
+        function startSetTimer() {
+            if (setTimer) clearInterval(setTimer);
+            setTimer = setInterval(() => {
+                setSeconds++;
+                let minutes = Math.floor(setSeconds / 60);
+                let displaySeconds = setSeconds % 60;
+                setTimerElement.innerText = `Set Timer: ${String(minutes).padStart(2, '0')}:${String(displaySeconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function resetSetTimer() {
+            if (setTimer) clearInterval(setTimer);
+            setSeconds = 0;
+            setTimerElement.innerText = "Set Timer: 00:00";
         }
 
         function toggleSet(checkbox) {
@@ -124,16 +179,6 @@ set1_updated_with_checkboxes = """<!DOCTYPE html>
                 checkbox.parentElement.classList.remove('completed');
             }
         }
-
-        startTimer(); // Start the timer when the page loads
     </script>
 </body>
 </html>
-"""
-
-# Save the updated set1.html file to disk
-set1_checkbox_file_path = "/mnt/data/set1_updated.html"
-with open(set1_checkbox_file_path, "w") as file:
-    file.write(set1_updated_with_checkboxes)
-
-set1_checkbox_file_path
