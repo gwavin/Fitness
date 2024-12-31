@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Glasgow Blatchford Score (GBS) Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 600px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 0.4rem;
+      box-sizing: border-box;
+    }
+    .inline-radio-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.3rem;
+    }
+    .form-section {
+      background: #f9f9f9;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      display: block;
+      margin: 0 auto;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 4px;
+      background: #007bff;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #result {
+      margin-top: 2rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Glasgow Blatchford Score (GBS)</h1>
+  <p style="text-align: center;">
+    Enter the following details, then click "Calculate GBS" to see the result.
+  </p>
+
+  <form id="gbs-form">
+    <!-- Haemoglobin Section -->
+    <div class="form-section">
+      <h2>Haemoglobin</h2>
+      <div class="form-group">
+        <label for="haemoglobinMale">Haemoglobin (g/L) - Male:</label>
+        <input
+          type="number"
+          id="haemoglobinMale"
+          name="haemoglobinMale"
+          placeholder="e.g. 130"
+          min="0"
+          step="1"
+        />
+      </div>
+      <div class="form-group">
+        <label for="haemoglobinFemale">Haemoglobin (g/L) - Female:</label>
+        <input
+          type="number"
+          id="haemoglobinFemale"
+          name="haemoglobinFemale"
+          placeholder="e.g. 120"
+          min="0"
+          step="1"
+        />
+      </div>
+    </div>
+
+    <!-- Blood Urea Section -->
+    <div class="form-section">
+      <h2>Blood Urea</h2>
+      <div class="form-group">
+        <label for="bloodUrea">Blood Urea (mmol/L):</label>
+        <input
+          type="number"
+          id="bloodUrea"
+          name="bloodUrea"
+          placeholder="e.g. 8.5"
+          min="0"
+          step="0.1"
+        />
+      </div>
+    </div>
+
+    <!-- Vital Signs Section -->
+    <div class="form-section">
+      <h2>Vital Signs</h2>
+      <div class="form-group">
+        <label for="systolicBP">Systolic Blood Pressure (mmHg):</label>
+        <input
+          type="number"
+          id="systolicBP"
+          name="systolicBP"
+          placeholder="e.g. 100"
+          min="0"
+          step="1"
+        />
+      </div>
+      <div class="form-group">
+        <label for="heartRate">Heart Rate (bpm):</label>
+        <input
+          type="number"
+          id="heartRate"
+          name="heartRate"
+          placeholder="e.g. 90"
+          min="0"
+          step="1"
+        />
+      </div>
+    </div>
+
+    <!-- Clinical Presentation Section -->
+    <div class="form-section">
+      <h2>Clinical Presentation</h2>
+      <div class="form-group">
+        <label>Melena:</label>
+        <div class="inline-radio-group">
+          <label>
+            <input type="radio" name="melena" value="yes" />Yes
+          </label>
+          <label>
+            <input type="radio" name="melena" value="no" checked />No
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Haematemesis:</label>
+        <div class="inline-radio-group">
+          <label>
+            <input type="radio" name="haematemesis" value="yes" />Yes
+          </label>
+          <label>
+            <input type="radio" name="haematemesis" value="no" checked />No
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Syncope:</label>
+        <div class="inline-radio-group">
+          <label>
+            <input type="radio" name="syncope" value="yes" />Yes
+          </label>
+          <label>
+            <input type="radio" name="syncope" value="no" checked />No
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comorbidities Section -->
+    <div class="form-section">
+      <h2>Comorbidities</h2>
+      <div class="form-group">
+        <label>Hepatic Disease:</label>
+        <div class="inline-radio-group">
+          <label>
+            <input type="radio" name="hepaticDisease" value="yes" />Yes
+          </label>
+          <label>
+            <input type="radio" name="hepaticDisease" value="no" checked />No
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Cardiac Failure:</label>
+        <div class="inline-radio-group">
+          <label>
+            <input type="radio" name="cardiacFailure" value="yes" />Yes
+          </label>
+          <label>
+            <input type="radio" name="cardiacFailure" value="no" checked />No
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit">Calculate GBS</button>
+  </form>
+
+  <!-- Result Display -->
+  <div id="result"></div>
+
+  <!-- JavaScript to calculate the Glasgow Blatchford Score -->
+  <script>
+    // Utility function to convert a string to a float safely.
+    function parseFloatSafe(value) {
+      const parsed = parseFloat(value);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    // Handle form submission
+    document.getElementById('gbs-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent actual form submission
+
+      // Read input values
+      const hbMale = parseFloatSafe(document.getElementById('haemoglobinMale').value);
+      const hbFemale = parseFloatSafe(document.getElementById('haemoglobinFemale').value);
+      const bloodUrea = parseFloatSafe(document.getElementById('bloodUrea').value);
+      const systolicBP = parseFloatSafe(document.getElementById('systolicBP').value);
+      const heartRate = parseFloatSafe(document.getElementById('heartRate').value);
+
+      const melena = document.querySelector('input[name="melena"]:checked').value;
+      const haematemesis = document.querySelector('input[name="haematemesis"]:checked').value;
+      const syncope = document.querySelector('input[name="syncope"]:checked').value;
+      const hepaticDisease = document.querySelector('input[name="hepaticDisease"]:checked').value;
+      const cardiacFailure = document.querySelector('input[name="cardiacFailure"]:checked').value;
+
+      let gbsScore = 0;
+
+      // ---- Blood Urea scoring ----
+      if (bloodUrea < 6.5) {
+        gbsScore += 0;
+      } else if (bloodUrea < 8.0) {
+        gbsScore += 2;
+      } else if (bloodUrea < 10.0) {
+        gbsScore += 3;
+      } else if (bloodUrea < 25.0) {
+        gbsScore += 4;
+      } else {
+        gbsScore += 6;
+      }
+
+      // ---- Haemoglobin scoring ----
+      // If the user entered the male haemoglobin, we use that;
+      // otherwise we use the female haemoglobin. Adjust logic as needed.
+      if (hbMale > 0) {
+        // Male ranges
+        if (hbMale >= 130) {
+          gbsScore += 0;
+        } else if (hbMale >= 120) {
+          gbsScore += 1;
+        } else if (hbMale >= 100) {
+          gbsScore += 3;
+        } else {
+          gbsScore += 6;
+        }
+      } else if (hbFemale > 0) {
+        // Female ranges
+        if (hbFemale >= 120) {
+          gbsScore += 0;
+        } else if (hbFemale >= 100) {
+          gbsScore += 1;
+        } else {
+          gbsScore += 6;
+        }
+      }
+      // If neither male nor female is entered, no haemoglobin points are added,
+      // but you may want to handle or warn the user in real implementation.
+
+      // ---- Systolic BP scoring ----
+      if (systolicBP >= 110) {
+        gbsScore += 0;
+      } else if (systolicBP >= 100) {
+        gbsScore += 1;
+      } else if (systolicBP >= 90) {
+        gbsScore += 2;
+      } else {
+        gbsScore += 3;
+      }
+
+      // ---- Heart Rate scoring ----
+      if (heartRate >= 100) {
+        gbsScore += 1;
+      }
+
+      // ---- Melena ----
+      if (melena === 'yes') {
+        gbsScore += 1;
+      }
+
+      // ---- Haematemesis ----
+      if (haematemesis === 'yes') {
+        gbsScore += 1;
+      }
+
+      // ---- Syncope ----
+      if (syncope === 'yes') {
+        gbsScore += 2;
+      }
+
+      // ---- Hepatic Disease ----
+      if (hepaticDisease === 'yes') {
+        gbsScore += 2;
+      }
+
+      // ---- Cardiac Failure ----
+      if (cardiacFailure === 'yes') {
+        gbsScore += 2;
+      }
+
+      // Display the result
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "Glasgow Blatchford Score: " + gbsScore;
+    });
+  </script>
+</body>
+</html>
