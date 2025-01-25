@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentary Treatment: Watson - The Duel in the Sun and Beyond</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2c5f2d;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1, h2, h3 {
+            color: #2c5f2d;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .key-scene {
+            background-color: #fff4e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #ffb700;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #2c5f2d;
+            color: white;
+        }
+        .budget-table td:nth-child(2) {
+            font-weight: bold;
+            color: #2c5f2d;
+        }
+        blockquote {
+            font-style: italic;
+            margin: 20px 0;
+            padding: 10px 30px;
+            border-left: 4px solid #2c5f2d;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Watson: The Duel in the Sun and Beyond</h1>
+        <h3>A Cinematic Exploration of Golf Legend Tom Watson's Life, Triumphs, and Legacy</h3>
+        <p>Runtime: 90 minutes | Format: Feature-length documentary (4K)</p>
+    </div>
+
+    <div class="section">
+        <h2>Logline</h2>
+        <p>This documentary chronicles the life of Tom Watson, an eight-time major champion whose career spans five decades, exploring his Midwestern roots, historic rivalry with Jack Nicklaus, legendary Open Championship victories, and his enduring impact on golf and philanthropy.</p>
+    </div>
+
+    <div class="section">
+        <h2>Synopsis</h2>
+        <p><em>Watson: The Duel in the Sun and Beyond</em> is a three-act journey through the life of one of golf's most revered figures:</p>
+        
+        <table>
+            <tr>
+                <th>Act</th>
+                <th>Focus</th>
+                <th>Key Elements</th>
+            </tr>
+            <tr>
+                <td>Act 1</td>
+                <td>Origins</td>
+                <td>Kansas City roots, early struggles, Byron Nelson mentorship</td>
+            </tr>
+            <tr>
+                <td>Act 2</td>
+                <td>Open Dominance</td>
+                <td>1977 Duel in the Sun, 1982 Pebble Beach miracle, 2009 Turnberry</td>
+            </tr>
+            <tr>
+                <td>Act 3</td>
+                <td>Legacy</td>
+                <td>ALS advocacy, Watson Links program, personal reflections</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Production Plan</h2>
+        <h3>Timeline</h3>
+        <table>
+            <tr>
+                <th>Phase</th>
+                <th>Duration</th>
+                <th>Key Activities</th>
+            </tr>
+            <tr>
+                <td>Pre-Production</td>
+                <td>3 months</td>
+                <td>Interview coordination, archival research, location scouting</td>
+            </tr>
+            <tr>
+                <td>Filming</td>
+                <td>6 months</td>
+                <td>Principal photography across 4 countries</td>
+            </tr>
+            <tr>
+                <td>Post-Production</td>
+                <td>3 months</td>
+                <td>Editing, scoring, final delivery</td>
+            </tr>
+        </table>
+
+        <h3>Budget Overview</h3>
+        <table class="budget-table">
+            <tr>
+                <td>Archival Licensing</td>
+                <td>$75,000</td>
+            </tr>
+            <tr>
+                <td>Travel & Locations</td>
+                <td>$120,000</td>
+            </tr>
+            <tr>
+                <td>Post-Production</td>
+                <td>$90,000</td>
+            </tr>
+            <tr>
+                <td>Contingency</td>
+                <td>$15,000</td>
+            </tr>
+            <tr style="border-top: 2px solid #2c5f2d;">
+                <td><strong>Total</strong></td>
+                <td><strong>$300,000</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Visual Style</h2>
+        <ul>
+            <li>4K cinematography with aerial course footage</li>
+            <li>Archival blend of 1970s-80s PGA broadcasts</li>
+            <li>Cinematic reenactments with period-accurate detail</li>
+            <li>Intimate verité-style interviews</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Director's Statement</h2>
+        <blockquote>
+            "This film seeks to humanize a legend - showcasing not just 39 PGA Tour wins but Watson's resilience after loss, 
+            his advocacy for ALS research, and dedication to nurturing golf's next generation."
+        </blockquote>
+    </div>
+
+    <div class="section">
+        <h2>Conclusion</h2>
+        <p>Tom Watson's story transcends golf - a universal narrative about aging, legacy, and resilience. 
+        This documentary will position his journey as both a sports chronicle and human drama, appealing to 
+        golf enthusiasts and general audiences alike.</p>
+        
+        <div class="key-scene">
+            <h3>Final Frame Concept</h3>
+            <p>Watson walking into a Kansas sunset, voiceover of his famous quote: 
+            <em>"Golf is a game of life. You don't get what you deserve - you get what you earn."</em></p>
+        </div>
+    </div>
+</body>
+</html>
