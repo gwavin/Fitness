@@ -1,98 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Morning Strength Recovery Plan</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-    h2 { background: #333; color: #fff; padding: 10px; border-radius: 5px; }
-    ul { background: #fff; padding: 15px; border-radius: 5px; list-style: square; margin-bottom: 20px; }
-    li { margin-bottom: 8px; }
-    .warmup-section { background: #e8e8e8; padding: 10px; margin-bottom: 20px; border-left: 5px solid #333; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morning Strength Recovery Plan</title>
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --card: #fff;
+      --primary: #4a5568;
+      --accent: #2b6cb0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      color: var(--primary);
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%; max-width: 600px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+    .card {
+      background: var(--card);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .card h2 {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1rem;
+      font-size: 1.1rem;
+    }
+    .card ul {
+      list-style: none;
+      padding: 1rem;
+    }
+    .card li {
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    @media (max-width: 400px) {
+      h1 { font-size: 1.25rem; }
+      .card h2 { font-size: 1rem; }
+    }
+  </style>
 </head>
 <body>
-
-  <h2>Daily Warm-Up (10 Minutes)</h2>
-  <div class="warmup-section">
-    <ul>
-      <li>Scapular Push-ups – 2 sets of 10 reps (slow and controlled)</li>
-      <li>Wall Slides – 2 sets of 10 reps (stand with back against wall, slide arms up/down in "goal post" shape)</li>
-      <li>YTWs – 2 rounds:
-        <ul>
-          <li>Y raise – 10 reps (thumbs up, 45° angle from body)</li>
-          <li>T raise – 10 reps (straight out to sides, squeeze shoulder blades)</li>
-          <li>W raise – 10 reps (bend elbows, pull into a "W" position)</li>
-        </ul>
-      </li>
-      <li>Cat-Cow Stretch – 1 minute (gentle alternation of arch and round back)</li>
-      <li>Thoracic Rotations – 10 reps per side (on all fours, thread arm under and reach up)</li>
-      <li>Scapular Rows (using band or slow bent-over motion with no weight) – 2 sets of 10</li>
-    </ul>
-  </div>
-
-  <h2>Monday – Bench Rebuild + Squat (Light)</h2>
-  <ul>
-    <li>Warm-up Flow (see above)</li>
-    <li>Barbell Bench – 4 x 5 (start at 60–65%)</li>
-    <li>Goblet Squat – 3 x 10</li>
-    <li>Paused DB Bench – 3 x 8</li>
-    <li>Reverse Lunges – 2 x 12 per leg</li>
-  </ul>
-
-  <h2>Tuesday – Deadlift + Pull</h2>
-  <ul>
-    <li>Warm-up Flow (see above)</li>
-    <li>Barbell or Trap Bar Deadlift – 4 x 5</li>
-    <li>Chest-supported Row (DB or machine) – 3 x 10</li>
-    <li>Single-leg RDL – 3 x 8 each side</li>
-    <li>Face Pulls (or rear delt flys) – 2 x 15</li>
-  </ul>
-
-  <h2>Wednesday – Arms + Shoulder Health</h2>
-  <ul>
-    <li>Warm-up Flow (see above)</li>
-    <li>Slow Shrugs – 3 x 12 @ 20 kg</li>
-    <li>Hammer Curls – 3 x 10</li>
-    <li>Triceps Kickbacks or Dips – 3 x 10 (pain-free)</li>
-    <li>YTWs – 2 rounds</li>
-    <li>Overhead Isometric Wall Press – 2 x 20s per arm</li>
-  </ul>
-
-  <h2>Thursday – Incline Bench + Front Squat</h2>
-  <ul>
-    <li>Warm-up Flow + 5-min light cycle/row</li>
-    <li>Incline DB Bench (light) – 4 x 8</li>
-    <li>Front Squat – 4 x 5</li>
-    <li>Incline Push-up or Machine Press – 3 x 10</li>
-    <li>DB Shrugs – 2 x 15 slow</li>
-  </ul>
-
-  <h2>Friday – Posterior Chain + Core</h2>
-  <ul>
-    <li>Warm-up Flow (see above)</li>
-    <li>Deadlift – 4 x 5 (lighter than Tuesday)</li>
-    <li>Bird-Dog Rows or Inverted Rows – 3 x 10</li>
-    <li>Glute Bridges or Hip Thrusts – 3 x 12</li>
-    <li>Plank Hold – 2 x 1 min</li>
-    <li>Rear Delt DB Raises – 2 x 12</li>
-  </ul>
-
-  <h2>Saturday – Dumbbell Medley + Conditioning</h2>
-  <ul>
-    <li>Warm-up Flow (see above)</li>
-    <li>DB Floor Press – 3 x 10</li>
-    <li>Renegade Rows – 3 x 8 per side</li>
-    <li>DB Lateral Raise + Front Raise (combo) – 3 x 12</li>
-    <li>Farmer’s Carry (short, heavy) – 3 rounds</li>
-    <li>Bodyweight Squats or Step-ups – 2 x 15</li>
-  </ul>
-
-  <h2>Sunday – Recovery</h2>
-  <ul>
-    <li>Optional: Walk, mobility flow, or full rest</li>
-    <li>Optional rehab circuit: wall slides, shoulder rolls, thoracic twist</li>
-  </ul>
-
+  <div class="container">
+    <h1>Morning Strength Recovery Plan</h1>
+    <div class="card">
+      <h2>Daily Warm-Up (10 Min)</h2>
+      <ul>
+        <li>Scapular Push-ups: 2×10 (slow)</li>
+        <li>Wall Slides: 2×10</li>
+        <li>YTWs: 2 rounds of 10 each (Y, T, W)</li>
+        <li>Cat-Cow: 1 min</li>
+        <li>Thoracic Rotations: 10 each side</li>
+        <li>Scapular Rows (bodyweight): 2×10</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Monday – Bench + Squat</h2>
+      <ul>
+        <li>Warm-Up Flow</li>
+        <li>Barbell Bench (rack): 4×5 @60–65%</li>
+        <li>Goblet Squat (20kg KB): 3×10</li>
+        <li>Floor Press (21kg DB): 3×8 paused</li>
+        <li>Reverse Lunges (KB): 2×12 per leg</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Tuesday – Deadlift + Rows</h2>
+      <ul>
+        <li>Warm-Up Flow</li>
+        <li>Deadlift (rack): 4×5</li>
+        <li>Bent-Over Row (21kg DB): 3×10 each side</li>
+        <li>Single-Leg RDL (KB): 3×8 each</li>
+        <li>Rear Delt Raises (bodyweight/KB): 2×15</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Wednesday – Arms + Shoulders</h2>
+      <ul>
+        <li>Warm-Up Flow</li>
+        <li>Shrugs (20kg KB): 3×12</li>
+        <li>Hammer Curls (21kg DB): 3×10</li>
+        <li>Triceps Dips (rack): 3×10</li>
+        <li>YTWs: 2 rounds</li>
+        <li>Wall Press: 2×20s per arm</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Thursday – Press + Squat</h2>
+      <ul>
+        <li>Warm-Up Flow</li>
+        <li>Floor Press (21kg DB): 4×8</li>
+        <li>Front Squat (rack): 4×5</li>
+        <li>Push-Ups: 3×10</li>
+        <li>Shrugs (KB): 2×15 slow</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Friday – Posterior + Core</h2>
+      <ul>
+        <li>Warm-Up Flow</li>
+        <li>Deadlift (lighter): 4×5</li>
+        <li>Bird-Dog Rows (floor): 3×10</li>
+        <li>Glute Bridge (floor): 3×12</li>
+        <li>Plank: 2×1min</li>
+        <li>Rear Delt Raises: 2×12</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Saturday – DB Medley + Conditioning</h2>
+      <ul>
+        <li>Warm-Up Flow</li>
+        <li>DB Floor Press: 3×10</li>
+        <li>Renegade Rows: 3×8 each</li>
+        <li>DB Lateral + Front Raise: 3×12</li>
+        <li>Farmer’s Carry (KB): 3 rounds</li>
+        <li>Bodyweight Squats: 2×15</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Sunday – Recovery</h2>
+      <ul>
+        <li>Walk or Mobility Flow</li>
+        <li>Rehab: wall slides, shoulder rolls</li>
+      </ul>
+    </div>
+  </div>
 </body>
 </html>
