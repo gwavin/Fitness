@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Surprise Demo Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap"
+  />
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* THEMES */
+    body.dark-theme {
+      --bg-color: linear-gradient(135deg, #000000, #333333);
+      --text-color: #fff;
+      --header-color: #FFD700;
+      --button-bg: #FFD700;
+      --button-text: #000;
+      --button-hover-bg: #FFC107;
+      --card-bg: rgba(255, 215, 0, 0.1);
+      --card-border: rgba(255, 215, 0, 0.3);
+      --link-color: #FFD700;
+    }
+
+    body.light-theme {
+      --bg-color: linear-gradient(135deg, #f0f2f5, #e0e5ec);
+      --text-color: #333;
+      --header-color: #2b6cb0;
+      --button-bg: #2b6cb0;
+      --button-text: #fff;
+      --button-hover-bg: #2c5282;
+      --card-bg: rgba(43, 108, 176, 0.1);
+      --card-border: rgba(43, 108, 176, 0.3);
+      --link-color: #2b6cb0;
+    }
+
+    body {
+      font-family: "Montserrat", sans-serif;
+      text-align: center;
+      background: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 1rem 0 2rem;
+      font-weight: 700;
+      color: var(--header-color);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .feature-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem auto;
+      max-width: 700px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .feature-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--header-color);
+    }
+
+    button#theme-switcher, button#load-content-btn {
+      text-decoration: none;
+      color: var(--button-text);
+      background: var(--button-bg);
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin: 10px;
+      display: inline-block;
+      font-size: 1em;
+      transition: background 0.3s ease, color 0.3s ease;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    button#theme-switcher:hover, button#load-content-btn:hover {
+      background: var(--button-hover-bg);
+    }
+
+    #dynamic-content-area {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(0,0,0,0.05);
+      border-radius: 5px;
+      text-align: left;
+    }
+    #dynamic-content-area ul {
+      list-style-position: inside;
+    }
+    #dynamic-content-area li {
+      margin-bottom: 0.5rem;
+    }
+
+    .home-link {
+      margin-top: 2rem;
+      display: inline-block;
+      color: var(--button-text);
+      background: var(--button-bg);
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .home-link:hover {
+      background: var(--button-hover-bg);
+    }
+
+  </style>
+</head>
+<body class="dark-theme">
+  <h1>Surprise Demo Page!</h1>
+
+  <div class="feature-section">
+    <h2>1. Theme Switcher</h2>
+    <p>Click the button to toggle between light and dark themes.</p>
+    <button id="theme-switcher">Switch to Light Theme</button>
+  </div>
+
+  <div class="feature-section">
+    <h2>2. Dynamic Content Loading</h2>
+    <p>Click the button to load some sample fitness tips from a local JSON file.</p>
+    <button id="load-content-btn">Load Fitness Tips</button>
+    <div id="dynamic-content-area" style="display: none;">
+      <h3>Fitness Tips:</h3>
+      <ul id="tips-list"></ul>
+    </div>
+  </div>
+
+  <a href="index.html" class="home-link">Back to Home</a>
+
+  <div style="text-align: center; margin-top: 30px; padding-bottom: 20px;">
+    <a href="https://github.com/gwavin/Fitness/edit/main/demo.html" target="_blank" id="edit-link" style="text-decoration: none; font-size: 0.9rem;">✏️ Edit this page on GitHub</a>
+  </div>
+
+  <script>
+    const editLink = document.getElementById('edit-link');
+    // Theme Switcher
+    const themeSwitcherBtn = document.getElementById('theme-switcher');
+    themeSwitcherBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-theme');
+      document.body.classList.toggle('dark-theme');
+
+      const isLightTheme = document.body.classList.contains('light-theme');
+      themeSwitcherBtn.textContent = isLightTheme ? 'Switch to Dark Theme' : 'Switch to Light Theme';
+      // Update edit link color based on theme
+      editLink.style.color = isLightTheme ? getComputedStyle(document.body).getPropertyValue('--link-color').trim() : '#FFD700';
+    });
+
+    // Initial set for edit link color
+    document.addEventListener('DOMContentLoaded', () => {
+        const isLightTheme = document.body.classList.contains('light-theme');
+        editLink.style.color = isLightTheme ? getComputedStyle(document.body).getPropertyValue('--link-color').trim() : '#FFD700';
+    });
+
+    // Dynamic Content Loading
+    const loadContentBtn = document.getElementById('load-content-btn');
+    const dynamicContentArea = document.getElementById('dynamic-content-area');
+    const tipsList = document.getElementById('tips-list');
+
+    loadContentBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch('sample-data.json');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        tipsList.innerHTML = ''; // Clear previous tips
+        data.fitnessTips.forEach(tip => {
+          const listItem = document.createElement('li');
+          listItem.textContent = tip;
+          tipsList.appendChild(listItem);
+        });
+        dynamicContentArea.style.display = 'block';
+      } catch (error) {
+        tipsList.innerHTML = '<li>Could not load tips. Please ensure sample-data.json exists.</li>';
+        dynamicContentArea.style.display = 'block';
+        console.error("Error loading dynamic content:", error);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "fitnessTips": [
+    "Stay hydrated: Drink water throughout the day, especially before, during, and after workouts.",
+    "Warm-up before every workout to prepare your muscles and prevent injuries.",
+    "Cool down and stretch after exercising to improve flexibility and aid recovery.",
+    "Consistency is key: Aim for regular physical activity, even if it's just for a short duration.",
+    "Listen to your body: Rest when you need to and don't push through pain.",
+    "Incorporate strength training at least twice a week to build muscle and boost metabolism.",
+    "Mix up your routine to keep things interesting and challenge different muscle groups.",
+    "Ensure you're getting enough quality sleep for muscle repair and overall health.",
+    "Focus on compound exercises (like squats, deadlifts, presses) for efficient full-body workouts.",
+    "Nutrition matters: Fuel your body with a balanced diet rich in whole foods."
+  ],
+  "recipeIdeas": [
+    {
+      "name": "Quick Protein Smoothie",
+      "ingredients": ["Protein powder", "Banana", "Spinach", "Almond milk", "Chia seeds"],
+      "method": "Blend all ingredients until smooth."
+    },
+    {
+      "name": "Overnight Oats",
+      "ingredients": ["Rolled oats", "Milk or yogurt", "Berries", "Nuts or seeds"],
+      "method": "Combine oats and milk/yogurt in a jar. Refrigerate overnight. Add toppings before serving."
+    }
+  ]
+}
