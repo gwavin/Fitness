@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAS-BLED Score Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 650px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+            padding: 0.8rem;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1rem;
+        }
+        .form-group .criteria-detail {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.4rem;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.3rem;
+        }
+        .radio-group label {
+            font-weight: normal;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff; /* Primary Blue */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 2rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; /* Initially hidden */
+            background-color: #fff3cd; /* Warning yellow for bleeding risk */
+            color: #856404;
+        }
+        #result .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: left;
+        }
+        #result .interpretation-text ul {
+            padding-left: 20px;
+            margin-top: 0.5rem;
+        }
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HAS-BLED Score Calculator</h1>
+        <p class="page-description">For assessing 1-year major bleeding risk in patients with atrial fibrillation on anticoagulation.</p>
+        <form id="hasbled-form">
+            <div class="form-group">
+                <label>Hypertension</label>
+                <p class="criteria-detail">Uncontrolled, SBP > 160 mmHg</p>
+                <div class="radio-group">
+                    <input type="radio" id="htn-yes" name="htn" value="1" required><label for="htn-yes">Yes</label>
+                    <input type="radio" id="htn-no" name="htn" value="0" checked><label for="htn-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Abnormal Renal Function (1 point)</label>
+                <p class="criteria-detail">Chronic dialysis, transplant, or Creatinine &ge;2.26 mg/dL (200 &micro;mol/L)</p>
+                <div class="radio-group">
+                    <input type="radio" id="renal-yes" name="renal" value="1" required><label for="renal-yes">Yes</label>
+                    <input type="radio" id="renal-no" name="renal" value="0" checked><label for="renal-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Abnormal Liver Function (1 point)</label>
+                <p class="criteria-detail">Cirrhosis, or Bilirubin >2x ULN with AST/ALT/AP >3x ULN</p>
+                <div class="radio-group">
+                    <input type="radio" id="liver-yes" name="liver" value="1" required><label for="liver-yes">Yes</label>
+                    <input type="radio" id="liver-no" name="liver" value="0" checked><label for="liver-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Stroke (history of)</label>
+                <div class="radio-group">
+                    <input type="radio" id="stroke-yes" name="stroke" value="1" required><label for="stroke-yes">Yes</label>
+                    <input type="radio" id="stroke-no" name="stroke" value="0" checked><label for="stroke-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Bleeding History or Predisposition</label>
+                <div class="radio-group">
+                    <input type="radio" id="bleeding-yes" name="bleeding" value="1" required><label for="bleeding-yes">Yes</label>
+                    <input type="radio" id="bleeding-no" name="bleeding" value="0" checked><label for="bleeding-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Labile INR</label>
+                <p class="criteria-detail">Unstable/high INRs, or time in therapeutic range (TTR) <60%</p>
+                <div class="radio-group">
+                    <input type="radio" id="inr-yes" name="inr" value="1" required><label for="inr-yes">Yes</label>
+                    <input type="radio" id="inr-no" name="inr" value="0" checked><label for="inr-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Elderly (Age > 65 years)</label>
+                <div class="radio-group">
+                    <input type="radio" id="elderly-yes" name="elderly" value="1" required><label for="elderly-yes">Yes</label>
+                    <input type="radio" id="elderly-no" name="elderly" value="0" checked><label for="elderly-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Drugs (1 point)</label>
+                <p class="criteria-detail">Concomitant use of NSAIDs, antiplatelet agents</p>
+                <div class="radio-group">
+                    <input type="radio" id="drugs-yes" name="drugs" value="1" required><label for="drugs-yes">Yes</label>
+                    <input type="radio" id="drugs-no" name="drugs" value="0" checked><label for="drugs-no">No</label>
+                </div>
+            </div>
+             <div class="form-group">
+                <label>Alcohol (1 point)</label>
+                <p class="criteria-detail">&ge;8 drinks/week</p>
+                <div class="radio-group">
+                    <input type="radio" id="alcohol-yes" name="alcohol" value="1" required><label for="alcohol-yes">Yes</label>
+                    <input type="radio" id="alcohol-no" name="alcohol" value="0" checked><label for="alcohol-no">No</label>
+                </div>
+            </div>
+            <button type="submit">Calculate HAS-BLED Score</button>
+        </form>
+        <div id="result">
+            <span class="score-value"></span>
+            <div class="interpretation-title">Interpretation (Approximate 1-Year Major Bleeding Risk):</div>
+            <div class="interpretation-text"></div>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/hasbled-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('hasbled-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let score = 0;
+            score += parseInt(document.querySelector('input[name="htn"]:checked').value);
+            score += parseInt(document.querySelector('input[name="renal"]:checked').value);
+            score += parseInt(document.querySelector('input[name="liver"]:checked').value);
+            score += parseInt(document.querySelector('input[name="stroke"]:checked').value);
+            score += parseInt(document.querySelector('input[name="bleeding"]:checked').value);
+            score += parseInt(document.querySelector('input[name="inr"]:checked').value);
+            score += parseInt(document.querySelector('input[name="elderly"]:checked').value);
+            score += parseInt(document.querySelector('input[name="drugs"]:checked').value);
+            score += parseInt(document.querySelector('input[name="alcohol"]:checked').value);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.score-value').textContent = "HAS-BLED Score: " + score;
+
+            let interpretation = "";
+            // Bleeding risk percentages are approximate.
+            if (score === 0) {
+                interpretation = "<ul><li><strong>Risk:</strong> ~1.13% bleeds per year.</li><li>Low risk of bleeding.</li></ul>";
+            } else if (score === 1) {
+                interpretation = "<ul><li><strong>Risk:</strong> ~1.02 - 1.88% bleeds per year.</li><li>Low-moderate risk of bleeding.</li></ul>";
+            } else if (score === 2) {
+                interpretation = "<ul><li><strong>Risk:</strong> ~1.88 - 3.2% bleeds per year.</li><li>Moderate risk of bleeding. Caution and regular review advised.</li></ul>";
+            } else if (score === 3) {
+                interpretation = "<ul><li><strong>Risk:</strong> ~3.74 - 4.1% bleeds per year.</li><li>High risk of bleeding. Caution and regular review advised. Address modifiable risk factors.</li></ul>";
+            } else if (score === 4) {
+                interpretation = "<ul><li><strong>Risk:</strong> ~8.7 - 12.5% bleeds per year.</li><li>Very high risk of bleeding. Consider alternatives or closer monitoring if anticoagulation is essential. Address modifiable risk factors.</li></ul>";
+            } else if (score >= 5) {
+                interpretation = "<ul><li><strong>Risk:</strong> >12.5% bleeds per year.</li><li>Extremely high risk of bleeding. Anticoagulation benefits must strongly outweigh risks. Address modifiable risk factors.</li></ul>";
+            }
+
+            resultDiv.querySelector('.interpretation-text').innerHTML = interpretation;
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

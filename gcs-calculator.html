@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glasgow Coma Scale (GCS) Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .form-section { /* Used for each GCS component */
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .form-section:last-of-type {
+            border-bottom: none;
+             padding-bottom: 0;
+        }
+        label { /* For section titles like "Eye Opening Response" */
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600; /* Bolder for section titles */
+            color: #007bff; /* Blue to make them stand out */
+            font-size: 1.1rem;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        #result .score-display { /* Container for score and component breakdown */
+             margin-bottom: 1rem;
+        }
+        #result .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            display: block;
+        }
+         #result .component-scores {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        #result .interpretation-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-text {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        /* Color coding for GCS result box based on severity */
+        .gcs-mild { background-color: #d4edda; color: #155724; } /* Greenish */
+        .gcs-moderate { background-color: #fff3cd; color: #856404; } /* Yellowish */
+        .gcs-severe { background-color: #f8d7da; color: #721c24; } /* Reddish */
+
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Glasgow Coma Scale (GCS) Calculator</h1>
+        <p class="page-description">Assesses level of consciousness after head injury.</p>
+        <form id="gcs-form">
+            <div class="form-section">
+                <label for="eye-response">Eye Opening Response</label>
+                <select id="eye-response" required>
+                    <option value="4">Spontaneous (4 points)</option>
+                    <option value="3">To Speech (3 points)</option>
+                    <option value="2">To Pain (2 points)</option>
+                    <option value="1">None (1 point)</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="verbal-response">Verbal Response</label>
+                <select id="verbal-response" required>
+                    <option value="5">Oriented (5 points)</option>
+                    <option value="4">Confused (4 points)</option>
+                    <option value="3">Inappropriate Words (3 points)</option>
+                    <option value="2">Incomprehensible Sounds (2 points)</option>
+                    <option value="1">None (1 point)</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="motor-response">Motor Response</label>
+                <select id="motor-response" required>
+                    <option value="6">Obeys Commands (6 points)</option>
+                    <option value="5">Localizes Pain (5 points)</option>
+                    <option value="4">Withdraws from Pain (4 points)</option>
+                    <option value="3">Flexion to Pain (Decorticate) (3 points)</option>
+                    <option value="2">Extension to Pain (Decerebrate) (2 points)</option>
+                    <option value="1">None (1 point)</option>
+                </select>
+            </div>
+            <button type="submit">Calculate GCS</button>
+        </form>
+        <div id="result">
+            <div class="score-display">
+                Total GCS: <span class="score-value"></span>
+                <div class="component-scores"></div>
+            </div>
+            <div class="interpretation-title">Interpretation:</div>
+            <div class="interpretation-text"></div>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/gcs-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('gcs-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const eyeScore = parseInt(document.getElementById('eye-response').value);
+            const verbalScore = parseInt(document.getElementById('verbal-response').value);
+            const motorScore = parseInt(document.getElementById('motor-response').value);
+
+            const totalGCS = eyeScore + verbalScore + motorScore;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.score-value').textContent = totalGCS;
+            resultDiv.querySelector('.component-scores').textContent = `(E${eyeScore} V${verbalScore} M${motorScore})`;
+
+            let interpretation = "";
+            let riskClass = "";
+
+            if (totalGCS >= 13) {
+                interpretation = "<strong>Mild Head Injury.</strong> Possible concussion. Further observation and assessment may be needed.";
+                riskClass = "gcs-mild";
+            } else if (totalGCS >= 9 && totalGCS <= 12) {
+                interpretation = "<strong>Moderate Head Injury.</strong> Requires hospital admission and neuro-observation. CT scan usually indicated.";
+                riskClass = "gcs-moderate";
+            } else { // totalGCS <= 8
+                interpretation = "<strong>Severe Head Injury.</strong> Indicates significant impairment of consciousness. Endotracheal intubation often considered. Urgent neurosurgical consultation and ICU admission likely required.";
+                 riskClass = "gcs-severe";
+            }
+
+            resultDiv.querySelector('.interpretation-text').innerHTML = interpretation;
+            resultDiv.className = 'gcs-result-active'; // Base class for active result
+            resultDiv.classList.add(riskClass); // Add specific risk class
+            resultDiv.style.display = 'block';
+        });
+
+        // Ensure correct class name for resultDiv when adding riskClass
+        document.addEventListener('DOMContentLoaded', () => {
+            const resultDiv = document.getElementById('result');
+            // Clear any lingering classes from previous calculations if the page was reloaded weirdly
+             resultDiv.className = '';
+        });
+    </script>
+</body>
+</html>
