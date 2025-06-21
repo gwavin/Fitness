@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #fff;
+            background-color: #28a745; /* Green for BMI result */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; /* Initially hidden */
+        }
+        #result .value {
+            font-size: 2.5rem;
+            display: block;
+            margin-top: 0.3rem;
+        }
+        #result .category {
+            font-size: 1rem;
+            font-weight: normal;
+            margin-top: 0.8rem;
+        }
+        .links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.9rem;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BMI Calculator</h1>
+        <form id="bmi-form">
+            <div class="form-group">
+                <label for="weight">Weight</label>
+                <input type="number" id="weight" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="weight-unit">Weight Unit</label>
+                <select id="weight-unit">
+                    <option value="kg">Kilograms (kg)</option>
+                    <option value="lbs">Pounds (lbs)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="height">Height</label>
+                <input type="number" id="height" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="height-unit">Height Unit</label>
+                <select id="height-unit">
+                    <option value="cm">Centimeters (cm)</option>
+                    <option value="in">Inches (in)</option>
+                </select>
+            </div>
+            <button type="submit">Calculate BMI</button>
+        </form>
+        <div id="result">
+            Your BMI is <span class="value"></span>
+            <p class="category"></p>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/bmi-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('bmi-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let weight = parseFloat(document.getElementById('weight').value);
+            const weightUnit = document.getElementById('weight-unit').value;
+            let height = parseFloat(document.getElementById('height').value);
+            const heightUnit = document.getElementById('height-unit').value;
+
+            if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+                alert("Please enter valid positive numbers for weight and height.");
+                return;
+            }
+
+            // Convert weight to kg
+            if (weightUnit === 'lbs') {
+                weight *= 0.453592;
+            }
+
+            // Convert height to meters
+            if (heightUnit === 'cm') {
+                height /= 100;
+            } else if (heightUnit === 'in') {
+                height *= 0.0254;
+            }
+
+            const bmi = weight / (height * height);
+            const resultDiv = document.getElementById('result');
+            const bmiValueSpan = resultDiv.querySelector('.value');
+            const bmiCategoryP = resultDiv.querySelector('.category');
+
+            bmiValueSpan.textContent = bmi.toFixed(1);
+
+            let category = '';
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                resultDiv.style.backgroundColor = '#ffc107'; // Yellow for underweight
+            } else if (bmi < 25) {
+                category = 'Normal weight';
+                resultDiv.style.backgroundColor = '#28a745'; // Green for normal
+            } else if (bmi < 30) {
+                category = 'Overweight';
+                resultDiv.style.backgroundColor = '#fd7e14'; // Orange for overweight
+            } else {
+                category = 'Obesity';
+                resultDiv.style.backgroundColor = '#dc3545'; // Red for obesity
+            }
+            bmiCategoryP.textContent = category;
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

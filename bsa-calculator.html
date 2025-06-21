@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSA Calculator (Mosteller)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #fff;
+            background-color: #17a2b8; /* Info blue for BSA result */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; /* Initially hidden */
+        }
+        #result .value {
+            font-size: 2.5rem;
+            display: block;
+            margin-top: 0.3rem;
+        }
+         .links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.9rem;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Body Surface Area (BSA) Calculator</h1>
+        <p style="text-align:center; font-size:0.9rem; color: #6c757d; margin-top:-1rem; margin-bottom:1.5rem;">Using Mosteller Formula</p>
+        <form id="bsa-form">
+            <div class="form-group">
+                <label for="weight-bsa">Weight (kg)</label>
+                <input type="number" id="weight-bsa" step="0.1" required placeholder="e.g., 70">
+            </div>
+            <div class="form-group">
+                <label for="height-bsa">Height (cm)</label>
+                <input type="number" id="height-bsa" step="0.1" required placeholder="e.g., 175">
+            </div>
+            <button type="submit">Calculate BSA</button>
+        </form>
+        <div id="result">
+            Body Surface Area: <span class="value"></span> m²
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/bsa-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('bsa-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const weight = parseFloat(document.getElementById('weight-bsa').value);
+            const height = parseFloat(document.getElementById('height-bsa').value);
+
+            if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+                alert("Please enter valid positive numbers for weight and height.");
+                return;
+            }
+
+            const bsa = Math.sqrt((height * weight) / 3600);
+
+            const resultDiv = document.getElementById('result');
+            const bsaValueSpan = resultDiv.querySelector('.value');
+
+            bsaValueSpan.textContent = bsa.toFixed(2); // BSA typically shown to 2 decimal places
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

@@ -54,11 +54,27 @@
       background: #0056b3;
     }
     #result {
-      margin-top: 2rem;
+      margin-top: 2.5rem; /* Increased margin */
+      padding: 1.5rem; /* Added padding */
       text-align: center;
       font-weight: bold;
-      font-size: 1.2rem;
-      color: #333;
+      font-size: 2rem; /* Significantly increased font size */
+      color: #ffffff; /* White text */
+      background-color: #007bff; /* Blue background, matching button */
+      border-radius: 8px; /* Rounded corners */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+      display: none; /* Initially hidden */
+    }
+    #result .score-value {
+      font-size: 3rem; /* Even larger for the score number */
+      display: block;
+      margin-top: 0.5rem;
+    }
+    #result .interpretation {
+      font-size: 1rem; /* Smaller text for interpretation */
+      font-weight: normal;
+      margin-top: 1rem;
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -67,7 +83,7 @@
 
   <h1>Glasgow Blatchford Score (GBS)</h1>
   <p style="text-align: center;">
-    Enter the following details, then click "Calculate GBS" to see the result.
+    The Glasgow-Blatchford Score helps determine the risk of needing intervention for upper GI bleeding.
   </p>
 
   <form id="gbs-form">
@@ -322,7 +338,19 @@
 
       // Display the result
       const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = "Glasgow Blatchford Score: " + gbsScore;
+      let interpretationText = "";
+      if (gbsScore === 0) {
+        interpretationText = "Score of 0: Very low risk. Consider outpatient management.";
+      } else if (gbsScore >= 1 && gbsScore <= 5) {
+        interpretationText = "Score 1-5: Low to moderate risk. Decision for admission should be individualized.";
+      } else if (gbsScore >= 6 && gbsScore <= 11) {
+        interpretationText = "Score 6-11: Moderate to high risk. Admission likely required for intervention.";
+      } else { // gbsScore >= 12
+        interpretationText = "Score 12+: Very high risk. Admission for urgent intervention is typically indicated.";
+      }
+
+      resultDiv.innerHTML = `Glasgow Blatchford Score: <span class="score-value">${gbsScore}</span> <p class="interpretation">${interpretationText}</p>`;
+      resultDiv.style.display = 'block'; // Make the result visible
     });
   </script>
   <div style="text-align: center; margin-top: 30px; padding-bottom: 20px;">
