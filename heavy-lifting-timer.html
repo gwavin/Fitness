@@ -22,24 +22,26 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(135deg, #373B44, #4286f4);
-      color: #fff;
+      background-color: #f4f7f6; /* Neutral light grey background */
+      color: #333; /* Dark grey text for better readability */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     header {
-      background: rgba(0, 0, 0, 0.4);
+      background-color: #6c757d; /* Muted grey-blue for header */
+      color: #fff; /* White text on header */
       text-align: center;
       padding: 1.5rem 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Softer shadow */
     }
 
     h1 {
       font-weight: 700;
-      font-size: 2.5rem;
+      font-size: 2.2rem; /* Slightly reduced for balance */
       margin: 0;
+      color: #fff;
     }
 
     /* TIMER SECTION (MAIN WORKOUT TIMER) */
@@ -52,17 +54,19 @@
 
     .timer-container {
       text-align: center;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: #ffffff; /* White background for timer card */
+      color: #333; /* Dark text for timer card */
       padding: 1rem;
       border-radius: 8px;
-      min-width: 150px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      min-width: 180px; /* Adjusted width */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Softer shadow */
     }
 
     .timer {
-      font-size: 1.2em;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 0.5rem 1rem;
+      font-size: 1.3em; /* Slightly larger timer font */
+      background-color: #e9ecef; /* Light grey background for timer display */
+      color: #495057; /* Darker grey for timer text */
+      padding: 0.6rem 1.2rem;
       border-radius: 5px;
       display: inline-block;
       margin-bottom: 1rem;
@@ -70,19 +74,19 @@
     }
 
     .timer-buttons button {
-      background: #6a11cb;
+      background-color: #5a6268; /* Muted button color */
       color: #fff;
       border: none;
-      padding: 0.6rem 1.2rem;
-      margin: 0.2rem;
+      padding: 0.7rem 1.4rem; /* Slightly larger buttons */
+      margin: 0.3rem;
       border-radius: 5px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background-color 0.3s ease;
       font-weight: 500;
     }
 
     .timer-buttons button:hover {
-      background: #4e54c8;
+      background-color: #495057; /* Darker shade on hover */
     }
 
     /* CONTENT SECTION */
@@ -94,26 +98,29 @@
     }
 
     .exercise {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: #ffffff; /* White background for exercise cards */
+      color: #333; /* Dark text for exercise cards */
       margin-bottom: 2rem;
       padding: 1.5rem;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Softer shadow */
     }
 
     .exercise h2 {
-      font-size: 1.6rem;
+      font-size: 1.5rem; /* Adjusted exercise title size */
       font-weight: 600;
       margin-bottom: 1rem;
+      color: #495057; /* Muted color for exercise titles */
     }
 
     .set {
       display: flex;
       align-items: center;
-      margin: 0.5rem 0;
+      margin: 0.6rem 0; /* Adjusted margin */
       font-size: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 0.5rem;
+      background-color: #e9ecef; /* Light grey for set background */
+      color: #495057; /* Darker grey for set text */
+      padding: 0.6rem; /* Adjusted padding */
       border-radius: 5px;
     }
 
@@ -131,8 +138,9 @@
     }
 
     .set.completed {
-      color: #00ff80; /* bright green */
+      color: #28a745; /* Softer green for completed */
       text-decoration: line-through;
+      background-color: #d4edda; /* Light green background for completed */
     }
 
     /* Rest Timer Section */
@@ -151,35 +159,55 @@
     }
 
     .start-countdown-btn {
-      background: #ff6600;
+      background-color: #007bff; /* Primary blue for start button */
       color: #fff;
       border: none;
-      padding: 0.4rem 0.8rem;
+      padding: 0.5rem 1rem; /* Adjusted padding */
       border-radius: 5px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background-color 0.3s ease;
       font-weight: 500;
     }
 
     .start-countdown-btn:hover {
-      background: #e65c00;
+      background-color: #0056b3; /* Darker blue on hover */
     }
 
     /* LINKS & BUTTONS */
+    /* General link styling - will be overridden by specific classes if needed */
     a {
+      color: #007bff; /* Standard link blue */
       text-decoration: none;
-      color: #fff;
-      background: #6a11cb;
-      padding: 0.8rem 1.6rem;
-      border-radius: 5px;
-      display: inline-block;
-      margin-top: 1rem;
-      transition: background 0.3s ease;
-      font-weight: 500;
+    }
+    a:hover {
+      text-decoration: underline;
     }
 
-    a:hover {
-      background: #4e54c8;
+    /* Specific style for the "Back to Home" link to make it button-like */
+    .home-link {
+      display: inline-block; /* To allow padding and margin */
+      background-color: #6c757d; /* Muted grey-blue, similar to header */
+      color: #fff;
+      padding: 0.8rem 1.6rem;
+      border-radius: 5px;
+      margin-top: 1.5rem; /* Adjusted margin */
+      transition: background-color 0.3s ease;
+      font-weight: 500;
+      text-decoration: none; /* Ensure no underline for this button-like link */
+    }
+
+    .home-link:hover {
+      background-color: #5a6268; /* Darker shade on hover */
+      text-decoration: none; /* Ensure no underline on hover */
+    }
+
+    .edit-github-link {
+      color: #6c757d !important; /* Ensure this color is applied, important if needed */
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .edit-github-link:hover {
+      text-decoration: underline;
     }
 
     /* MEDIA QUERIES */
@@ -344,7 +372,11 @@
       </div>
     </div>
 
-    <a href="index.html">Back to Home</a>
+    <a href="index.html" class="home-link">Back to Home</a>
+  </div>
+
+  <div style="text-align: center; margin-top: 30px; padding-bottom: 20px;">
+    <a href="https://github.com/gwavin/Fitness/edit/main/heavy-lifting-timer.html" target="_blank" class="edit-github-link">✏️ Edit this page on GitHub</a>
   </div>
 
   <script>
@@ -386,7 +418,7 @@
       countdownDisplay.textContent = "01:15";
 
       // Prepare beep sound
-      let beepSound = new Audio("beep.mp3");
+      let beepSound = new Audio("beep.mp3"); // Note: beep.mp3 is not in the repo, this will likely fail silently or log error.
 
       button.intervalId = setInterval(() => {
         timeLeft--;
@@ -398,8 +430,13 @@
         if (timeLeft <= 0) {
           clearInterval(button.intervalId);
           beepSound.play().catch(err => {
-            console.log("Beep sound was blocked or couldn't play automatically:", err);
-            alert("Time is up!");
+            console.log("Beep sound was blocked or couldn't play automatically. (beep.mp3 missing?):", err);
+            // Fallback alert if sound fails or is blocked
+            if (document.hasFocus()) { // Only alert if tab is active
+                alert("Time is up!");
+            } else {
+                console.log("Timer ended in background tab.");
+            }
           });
         }
       }, 1000);
@@ -416,8 +453,5 @@
       }
     }
   </script>
-  <div style="text-align: center; margin-top: 30px; padding-bottom: 20px;">
-    <a href="https://github.com/gwavin/Fitness/edit/main/set2.html" target="_blank" style="color: #FFF; text-decoration: none; font-size: 0.9rem;">✏️ Edit this page on GitHub</a>
-  </div>
 </body>
 </html>
