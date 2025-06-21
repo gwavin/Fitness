@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CURB-65 Score Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem; /* Adjusted margin */
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+        }
+        label { /* Main label for group */
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        .radio-group, .input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .radio-group label, .input-group label { /* Label for radio/specific input */
+            font-weight: normal;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+         input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            width: 100px; /* Fixed width for consistency */
+        }
+        select {
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            min-width: 100px;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 2rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; /* Initially hidden */
+        }
+        #result .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: left; /* For bullet points or detailed text */
+        }
+        #result .interpretation-text ul {
+            padding-left: 20px;
+            margin-top: 0.5rem;
+        }
+         /* Color coding for CURB-65 result box based on score/risk */
+        .curb-low { background-color: #d4edda; color: #155724; } /* Greenish */
+        .curb-moderate { background-color: #fff3cd; color: #856404; } /* Yellowish */
+        .curb-high { background-color: #f8d7da; color: #721c24; } /* Reddish */
+
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CURB-65 Score Calculator</h1>
+        <p class="page-description">For assessing severity of community-acquired pneumonia.</p>
+        <form id="curb65-form">
+            <div class="form-group">
+                <label>Confusion (new disorientation)?</label>
+                <div class="radio-group">
+                    <input type="radio" id="confusion-yes" name="confusion" value="1" required><label for="confusion-yes">Yes</label>
+                    <input type="radio" id="confusion-no" name="confusion" value="0" checked><label for="confusion-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Urea > 7 mmol/L (or BUN > 19 mg/dL)?</label>
+                 <div class="radio-group">
+                    <input type="radio" id="urea-yes" name="urea" value="1" required><label for="urea-yes">Yes</label>
+                    <input type="radio" id="urea-no" name="urea" value="0" checked><label for="urea-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Respiratory Rate &ge; 30 breaths/min?</label>
+                <div class="radio-group">
+                    <input type="radio" id="resp-rate-yes" name="resp_rate" value="1" required><label for="resp-rate-yes">Yes</label>
+                    <input type="radio" id="resp-rate-no" name="resp_rate" value="0" checked><label for="resp-rate-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Blood Pressure (Systolic < 90 mmHg or Diastolic &le; 60 mmHg)?</label>
+                <div class="radio-group">
+                    <input type="radio" id="bp-yes" name="bp" value="1" required><label for="bp-yes">Yes</label>
+                    <input type="radio" id="bp-no" name="bp" value="0" checked><label for="bp-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Age &ge; 65 years?</label>
+                 <div class="radio-group">
+                    <input type="radio" id="age-yes" name="age" value="1" required><label for="age-yes">Yes</label>
+                    <input type="radio" id="age-no" name="age" value="0" checked><label for="age-no">No</label>
+                </div>
+            </div>
+            <button type="submit">Calculate CURB-65 Score</button>
+        </form>
+        <div id="result">
+            <span class="score-value"></span>
+            <div class="interpretation-title">Interpretation & Management:</div>
+            <div class="interpretation-text"></div>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/curb65-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('curb65-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let score = 0;
+            score += parseInt(document.querySelector('input[name="confusion"]:checked').value);
+            score += parseInt(document.querySelector('input[name="urea"]:checked').value);
+            score += parseInt(document.querySelector('input[name="resp_rate"]:checked').value);
+            score += parseInt(document.querySelector('input[name="bp"]:checked').value);
+            score += parseInt(document.querySelector('input[name="age"]:checked').value);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.score-value').textContent = "CURB-65 Score: " + score;
+
+            let interpretation = "";
+            let riskClass = "";
+
+            if (score === 0 || score === 1) {
+                interpretation = "<ul><li><strong>Risk:</strong> Low (Mortality ~1.5%)</li><li><strong>Management:</strong> Consider home treatment.</li></ul>";
+                riskClass = "curb-low";
+            } else if (score === 2) {
+                interpretation = "<ul><li><strong>Risk:</strong> Moderate (Mortality ~9.2%)</li><li><strong>Management:</strong> Consider hospital admission or supervised outpatient treatment.</li></ul>";
+                riskClass = "curb-moderate";
+            } else if (score >= 3) { // Scores 3, 4, or 5
+                interpretation = "<ul><li><strong>Risk:</strong> High (Mortality ~22% for score 3; up to 57% for scores 4-5)</li><li><strong>Management:</strong> Urgent hospital admission. Assess for ICU if score 4-5.</li></ul>";
+                riskClass = "curb-high";
+            }
+
+            resultDiv.querySelector('.interpretation-text').innerHTML = interpretation;
+            resultDiv.className = ''; // Clear previous classes
+            resultDiv.classList.add(riskClass); // Add new risk class for color
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

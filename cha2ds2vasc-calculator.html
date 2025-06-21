@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHA2DS2-VASc Score Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 650px; /* Adjusted width */
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+            padding: 0.8rem; /* Reduced padding */
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+        }
+        .form-group label { /* Main label for group */
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1rem; /* Adjusted font size */
+        }
+        .form-group .points-info {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-left: 5px;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.3rem;
+        }
+        .radio-group label { /* Label for radio */
+            font-weight: normal;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 2rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none; /* Initially hidden */
+            background-color: #e9ecef; /* Neutral background for result box */
+            color: #495057;
+        }
+        #result .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #007bff; /* Blue for the score itself */
+        }
+        #result .interpretation-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: left;
+        }
+         #result .interpretation-text ul {
+            padding-left: 20px;
+            margin-top: 0.5rem;
+        }
+
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CHA₂DS₂-VASc Score Calculator</h1>
+        <p class="page-description">For estimating stroke risk in patients with non-valvular atrial fibrillation.</p>
+        <form id="cha2ds2vasc-form">
+            <div class="form-group">
+                <label>Congestive Heart Failure (or LVEF &le; 40%) <span class="points-info">(1 point)</span></label>
+                <div class="radio-group">
+                    <input type="radio" id="chf-yes" name="chf" value="1" required><label for="chf-yes">Yes</label>
+                    <input type="radio" id="chf-no" name="chf" value="0" checked><label for="chf-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Hypertension (history of, or treated) <span class="points-info">(1 point)</span></label>
+                <div class="radio-group">
+                    <input type="radio" id="htn-yes" name="htn" value="1" required><label for="htn-yes">Yes</label>
+                    <input type="radio" id="htn-no" name="htn" value="0" checked><label for="htn-no">No</label>
+                </div>
+            </div>
+             <div class="form-group">
+                <label>Age</label>
+                <div class="radio-group">
+                    <input type="radio" id="age-under65" name="age" value="0" checked><label for="age-under65">&lt;65 years <span class="points-info">(0 points)</span></label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="age-65to74" name="age" value="1"><label for="age-65to74">65-74 years <span class="points-info">(1 point)</span></label>
+                </div>
+                 <div class="radio-group">
+                    <input type="radio" id="age-75plus" name="age" value="2"><label for="age-75plus">&ge;75 years <span class="points-info">(2 points)</span></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Diabetes Mellitus <span class="points-info">(1 point)</span></label>
+                <div class="radio-group">
+                    <input type="radio" id="diabetes-yes" name="diabetes" value="1" required><label for="diabetes-yes">Yes</label>
+                    <input type="radio" id="diabetes-no" name="diabetes" value="0" checked><label for="diabetes-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Stroke / TIA / Thromboembolism (prior) <span class="points-info">(2 points)</span></label>
+                <div class="radio-group">
+                    <input type="radio" id="stroke-yes" name="stroke" value="2" required><label for="stroke-yes">Yes</label>
+                    <input type="radio" id="stroke-no" name="stroke" value="0" checked><label for="stroke-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Vascular Disease (prior MI, PAD, aortic plaque) <span class="points-info">(1 point)</span></label>
+                <div class="radio-group">
+                    <input type="radio" id="vascular-yes" name="vascular" value="1" required><label for="vascular-yes">Yes</label>
+                    <input type="radio" id="vascular-no" name="vascular" value="0" checked><label for="vascular-no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Sex Category (Female) <span class="points-info">(1 point)</span></label>
+                <div class="radio-group">
+                    <input type="radio" id="sex-female" name="sex" value="1" required><label for="sex-female">Female</label>
+                    <input type="radio" id="sex-male" name="sex" value="0" checked><label for="sex-male">Male</label>
+                </div>
+            </div>
+            <button type="submit">Calculate CHA₂DS₂-VASc Score</button>
+        </form>
+        <div id="result">
+            <span class="score-value"></span>
+            <div class="interpretation-title">Interpretation:</div>
+            <div class="interpretation-text"></div>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/cha2ds2vasc-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('cha2ds2vasc-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let score = 0;
+            score += parseInt(document.querySelector('input[name="chf"]:checked').value);
+            score += parseInt(document.querySelector('input[name="htn"]:checked').value);
+            score += parseInt(document.querySelector('input[name="age"]:checked').value); // Age handles its own points
+            score += parseInt(document.querySelector('input[name="diabetes"]:checked').value);
+            score += parseInt(document.querySelector('input[name="stroke"]:checked').value); // Stroke handles its own points
+            score += parseInt(document.querySelector('input[name="vascular"]:checked').value);
+            score += parseInt(document.querySelector('input[name="sex"]:checked').value);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.score-value').textContent = "Score: " + score;
+
+            let interpretation = "";
+            // Stroke risk percentages are approximate and can vary slightly by study/guideline
+            // These are commonly cited values.
+            if (score === 0) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~0% per year (for males) or ~1.3% (for females if sex is the only risk factor, though guidelines vary on OAC for score 1 in females).</li><li><strong>Recommendation:</strong> Anticoagulation generally not recommended. Reassess if clinical status changes.</li></ul>";
+            } else if (score === 1) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~1.3% per year (males) or ~2.2% (females).</li><li><strong>Recommendation:</strong> Consider anticoagulation based on clinical judgment and patient preference (NOAC preferred over warfarin). For females, if score is 1 due to sex alone, OAC may not be needed.</li></ul>";
+            } else if (score === 2) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~2.2% per year.</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            } else if (score === 3) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~3.2% per year.</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            } else if (score === 4) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~4.0% per year.</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            } else if (score === 5) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~6.7% per year.</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            } else if (score === 6) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~9.8% per year.</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            } else if (score === 7) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~9.6% per year.</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            } else if (score === 8) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~12.5% per year.</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            } else if (score >= 9) {
+                interpretation = "<ul><li><strong>Adjusted Stroke Rate:</strong> ~15.2% per year (or higher).</li><li><strong>Recommendation:</strong> Anticoagulation recommended (NOAC preferred over warfarin).</li></ul>";
+            }
+
+            resultDiv.querySelector('.interpretation-text').innerHTML = interpretation;
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
