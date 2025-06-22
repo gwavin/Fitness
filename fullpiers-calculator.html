@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fullPIERS Pre-eclampsia Risk Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 700px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .form-section {
+            margin-bottom: 1.2rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .input-group input[type="number"] { flex-grow: 1; }
+        .input-group select { flex-basis: 130px; } /* For unit selector */
+
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+            background-color: #f8d7da; /* Reddish for risk */
+            color: #721c24;
+        }
+        #result .probability-value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            display: block;
+        }
+        #result .interpretation-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-top: 0.5rem;
+        }
+        .formula-reference {
+            font-size: 0.8rem; color: #6c757d; margin-top:1.5rem; text-align:center;
+        }
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>fullPIERS Pre-eclampsia Risk Calculator</h1>
+        <p class="page-description">Estimates probability of adverse maternal outcomes within 48 hours for women with pre-eclampsia (using recalibrated model for early-onset).</p>
+
+        <form id="fullpiers-form">
+            <div class="form-section">
+                <label for="ga">Gestational Age (weeks)</label>
+                <input type="number" id="ga" step="0.1" required placeholder="e.g., 30.5">
+            </div>
+            <div class="form-section">
+                <label for="chest-pain-dyspnoea">Chest Pain or Dyspnoea?</label>
+                <select id="chest-pain-dyspnoea">
+                    <option value="0" selected>No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="spo2">Oxygen Saturation (SpO₂ %)</label>
+                <input type="number" id="spo2" min="50" max="100" step="1" required placeholder="e.g., 97">
+            </div>
+            <div class="form-section">
+                <label for="platelets">Platelet Count (x10⁹/L)</label>
+                <input type="number" id="platelets" step="1" required placeholder="e.g., 150">
+            </div>
+            <div class="form-section">
+                <label for="creatinine">Creatinine</label>
+                <div class="input-group">
+                    <input type="number" id="creatinine" step="any" required placeholder="e.g., 70 or 0.8">
+                    <select id="creatinine-unit">
+                        <option value="umol_l" selected>&micro;mol/L</option>
+                        <option value="mg_dl">mg/dL</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-section">
+                <label for="ast">Aspartate Transaminase (AST) (IU/L)</label>
+                <input type="number" id="ast" step="1" required placeholder="e.g., 25">
+            </div>
+            <button type="submit">Calculate Risk</button>
+        </form>
+
+        <div id="result">
+            Probability of Adverse Maternal Outcome (within 48h):
+            <span class="probability-value"></span>
+            <div class="interpretation-text"></div>
+        </div>
+        <p class="formula-reference">Based on Ukah et al. Hypertension. 2018;71(4):659-665 (Recalibrated fullPIERS model).</p>
+    </div>
+
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/fullpiers-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('fullpiers-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get inputs
+            const ga = parseFloat(document.getElementById('ga').value);
+            const chestPainDyspnoea = parseInt(document.getElementById('chest-pain-dyspnoea').value); // 0 or 1
+            const spo2 = parseFloat(document.getElementById('spo2').value);
+            const platelets = parseFloat(document.getElementById('platelets').value);
+            let creatinine = parseFloat(document.getElementById('creatinine').value);
+            const creatinineUnit = document.getElementById('creatinine-unit').value;
+            const ast = parseFloat(document.getElementById('ast').value);
+
+            // Validate inputs
+            if (isNaN(ga) || isNaN(chestPainDyspnoea) || isNaN(spo2) || isNaN(platelets) || isNaN(creatinine) || isNaN(ast)) {
+                alert("Please ensure all fields are filled with valid numbers.");
+                return;
+            }
+             if (ga < 20 || ga > 42) { alert("Please enter a gestational age between 20 and 42 weeks."); return;}
+             if (spo2 < 50 || spo2 > 100) { alert("Please enter an SpO2 value between 50 and 100%."); return;}
+             if (platelets < 0) { alert("Platelet count cannot be negative."); return;}
+             if (creatinine < 0) { alert("Creatinine cannot be negative."); return;}
+             if (ast < 0) { alert("AST cannot be negative."); return;}
+
+
+            // Convert creatinine to µmol/L if entered in mg/dL (1 mg/dL = 88.4 µmol/L)
+            if (creatinineUnit === 'mg_dl') {
+                creatinine = creatinine * 88.4;
+            }
+
+            // Original fullPIERS model terms (Equation 1 from PMC5865495)
+            // −logit(pi)= 2.68 + (–5.41×10^–2 × GA) + 1.23 (if CPD) + (–2.71×10^–2 × Cr) +
+            //             (2.07×10^–1 × Plt) + (4.00×10^–5 × Plt^2) + (1.01×10^–2 × AST) +
+            //             (–3.05×10^–6 × AST^2) + (2.50×10^–4 × Cr × Plt) +
+            //             (–6.99×10^–5 × Plt × AST) + (–2.56×10^–3 × Plt × SpO2)
+            // Note: The paper presents it as -logit(pi) = ..., so logit(pi) = - (that expression)
+
+            const term_ga = -5.41e-2 * ga;
+            const term_cpd = 1.23 * chestPainDyspnoea;
+            const term_cr = -2.71e-2 * creatinine;
+            const term_plt = 2.07e-1 * platelets;
+            const term_plt_sq = 4.00e-5 * Math.pow(platelets, 2);
+            const term_ast = 1.01e-2 * ast;
+            const term_ast_sq = -3.05e-6 * Math.pow(ast, 2);
+            const term_cr_plt = 2.50e-4 * creatinine * platelets;
+            const term_plt_ast = -6.99e-5 * platelets * ast;
+            const term_plt_spo2 = -2.56e-3 * platelets * spo2;
+
+            const original_neg_logit_pi_sum_of_terms = term_ga + term_cpd + term_cr + term_plt + term_plt_sq + term_ast + term_ast_sq + term_cr_plt + term_plt_ast + term_plt_spo2;
+            const original_neg_logit_pi = 2.68 + original_neg_logit_pi_sum_of_terms;
+
+            // Recalibrated model (Equation 2): −logit(pi)_recal = −0.29 + (0.6777 × original_neg_logit_pi)
+            const recal_neg_logit_pi = -0.29 + (0.6777 * original_neg_logit_pi);
+
+            // Final logit for probability calculation
+            const final_logit_pi = -recal_neg_logit_pi; // Since the equations define -logit(pi)
+
+            // Calculate probability p = 1 / (1 + e^(-logit))
+            const probability = 1 / (1 + Math.exp(-final_logit_pi));
+            const probabilityPercent = probability * 100;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.probability-value').textContent = probabilityPercent.toFixed(1) + "%";
+
+            let interpretation = "";
+            if (probabilityPercent < 5) {
+                interpretation = "Low risk of adverse maternal outcome within 48 hours.";
+            } else if (probabilityPercent < 30) {
+                interpretation = "Moderate risk of adverse maternal outcome within 48 hours. Monitor closely.";
+            } else { // >= 30%
+                interpretation = "High risk of adverse maternal outcome within 48 hours. Consider interventions as per guidelines (e.g., delivery, transfer to higher care).";
+            }
+            resultDiv.querySelector('.interpretation-text').innerHTML = interpretation;
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

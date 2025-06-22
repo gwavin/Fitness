@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Ballard Score Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 800px; /* Wider for more inputs */
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 1.5rem;
+        }
+        .criteria-column h2 {
+            font-size: 1.3rem;
+            color: #007bff;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label.criteria-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1rem;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+            background-color: #28a745; /* Green for result */
+            color: #fff;
+        }
+        .total-score-display, .gestational-age-display {
+            margin-bottom: 0.8rem;
+        }
+        #result .score-value, #result .age-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: inline;
+        }
+        #result .result-label {
+            font-size: 1.2rem;
+            font-weight: normal;
+            display: inline;
+        }
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>New Ballard Score Calculator</h1>
+        <p class="page-description">Estimates gestational age based on neuromuscular and physical maturity.</p>
+        <form id="ballard-score-form">
+            <div class="criteria-grid">
+                <div class="criteria-column" id="neuromuscular-criteria">
+                    <h2>Neuromuscular Maturity</h2>
+                    <div class="form-group">
+                        <label class="criteria-label" for="posture">Posture</label>
+                        <select id="posture" required>
+                            <option value="-1">Arms, legs extended (-1 pt)</option>
+                            <option value="0" selected>Beginning of flexion of hips and knees (0 pts)</option>
+                            <option value="1">Hips and knees flexed, arms slightly flexed (1 pt)</option>
+                            <option value="2">Stronger flexion of hips and knees (2 pts)</option>
+                            <option value="3">Full flexion of hips and knees, arms adducted (3 pts)</option>
+                            <option value="4">Hypertonic flexion (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="square-window">Square Window (Wrist °)</label>
+                        <select id="square-window" required>
+                            <option value="-1">>90° (-1 pt)</option>
+                            <option value="0" selected>90° (0 pts)</option>
+                            <option value="1">60° (1 pt)</option>
+                            <option value="2">45° (2 pts)</option>
+                            <option value="3">30° (3 pts)</option>
+                            <option value="4">0° (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="arm-recoil">Arm Recoil (Angle after extension)</label>
+                        <select id="arm-recoil" required>
+                            <option value="0">180° (no recoil) (0 pts)</option>
+                            <option value="1">140-180° (1 pt)</option>
+                            <option value="2" selected>110-140° (2 pts)</option>
+                            <option value="3">90-110° (3 pts)</option>
+                            <option value="4"><90° (brisk recoil) (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="popliteal-angle">Popliteal Angle (°)</label>
+                        <select id="popliteal-angle" required>
+                            <option value="-1">180° (-1 pt)</option>
+                            <option value="0">160° (0 pts)</option>
+                            <option value="1">140° (1 pt)</option>
+                            <option value="2" selected>120° (2 pts)</option>
+                            <option value="3">100° (3 pts)</option>
+                            <option value="4">90° (4 pts)</option>
+                            <option value="5"><90° (5 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="scarf-sign">Scarf Sign (Elbow position)</label>
+                        <select id="scarf-sign" required>
+                            <option value="-1">Elbow past opposite axillary line (-1 pt)</option>
+                            <option value="0" selected>Elbow to opposite axillary line (0 pts)</option>
+                            <option value="1">Elbow to opposite nipple line (1 pt)</option>
+                            <option value="2">Elbow to midline (xyphoid) (2 pts)</option>
+                            <option value="3">Elbow not reaching midline (3 pts)</option>
+                            <option value="4">Elbow at near shoulder (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="heel-to-ear">Heel to Ear (Knee flexion)</label>
+                        <select id="heel-to-ear" required>
+                            <option value="-1">Heel to ear or beyond (-1 pt)</option>
+                            <option value="0" selected>Heel near ear (0 pts)</option>
+                            <option value="1">Heel to axilla level (1 pt)</option>
+                            <option value="2">Heel to nipple line level (2 pts)</option>
+                            <option value="3">Heel to umbilicus level (3 pts)</option>
+                            <option value="4">Heel on thigh (4 pts)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="criteria-column" id="physical-maturity">
+                    <h2>Physical Maturity</h2>
+                    <div class="form-group">
+                        <label class="criteria-label" for="skin">Skin Texture</label>
+                        <select id="skin" required>
+                            <option value="-1">Sticky, friable, transparent (-1 pt)</option>
+                            <option value="0">Gelatinous, red, translucent (0 pts)</option>
+                            <option value="1" selected>Smooth pink, visible veins (1 pt)</option>
+                            <option value="2">Superficial peeling &/or rash, few veins (2 pts)</option>
+                            <option value="3">Cracking, pale areas, rare veins (3 pts)</option>
+                            <option value="4">Parchment, deep cracking, no vessels (4 pts)</option>
+                            <option value="5">Leathery, cracked, wrinkled (5 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="lanugo">Lanugo Hair</label>
+                        <select id="lanugo" required>
+                            <option value="-1">None (-1 pt)</option>
+                            <option value="0">Sparse (0 pts)</option>
+                            <option value="1" selected>Abundant (1 pt)</option>
+                            <option value="2">Thinning (2 pts)</option>
+                            <option value="3">Bald areas (3 pts)</option>
+                            <option value="4">Mostly bald (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="plantar-surface">Plantar Surface Creases</label>
+                        <select id="plantar-surface" required>
+                            <option value="-2">Heel-toe 40-50 mm (no crease) (-2 pts)</option>
+                            <option value="-1">>50 mm, no crease (-1 pt)</option>
+                            <option value="0" selected>Faint red marks (0 pts)</option>
+                            <option value="1">Anterior transverse crease only (1 pt)</option>
+                            <option value="2">Creases anterior 2/3 (2 pts)</option>
+                            <option value="3">Creases over entire sole (3 pts)</option>
+                            <option value="4">Creases over entire sole (deep indentations) (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="breast">Breast Tissue</label>
+                        <select id="breast" required>
+                            <option value="-1">Imperceptible (-1 pt)</option>
+                            <option value="0">Barely perceptible (0 pts)</option>
+                            <option value="1" selected>Flat areola, no bud (1 pt)</option>
+                            <option value="2">Stippled areola, 1-2 mm bud (2 pts)</option>
+                            <option value="3">Raised areola, 3-4 mm bud (3 pts)</option>
+                            <option value="4">Full areola, 5-10 mm bud (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="eye-ear">Eye / Ear Development</label>
+                        <select id="eye-ear" required>
+                            <option value="-2">Lids fused tightly (-2 pts)</option>
+                            <option value="-1">Lids fused loosely (-1 pt)</option>
+                            <option value="0" selected>Lids open, pinna flat, stays folded (0 pts)</option>
+                            <option value="1">Slightly curved pinna, soft, slow recoil (1 pt)</option>
+                            <option value="2">Well-curved pinna, soft but ready recoil (2 pts)</option>
+                            <option value="3">Formed & firm, instant recoil (3 pts)</option>
+                            <option value="4">Thick cartilage, ear stiff (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="criteria-label" for="genitals-sex">Sex for Genital Assessment</label>
+                        <select id="genitals-sex">
+                            <option value="female" selected>Female</option>
+                            <option value="male">Male</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="genitals-female-group">
+                        <label class="criteria-label" for="genitals-female">Genitals (Female)</label>
+                        <select id="genitals-female">
+                            <option value="-1">Clitoris prominent, labia flat (-1 pt)</option>
+                            <option value="0" selected>Prominent clitoris, small labia minora (0 pts)</option>
+                            <option value="1">Prominent clitoris, enlarging minora (1 pt)</option>
+                            <option value="2">Majora & minora equally prominent (2 pts)</option>
+                            <option value="3">Majora large, minora small (3 pts)</option>
+                            <option value="4">Majora cover clitoris & minora (4 pts)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="genitals-male-group" style="display:none;">
+                        <label class="criteria-label" for="genitals-male">Genitals (Male)</label>
+                        <select id="genitals-male">
+                             <option value="-2">Scrotum flat, smooth (-2 pts)</option>
+                            <option value="-1">Scrotum empty, faint rugae (-1 pt)</option>
+                            <option value="0" selected>Testes in upper canal, rare rugae (0 pts)</option>
+                            <option value="1">Testes descending, few rugae (1 pt)</option>
+                            <option value="2">Testes down, good rugae (2 pts)</option>
+                            <option value="3">Testes pendulous, deep rugae (3 pts)</option>
+                             <!-- Note: Original Wikipedia table for male genitals only went to 3 points. Added a 4pt placeholder if needed -->
+                            <option value="4">Testes fully descended, pendulous, deep rugae (4 pts)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button type="submit">Calculate Ballard Score</button>
+        </form>
+        <div id="result">
+            <div class="total-score-display">
+                <span class="result-label">Total Ballard Score: </span><span class="score-value"></span>
+            </div>
+            <div class="gestational-age-display">
+                <span class="result-label">Estimated Gestational Age: </span><span class="age-value"></span> weeks
+            </div>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/ballard-score-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        const genitalsSexSelect = document.getElementById('genitals-sex');
+        const femaleGenitalsGroup = document.getElementById('genitals-female-group');
+        const maleGenitalsGroup = document.getElementById('genitals-male-group');
+
+        genitalsSexSelect.addEventListener('change', function() {
+            if (this.value === 'female') {
+                femaleGenitalsGroup.style.display = 'block';
+                maleGenitalsGroup.style.display = 'none';
+            } else {
+                femaleGenitalsGroup.style.display = 'none';
+                maleGenitalsGroup.style.display = 'block';
+            }
+        });
+
+        document.getElementById('ballard-score-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let totalScore = 0;
+
+            totalScore += parseInt(document.getElementById('posture').value);
+            totalScore += parseInt(document.getElementById('square-window').value);
+            totalScore += parseInt(document.getElementById('arm-recoil').value);
+            totalScore += parseInt(document.getElementById('popliteal-angle').value);
+            totalScore += parseInt(document.getElementById('scarf-sign').value);
+            totalScore += parseInt(document.getElementById('heel-to-ear').value);
+
+            totalScore += parseInt(document.getElementById('skin').value);
+            totalScore += parseInt(document.getElementById('lanugo').value);
+            totalScore += parseInt(document.getElementById('plantar-surface').value);
+            totalScore += parseInt(document.getElementById('breast').value);
+            totalScore += parseInt(document.getElementById('eye-ear').value);
+
+            if (genitalsSexSelect.value === 'female') {
+                totalScore += parseInt(document.getElementById('genitals-female').value);
+            } else {
+                totalScore += parseInt(document.getElementById('genitals-male').value);
+            }
+
+            let gestationalAge = 0;
+            // Using the formula: GA = (2 * score + 120) / 5 which simplifies to (0.4 * score) + 24
+            // This formula aligns with the common New Ballard Score conversion.
+            // Example: Score -10 -> (0.4 * -10) + 24 = -4 + 24 = 20 weeks
+            // Example: Score 0 -> (0.4 * 0) + 24 = 24 weeks
+            // Example: Score 50 -> (0.4 * 50) + 24 = 20 + 24 = 44 weeks
+            gestationalAge = (0.4 * totalScore) + 24;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.score-value').textContent = totalScore;
+            // Round GA to nearest whole or half week, or display as calculated.
+            // For simplicity, showing raw calculation which might be e.g. 37.2 weeks.
+            // Clinical practice might round this. For now, let's do one decimal.
+            resultDiv.querySelector('.age-value').textContent = gestationalAge.toFixed(1);
+
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

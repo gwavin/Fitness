@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neonatal Bilirubin Risk Calculator (Bhutani Nomogram)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 700px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .form-section, .risk-factor-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .form-section:last-of-type, .risk-factor-section:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .input-group input[type="number"] { flex-grow: 1; }
+        .input-group select { flex-basis: 120px; }
+
+        .risk-factor-section h2 {
+            font-size: 1.2rem;
+            color: #007bff;
+            margin-bottom: 0.75rem;
+        }
+        .checkbox-group {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+        .checkbox-group label {
+            font-weight: normal;
+            font-size: 0.95rem;
+            display: inline;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        #result .risk-zone-value {
+            font-size: 2rem; /* Adjusted size */
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+        }
+        #result .interpretation-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: left;
+        }
+         #result .interpretation-text ul {
+            padding-left: 20px;
+            margin-top: 0.5rem;
+        }
+
+        /* Color coding for risk zones */
+        .zone-low { background-color: #cce5ff; color: #004085; } /* Light Blue */
+        .zone-lower-intermediate { background-color: #d4edda; color: #155724; } /* Light Green */
+        .zone-upper-intermediate { background-color: #fff3cd; color: #856404; } /* Light Yellow */
+        .zone-high { background-color: #f8d7da; color: #721c24; } /* Light Red */
+        .zone-very-high { background-color: #dc3545; color: #fff; } /* Strong Red for phototherapy threshold */
+
+
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+
+        .nomogram-reference {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Neonatal Bilirubin Risk Calculator</h1>
+        <p class="page-description">Based on Bhutani Nomogram for hyperbilirubinemia risk assessment in newborns &ge;35 weeks gestation.</p>
+
+        <form id="bilirubin-form">
+            <div class="form-section">
+                <label for="age-hours">Postnatal Age (hours)</label>
+                <input type="number" id="age-hours" min="0" step="1" required placeholder="e.g., 48">
+            </div>
+            <div class="form-section">
+                <label for="tsb-value">Total Serum Bilirubin (TSB)</label>
+                <div class="input-group">
+                    <input type="number" id="tsb-value" step="any" required placeholder="e.g., 8.5">
+                    <select id="tsb-unit">
+                        <option value="mg_dl" selected>mg/dL</option>
+                        <option value="umol_l">&micro;mol/L</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="risk-factor-section">
+                <h2>Risk Factors</h2>
+                <div class="form-group">
+                    <label for="gestational-age">Gestational Age at Birth (weeks)</label>
+                    <input type="number" id="gestational-age" min="20" max="45" step="1" required placeholder="e.g., 38">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="risk-isoimmune" name="risk_factor" value="isoimmune">
+                    <label for="risk-isoimmune">Isoimmune hemolytic disease (e.g., ABO/Rh incompatibility, positive DAT)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="risk-g6pd" name="risk_factor" value="g6pd">
+                    <label for="risk-g6pd">G6PD deficiency</label>
+                </div>
+                 <div class="checkbox-group">
+                    <input type="checkbox" id="risk-jaundice24h" name="risk_factor" value="jaundice24h">
+                    <label for="risk-jaundice24h">Jaundice observed in first 24 hours</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="risk-asphyxia" name="risk_factor" value="asphyxia">
+                    <label for="risk-asphyxia">Significant asphyxia / Sepsis / Acidosis</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="risk-albumin" name="risk_factor" value="albumin">
+                    <label for="risk-albumin">Albumin <3.0 g/dL (if measured)</label>
+                </div>
+            </div>
+            <button type="submit">Assess Bilirubin Risk</button>
+        </form>
+
+        <div id="result">
+            <span class="risk-zone-value"></span>
+            <div class="interpretation-title">Management Considerations:</div>
+            <div class="interpretation-text"></div>
+        </div>
+        <p class="nomogram-reference">This tool helps interpret the Bhutani nomogram. Always correlate with clinical judgment and official AAP guidelines.</p>
+    </div>
+
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/neonatal-bilirubin-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        // Bhutani Nomogram Data Points (approximate, mg/dL)
+        // For term infants (>=38 weeks) without risk factors (Lower Risk Line)
+        // Format: { hours: TSB_value_for_low_risk_line, ... }
+        // These are illustrative points. Actual implementation will need more precise data or curves.
+        // The AAP guidelines provide thresholds for phototherapy and exchange transfusion based on risk factors and age.
+        // This calculator will determine the RISK ZONE based on Bhutani, then suggest actions.
+
+        // Simplified Bhutani Nomogram thresholds (mg/dL) for RISK ZONES (not treatment lines)
+        // These are illustrative and would need to be derived carefully from the nomogram image or tables.
+        // For infants >= 38 weeks and well
+        const bhutaniNomogram = {
+            // hour: [LowRiskZoneUpper, LowerIntZoneUpper, UpperIntZoneUpper, HighRiskZoneUpper(approx 95th %ile)]
+            // Values are TSB in mg/dL for the upper limit of that zone at that hour
+            // These are approximations and for demonstration. Real values needed.
+            24: [5, 7, 9, 11],       // Example
+            48: [7.5, 10, 12.5, 15],  // Example
+            72: [10, 12.5, 15, 18],   // Example
+            96: [12, 14.5, 17, 20],   // Example
+            120: [13.5, 16, 18.5, 21.5] // Example
+        };
+
+        // Phototherapy thresholds (AAP guidelines, mg/dL) - Simplified
+        // [Lower Risk (>=38wk well), Medium Risk (>=38wk + risk OR 35-37.9wk well), High Risk (35-37.9wk + risk)]
+        const phototherapyThresholds = {
+            24: [12, 10, 8],
+            48: [15, 13, 11],
+            72: [18, 15, 13],
+            96: [20, 17, 14] // And older
+        };
+
+
+        document.getElementById('bilirubin-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let ageHours = parseInt(document.getElementById('age-hours').value);
+            let tsbValue = parseFloat(document.getElementById('tsb-value').value);
+            const tsbUnit = document.getElementById('tsb-unit').value;
+            let gestAge = parseInt(document.getElementById('gestational-age').value);
+
+            const riskFactorsElements = document.querySelectorAll('input[name="risk_factor"]:checked');
+            let riskFactorCount = riskFactorsElements.length;
+
+            // Convert TSB to mg/dL if in µmol/L (1 mg/dL = 17.1 µmol/L)
+            if (tsbUnit === 'umol_l') {
+                tsbValue /= 17.1;
+            }
+
+            if (isNaN(ageHours) || isNaN(tsbValue) || isNaN(gestAge) || ageHours < 0 || tsbValue < 0 || gestAge < 20) {
+                alert("Please enter valid positive numbers for age, TSB, and gestational age.");
+                return;
+            }
+            if (ageHours > 168) ageHours = 168; // Nomogram typically up to 7 days
+
+            // Determine overall risk category for phototherapy thresholds (simplified from AAP)
+            let aapRiskCategory = 0; // 0: Lower, 1: Medium, 2: High
+            if (gestAge >= 38 && riskFactorCount === 0) {
+                aapRiskCategory = 0; // Lower risk
+            } else if ((gestAge >= 38 && riskFactorCount > 0) || (gestAge >= 35 && gestAge < 38 && riskFactorCount === 0)) {
+                aapRiskCategory = 1; // Medium risk
+            } else if (gestAge >= 35 && gestAge < 38 && riskFactorCount > 0) {
+                aapRiskCategory = 2; // High risk
+            } else { // <35 weeks - Bhutani nomogram and these simplified thresholds may not directly apply.
+                document.getElementById('result').querySelector('.risk-zone-value').textContent = "Specific guidelines for <35 weeks needed.";
+                document.getElementById('result').querySelector('.interpretation-text').innerHTML = "This calculator is primarily for infants &ge;35 weeks. Consult specialized guidelines.";
+                document.getElementById('result').className = '';
+                document.getElementById('result').classList.add('zone-high'); // Default to high for caution
+                document.getElementById('result').style.display = 'block';
+                return;
+            }
+
+
+            // Find appropriate Bhutani nomogram data points for the age (simple interpolation/closest for demo)
+            let nomogramHourKey = Object.keys(bhutaniNomogram).reduce((prev, curr) =>
+                (Math.abs(curr - ageHours) < Math.abs(prev - ageHours) ? curr : prev)
+            );
+            const zones = bhutaniNomogram[nomogramHourKey];
+            let riskZone = "";
+            let resultClass = "";
+
+            if (tsbValue < zones[0]) { riskZone = "Low Risk Zone"; resultClass = "zone-low"; }
+            else if (tsbValue < zones[1]) { riskZone = "Lower Intermediate Risk Zone"; resultClass = "zone-lower-intermediate"; }
+            else if (tsbValue < zones[2]) { riskZone = "Upper Intermediate Risk Zone"; resultClass = "zone-upper-intermediate"; }
+            else { riskZone = "High Risk Zone (≥95th percentile)"; resultClass = "zone-high"; }
+
+
+            // Determine phototherapy recommendation based on AAP thresholds (simplified)
+            let phototherapyKey = ageHours <= 24 ? 24 : (ageHours <= 48 ? 48 : (ageHours <= 72 ? 72 : 96));
+            const ptThresholdsForAge = phototherapyThresholds[phototherapyKey];
+            let phototherapyRecommendation = "";
+
+            if (ptThresholdsForAge && tsbValue >= ptThresholdsForAge[aapRiskCategory]) {
+                phototherapyRecommendation = "Phototherapy is indicated based on AAP guidelines for this risk level.";
+                if (resultClass !== "zone-high") resultClass = "zone-very-high"; // Override for phototherapy indication
+            } else if (ptThresholdsForAge && tsbValue >= ptThresholdsForAge[aapRiskCategory] - 2) { // Within 2mg/dL of threshold
+                 phototherapyRecommendation = "TSB is approaching phototherapy threshold. Consider phototherapy, repeat TSB soon (e.g., 4-12h).";
+            } else {
+                phototherapyRecommendation = "Phototherapy may not be immediately indicated. Follow based on risk zone and serial TSB levels.";
+            }
+
+            let interpretation = `<ul>
+                                    <li><strong>Gestational Age:</strong> ${gestAge} weeks</li>
+                                    <li><strong>Risk Factors Present:</strong> ${riskFactorCount}</li>
+                                    <li><strong>AAP Risk Category for Phototherapy:</strong> ${["Lower", "Medium", "High"][aapRiskCategory]}</li>
+                                    <li><strong>Bhutani Nomogram Interpretation:</strong> TSB of ${tsbValue.toFixed(1)} mg/dL at ${ageHours} hours places infant in the <strong>${riskZone}</strong>.</li>
+                                    <li><strong>Management Note:</strong> ${phototherapyRecommendation}</li>
+                                    <li>Always confirm with current AAP guidelines and clinical context. This tool is for educational purposes.</li>
+                                 </ul>`;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.risk-zone-value').textContent = riskZone;
+            resultDiv.querySelector('.interpretation-text').innerHTML = interpretation;
+            resultDiv.className = '';
+            resultDiv.classList.add(resultClass);
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
