@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bishop Score Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .form-section {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .form-section:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        #result .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #result .interpretation-text {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        /* Color coding for Bishop score result */
+        .bishop-favorable { background-color: #d4edda; color: #155724; } /* Greenish */
+        .bishop-intermediate { background-color: #fff3cd; color: #856404; } /* Yellowish */
+        .bishop-unfavorable { background-color: #f8d7da; color: #721c24; } /* Reddish */
+
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bishop Score Calculator</h1>
+        <p class="page-description">Assesses cervical readiness for induction of labor.</p>
+        <form id="bishop-score-form">
+            <div class="form-section">
+                <label for="dilation">Cervical Dilation (cm)</label>
+                <select id="dilation" required>
+                    <option value="0">Closed (0 pts)</option>
+                    <option value="1">1-2 cm (1 pt)</option>
+                    <option value="2">3-4 cm (2 pts)</option>
+                    <option value="3">≥5 cm (3 pts)</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="effacement">Cervical Effacement (%)</label>
+                <select id="effacement" required>
+                    <option value="0">0-30% (0 pts)</option>
+                    <option value="1">40-50% (1 pt)</option>
+                    <option value="2">60-70% (2 pts)</option>
+                    <option value="3">≥80% (3 pts)</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="station">Fetal Station</label>
+                <select id="station" required>
+                    <option value="0">-3 (0 pts)</option>
+                    <option value="1">-2 (1 pt)</option>
+                    <option value="2">-1 / 0 (2 pts)</option>
+                    <option value="3">+1 / +2 or lower (3 pts)</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="consistency">Cervical Consistency</label>
+                <select id="consistency" required>
+                    <option value="0">Firm (0 pts)</option>
+                    <option value="1">Medium (1 pt)</option>
+                    <option value="2">Soft (2 pts)</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="position">Cervical Position</label>
+                <select id="position" required>
+                    <option value="0">Posterior (0 pts)</option>
+                    <option value="1">Mid-position (1 pt)</option>
+                    <option value="2">Anterior (2 pts)</option>
+                </select>
+            </div>
+            <button type="submit">Calculate Bishop Score</button>
+        </form>
+        <div id="result">
+            Total Bishop Score: <span class="score-value"></span>
+            <div class="interpretation-title">Interpretation:</div>
+            <div class="interpretation-text"></div>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/bishop-score-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('bishop-score-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const dilationScore = parseInt(document.getElementById('dilation').value);
+            const effacementScore = parseInt(document.getElementById('effacement').value);
+            const stationScore = parseInt(document.getElementById('station').value);
+            const consistencyScore = parseInt(document.getElementById('consistency').value);
+            const positionScore = parseInt(document.getElementById('position').value);
+
+            const totalBishopScore = dilationScore + effacementScore + stationScore + consistencyScore + positionScore;
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.score-value').textContent = totalBishopScore;
+
+            let interpretation = "";
+            let riskClass = ""; // Changed from resultClass to riskClass for clarity
+
+            if (totalBishopScore >= 9) {
+                interpretation = "Score ≥9: Favorable for induction. High likelihood of successful induction. Labor may also commence spontaneously.";
+                riskClass = "bishop-favorable";
+            } else if (totalBishopScore >= 6 && totalBishopScore <= 8) {
+                interpretation = "Score 6-8: Borderline. Requires clinical judgment. Induction may be successful, consider cervical ripening if other factors are unfavorable.";
+                riskClass = "bishop-intermediate";
+            } else { // Score <= 5
+                interpretation = "Score ≤5: Unfavorable cervix. Low likelihood of successful induction without cervical ripening. Labor unlikely to start spontaneously soon.";
+                riskClass = "bishop-unfavorable";
+            }
+
+            resultDiv.querySelector('.interpretation-text').innerHTML = interpretation;
+            // Clear previous result classes before adding new one
+            resultDiv.classList.remove('bishop-favorable', 'bishop-intermediate', 'bishop-unfavorable');
+            resultDiv.classList.add(riskClass);
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NRP Guided Tool</title>
+    <!-- Tailwind CSS via CDN is for your example; I will translate this to standard CSS -->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600;700&family=Roboto+Mono:wght@400;700&display=swap">
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Montserrat', sans-serif; /* Changed from Inter for consistency */
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6; /* bg-gray-100 equivalent */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem; /* p-4 */
+            max-width: 56rem; /* max-w-3xl */
+            width: 100%;
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .container { padding: 1.5rem; } /* md:p-6 */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        header h1 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* text-gray-800 */
+        }
+        header p {
+            margin-top: 0.25rem; /* mt-1 */
+            font-size: 0.875rem; /* text-sm */
+            color: #4b5563; /* text-gray-600 */
+        }
+
+        /* Timer Section */
+        .timer-section {
+            background-color: #1f2937; /* bg-gray-800 */
+            color: white;
+            padding: 1rem; /* p-4 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-lg */
+            margin-bottom: 1.5rem; /* mb-6 */
+            position: sticky;
+            top: 8px; /* top-2 */
+            z-index: 10;
+        }
+        .timer-section .timer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .timer-section .timer-title {
+            font-weight: 700; /* font-bold */
+            font-size: 1.125rem; /* text-lg */
+        }
+        #timer-display {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700; /* font-bold */
+        }
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem; /* gap-2 */
+            margin-top: 0.75rem; /* mt-3 */
+        }
+        .timer-controls button {
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1rem; /* py-2 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 0.875rem; /* text-sm */
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        #timer-start { background-color: #2563eb; /* bg-blue-600 */ }
+        #timer-start:hover { background-color: #1d4ed8; /* hover:bg-blue-700 */ }
+        #timer-stop { background-color: #f59e0b; /* bg-yellow-500 */ color: #1f2937; /* text-gray-800 */}
+        #timer-stop:hover { background-color: #d97706; /* hover:bg-yellow-600 */ }
+        #timer-reset { background-color: #dc2626; /* bg-red-600 */ }
+        #timer-reset:hover { background-color: #b91c1c; /* hover:bg-red-700 */ }
+        #timer-start:disabled, #timer-stop:disabled {
+            background-color: #6b7280; /* gray-500 for disabled */
+            cursor: not-allowed;
+        }
+
+
+        /* Guide Steps Container */
+        #guide-container {
+            position: relative;
+            min-height: 200px; /* Avoid collapse during transitions */
+        }
+        .step-card {
+            background-color: white;
+            padding: 1.5rem; /* p-6 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-lg */
+            width: 100%;
+            box-sizing: border-box;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: scale(0.98);
+            opacity: 0;
+            position: absolute; /* For stacking and transition */
+            top: 0;
+            left: 0;
+        }
+        .step-card.active {
+            transform: scale(1);
+            opacity: 1;
+            position: relative; /* Active card takes space */
+        }
+        .step-card.hidden-step { /* Using this instead of just 'hidden' to manage transitions */
+            display: none !important; /* Ensure it's truly hidden for layout calculation */
+        }
+
+        .step-card h2 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700; /* font-bold */
+            color: #1f2937; /* text-gray-800 */
+            margin-bottom: 1rem; /* mb-4 */
+            border-bottom: 1px solid #e5e7eb; /* border-gray-200 */
+            padding-bottom: 0.5rem; /* pb-2 */
+        }
+        .step-card p, .step-card ul {
+            color: #374151; /* text-gray-700 */
+            margin-bottom: 1rem; /* mb-4 or mb-6 */
+        }
+        .step-card ul {
+            list-style-type: disc;
+            list-style-position: inside;
+            padding-left: 0.5rem; /* Adjust if needed */
+        }
+        .step-card ul li { margin-bottom: 0.5rem; /* space-y-2 */ }
+        .step-card .font-semibold { font-weight: 600; }
+
+        .decision-buttons-container { /* Replaces flex flex-col md:flex-row gap-4 */
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* gap-4 */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .decision-buttons-container { flex-direction: row; }
+        }
+
+        .decision-btn {
+            flex-grow: 1; /* flex-1 */
+            color: white;
+            font-weight: 700; /* font-bold */
+            padding: 0.75rem 1.25rem; /* py-3 px-5 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn-decision-yes { background-color: #16a34a; /* green-600 */ }
+        .btn-decision-yes:hover { background-color: #15803d; /* green-700 */ }
+        .btn-decision-no { background-color: #dc2626; /* red-600 */ }
+        .btn-decision-no:hover { background-color: #b91c1c; /* red-700 */ }
+        .btn-neutral { background-color: #2563eb; /* blue-600 */ }
+        .btn-neutral:hover { background-color: #1d4ed8; /* blue-700 */ }
+        .btn-warning { background-color: #f59e0b; /* yellow-500 */ color: #1f2937; }
+        .btn-warning:hover { background-color: #d97706; /* yellow-600 */ }
+        .btn-critical { background-color: #991b1b; /* purple-700 equivalent (using a dark red) */ }
+        .btn-critical:hover { background-color: #7f1d1d; /* purple-800 equivalent */ }
+
+
+        #step-routine-care h2 { color: #15803d; /* text-green-700 */ }
+        #step-ppv h2 { color: #ea580c; /* text-orange-600 */ }
+        #step-ppv-hr-gt-100 h2 { color: #15803d; /* text-green-700 */ }
+        #step-ppv-hr-gt-60 h2 { color: #ca8a04; /* text-yellow-600 */ }
+        #step-compressions h2 { color: #b91c1c; /* text-red-700 */ }
+        #step_epinephrine h2 { color: #7e22ce; /* text-purple-800 */ } /* Corrected ID */
+        #step-post-resuscitation h2 { color: #15803d; /* text-green-700 */ }
+
+        .mrsopa-section { /* bg-blue-50 p-4 rounded-lg */
+            background-color: #eff6ff; /* blue-50 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        .mrsopa-section h3 {
+            font-weight: 700; /* font-bold */
+            color: #1e40af; /* text-blue-800 */
+            margin-bottom: 0.5rem;
+        }
+        #mrsopa-checklist {
+            margin-top: 0.5rem; /* mt-2 */
+        }
+        #mrsopa-checklist label { /* flex items-center */
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem; /* text-sm */
+            margin-bottom: 0.5rem; /* space-y-2 on parent */
+            font-weight: normal;
+            color: #374151;
+        }
+        #mrsopa-checklist input[type="checkbox"] {
+            height: 1rem; width: 1rem; /* h-4 w-4 */
+            border-radius: 0.25rem; /* rounded */
+            margin-right: 0.5rem; /* mr-2 */
+            color: #4f46e5; /* indigo-600 */
+        }
+
+        .reset-btn-container button { /* For "Start Over" buttons */
+            width: 100%;
+            background-color: #6b7280; /* bg-gray-500 */
+            color: white;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .reset-btn-container button:hover { background-color: #4b5563; /* hover:bg-gray-600 */ }
+
+        /* Standard links styling */
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NRP Interactive Guide</h1>
+            <p>Based on 2020 AHA/AAP Guidelines. This is a support tool and does not replace certified training.</p>
+        </header>
+
+        <div class="timer-section">
+            <div class="timer-header">
+                <span class="timer-title">Resuscitation Timer</span>
+                <span id="timer-display">00:00</span>
+            </div>
+            <div class="timer-controls">
+                <button id="timer-start">Start</button>
+                <button id="timer-stop">Stop</button>
+                <button id="timer-reset">Reset</button>
+            </div>
+        </div>
+
+        <div id="guide-container">
+            <div id="step-initial" class="step-card active">
+                <h2>Step 1: Initial Assessment at Birth</h2>
+                <p>At birth, ask the following three questions:</p>
+                <ul>
+                    <li>Term gestation?</li>
+                    <li>Good tone?</li>
+                    <li>Breathing or crying?</li>
+                </ul>
+                <div class="decision-buttons-container">
+                    <button data-next="step-routine-care" class="decision-btn btn-decision-yes">Yes to all three</button>
+                    <button data-next="step-initial-actions" class="decision-btn btn-decision-no">No to any question</button>
+                </div>
+            </div>
+
+            <div id="step-routine-care" class="step-card hidden-step">
+                <h2>Outcome: Routine Care</h2>
+                <p>The neonate is vigorous. Proceed with routine care:</p>
+                <ul>
+                    <li>Place skin-to-skin with mother.</li>
+                    <li>Dry the infant and keep warm.</li>
+                    <li>Clear airway only if necessary.</li>
+                    <li>Perform ongoing evaluation of breathing, heart rate, and color.</li>
+                </ul>
+                <div class="reset-btn-container"><button class="reset-btn">Start Over</button></div>
+            </div>
+
+            <div id="step-initial-actions" class="step-card hidden-step">
+                <h2>Step 2: Initial Actions (First 60 Seconds)</h2>
+                <p>Perform the following initial steps of resuscitation:</p>
+                <ul>
+                    <li>Provide warmth (place under radiant warmer).</li>
+                    <li>Position head and neck to open the airway.</li>
+                    <li>Clear airway if necessary.</li>
+                    <li>Dry the infant.</li>
+                    <li>Stimulate.</li>
+                </ul>
+                <p class="font-semibold">After initial steps, assess:</p>
+                <div class="decision-buttons-container">
+                    <button data-next="step-assess-hr-ppv" class="decision-btn btn-neutral">Assessment Complete, Proceed</button>
+                </div>
+            </div>
+
+            <div id="step-assess-hr-ppv" class="step-card hidden-step">
+                <h2>Step 3: Assess Respiration and Heart Rate</h2>
+                <p>Is the baby apneic/gasping OR is the Heart Rate (HR) below 100 bpm?</p>
+                 <div class="decision-buttons-container">
+                    <button data-next="step-ppv" class="decision-btn btn-decision-no">Yes, Apnea/Gasping or HR &lt; 100</button> <!-- "No" means problem exists -->
+                    <button data-next="step-post-resuscitation" class="decision-btn btn-decision-yes">No, Breathing & HR &ge; 100</button> <!-- "Yes" means okay -->
+                </div>
+            </div>
+
+            <div id="step-ppv" class="step-card hidden-step">
+                <h2>Step 4: Start Positive-Pressure Ventilation (PPV)</h2>
+                <ul>
+                    <li>Start PPV at a rate of 40-60 breaths/min.</li>
+                    <li>Attach SpO₂ monitor and consider ECG monitor.</li>
+                    <li>Check for chest rise.</li>
+                </ul>
+                 <div class="mrsopa-section">
+                    <h3>If no chest rise, perform MR. SOPA:</h3>
+                    <div id="mrsopa-checklist">
+                        <label><input type="checkbox" class="mrsopa-item"><b>M</b>ask adjustment</label>
+                        <label><input type="checkbox" class="mrsopa-item"><b>R</b>eposition airway</label>
+                        <label><input type="checkbox" class="mrsopa-item"><b>S</b>uction mouth and nose</label>
+                        <label><input type="checkbox" class="mrsopa-item"><b>O</b>pen mouth</label>
+                        <label><input type="checkbox" class="mrsopa-item"><b>P</b>ressure increase</label>
+                        <label><input type="checkbox" class="mrsopa-item"><b>A</b>lternative airway</label>
+                    </div>
+                </div>
+                <p class="font-semibold" style="margin-top: 1rem;">After 15-30 seconds of effective PPV, what is the heart rate?</p>
+                 <div class="decision-buttons-container" style="margin-top: 1rem;">
+                    <button data-next="step-ppv-hr-gt-100" class="decision-btn btn-decision-yes">HR is 100 or greater</button>
+                    <button data-next="step-ppv-hr-gt-60" class="decision-btn btn-warning">HR is 60 to 99</button>
+                    <button data-next="step-compressions" class="decision-btn btn-decision-no">HR is less than 60</button>
+                </div>
+            </div>
+
+            <div id="step-ppv-hr-gt-100" class="step-card hidden-step">
+                <h2>Continue PPV until Spontaneous Breathing</h2>
+                <p>Heart rate is improving (≥100 bpm). Continue PPV at 40-60 breaths/min until there is sustained spontaneous respiratory effort.</p>
+                <div class="decision-buttons-container">
+                    <button data-next="step-post-resuscitation" class="decision-btn btn-neutral">Spontaneous Breathing Returned</button>
+                </div>
+            </div>
+
+            <div id="step-ppv-hr-gt-60" class="step-card hidden-step">
+                <h2>Continue PPV & Reassess (HR 60-99)</h2>
+                <p>Heart rate is 60-99 bpm. Continue PPV and ensure ventilation corrective steps (MR. SOPA) are performed. Reassess HR frequently (e.g., every 30-60 seconds).</p>
+                 <div class="decision-buttons-container">
+                    <button data-next="step-ppv" class="decision-btn btn-neutral">Re-assess HR after more PPV</button>
+                 </div>
+            </div>
+
+            <div id="step-compressions" class="step-card hidden-step">
+                <h2>Step 5: Start Chest Compressions (HR &lt; 60)</h2>
+                <p>Heart rate remains below 60 bpm despite effective PPV.</p>
+                <ul>
+                    <li>Consider intubation if not already done.</li>
+                    <li>Start chest compressions, coordinated with PPV (3:1 ratio).</li>
+                    <li>Increase FiO₂ to 100%.</li>
+                    <li>Attach ECG monitor.</li>
+                </ul>
+                <p class="font-semibold" style="margin-top: 1rem;">After 60 seconds of coordinated PPV and compressions, what is the heart rate?</p>
+                 <div class="decision-buttons-container" style="margin-top: 1rem;">
+                    <button data-next="step-epinephrine" class="decision-btn btn-decision-no">HR remains &lt; 60 (Consider Epinephrine)</button>
+                    <button data-next="step-ppv" class="decision-btn btn-decision-yes">HR is 60 or greater (Stop Compressions, Continue PPV)</button>
+                </div>
+            </div>
+
+             <div id="step-epinephrine" class="step-card hidden-step"> <!-- Corrected ID -->
+                <h2>Step 6: Administer Epinephrine (HR &lt; 60)</h2>
+                <p>Administer IV/IO epinephrine while continuing coordinated PPV and compressions.</p>
+                 <ul>
+                    <li>Recommended IV/IO dose: 0.01-0.03 mg/kg (0.1-0.3 mL/kg of 1:10,000 solution).</li>
+                    <li>May repeat every 3-5 minutes if HR remains <60 bpm.</li>
+                    <li>Consider causes such as hypovolemia or pneumothorax.</li>
+                </ul>
+                <div class="decision-buttons-container">
+                    <button data-next="step-compressions" class="decision-btn btn-neutral">Continue Compressions & Re-assess HR</button>
+                </div>
+            </div>
+
+            <div id="step-post-resuscitation" class="step-card hidden-step">
+                <h2>Outcome: Post-Resuscitation Care</h2>
+                <p>The neonate is breathing with a heart rate above 100 bpm (or stable with support).</p>
+                <ul>
+                    <li>Monitor breathing, heart rate, and oxygen saturation closely.</li>
+                    <li>Maintain normal temperature.</li>
+                    <li>Manage glucose levels.</li>
+                    <li>Consider transfer to a higher level of care (e.g., NICU) based on course and underlying condition.</li>
+                </ul>
+                <div class="reset-btn-container"><button class="reset-btn">Start Over</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/nrp-guide-tool.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const guideContainer = document.getElementById('guide-container');
+        const decisionBtns = document.querySelectorAll('.decision-btn');
+        const resetBtns = document.querySelectorAll('.reset-btn');
+
+        let timerInterval;
+        let totalSeconds = 0;
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('timer-start');
+        const stopBtn = document.getElementById('timer-stop');
+        const resetTimerBtn = document.getElementById('timer-reset');
+
+        function formatTime(seconds) {
+            let minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+            let secs = (seconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${secs}`;
+        }
+
+        function startTimer() {
+            if (timerInterval) return;
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                timerDisplay.textContent = formatTime(totalSeconds);
+            }, 1000);
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
+
+        function resetLocalTimer() { // Renamed to avoid conflict with global reset
+            stopTimer();
+            totalSeconds = 0;
+            timerDisplay.textContent = formatTime(totalSeconds);
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
+
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        resetTimerBtn.addEventListener('click', resetLocalTimer);
+        stopBtn.disabled = true; // Initial state
+
+        const showStep = (stepId) => {
+            const allSteps = guideContainer.querySelectorAll('.step-card');
+            let foundActive = false;
+            allSteps.forEach(step => {
+                if (step.id === stepId) {
+                    step.classList.remove('hidden-step', 'absolute');
+                    step.classList.add('active');
+                    // Delay for transition effect
+                    setTimeout(() => {
+                         guideContainer.style.height = `${step.offsetHeight}px`;
+                    }, 50);
+                    foundActive = true;
+                } else {
+                    step.classList.add('hidden-step', 'absolute');
+                    step.classList.remove('active');
+                }
+            });
+             if (!foundActive && stepId) { // Fallback if ID somehow doesn't match
+                console.error("Step not found:", stepId);
+                showStep('step-initial'); // Go to initial step
+            }
+        };
+
+        decisionBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const nextStepId = e.currentTarget.dataset.next;
+                if (nextStepId) {
+                    showStep(nextStepId);
+                } else {
+                    console.error("No next step defined for button:", e.currentTarget);
+                }
+            });
+        });
+
+        const resetAllGuide = () => {
+             resetLocalTimer(); // Reset the timer
+             const mrsopaChecklist = document.getElementById('mrsopa-checklist');
+             if(mrsopaChecklist) { // Check if it exists
+                mrsopaChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+             }
+             showStep('step-initial');
+        };
+
+        resetBtns.forEach(btn => btn.addEventListener('click', resetAllGuide));
+
+        // Initial setup to show the first step and set container height
+        const initialStepElement = document.getElementById('step-initial');
+        if (initialStepElement) {
+            initialStepElement.classList.remove('hidden-step', 'absolute');
+            initialStepElement.classList.add('active');
+            setTimeout(() => { // Ensure DOM has rendered for offsetHeight
+                 guideContainer.style.height = `${initialStepElement.offsetHeight}px`;
+            }, 100);
+        }
+
+        // Adjust container height on window resize for the active card
+        window.addEventListener('resize', () => {
+            const activeStep = document.querySelector('.step-card.active');
+            if(activeStep) {
+                guideContainer.style.height = `${activeStep.offsetHeight}px`;
+            }
+        });
+    });
+    </script>
+</body>
+</html>

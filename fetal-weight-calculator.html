@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetal Weight Estimation Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+        .formula-selection-group, .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 1.05rem;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+        .formula-inputs .form-group {
+             border-left: 3px solid #007bff;
+             padding-left: 10px;
+             margin-top: 10px;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+            background-color: #28a745; /* Green for result */
+            color: #fff;
+        }
+        #result .efw-value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            display: block;
+        }
+        #result .unit {
+            font-size: 1.2rem;
+            font-weight: normal;
+        }
+        .formula-details {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fetal Weight Estimation Calculator</h1>
+        <p class="page-description">Estimates fetal weight using common ultrasound formulas.</p>
+
+        <form id="efw-form">
+            <div class="formula-selection-group">
+                <label for="formula-select">Select Formula:</label>
+                <select id="formula-select">
+                    <option value="hadlock_ac_fl" selected>Hadlock (AC, FL)</option>
+                    <option value="shepard_bpd_ac">Shepard (BPD, AC)</option>
+                </select>
+            </div>
+
+            <div id="formula-inputs-container">
+                <!-- Dynamic inputs based on formula selection -->
+            </div>
+
+            <button type="submit">Estimate Fetal Weight</button>
+        </form>
+
+        <div id="result">
+            Estimated Fetal Weight (EFW): <span class="efw-value"></span> <span class="unit">grams</span>
+        </div>
+    </div>
+
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/fetal-weight-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        const formulaSelectElement = document.getElementById('formula-select');
+        const formulaInputsContainerElement = document.getElementById('formula-inputs-container');
+
+        const inputFieldHTML = {
+            bpd: `
+                <div class="form-group" id="bpd-group">
+                    <label for="bpd">Biparietal Diameter (BPD) (cm)</label>
+                    <input type="number" id="bpd" step="0.01" placeholder="e.g., 8.50" required>
+                    <div class="formula-details">Used in Shepard formula.</div>
+                </div>`,
+            ac: `
+                <div class="form-group" id="ac-group">
+                    <label for="ac">Abdominal Circumference (AC) (cm)</label>
+                    <input type="number" id="ac" step="0.01" placeholder="e.g., 30.00" required>
+                    <div class="formula-details">Used in both Shepard and Hadlock (AC,FL) formulas.</div>
+                </div>`,
+            fl: `
+                <div class="form-group" id="fl-group">
+                    <label for="fl">Femur Length (FL) (cm)</label>
+                    <input type="number" id="fl" step="0.01" placeholder="e.g., 6.50" required>
+                    <div class="formula-details">Used in Hadlock (AC,FL) formula.</div>
+                </div>`
+        };
+
+        function renderFormulaInputs() {
+            const selectedFormula = formulaSelectElement.value;
+            let inputsToShow = '';
+
+            if (selectedFormula === 'hadlock_ac_fl') {
+                inputsToShow = inputFieldHTML.ac + inputFieldHTML.fl;
+            } else if (selectedFormula === 'shepard_bpd_ac') {
+                inputsToShow = inputFieldHTML.bpd + inputFieldHTML.ac;
+            }
+            formulaInputsContainerElement.innerHTML = inputsToShow;
+        }
+
+        formulaSelectElement.addEventListener('change', renderFormulaInputs);
+        // Initial render for default selection
+        renderFormulaInputs();
+
+
+        document.getElementById('efw-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const selectedFormula = formulaSelectElement.value;
+            let efw = 0;
+            let log10_efw = 0;
+            let acValue, flValue, bpdValue;
+
+            acValue = parseFloat(document.getElementById('ac').value);
+            if (isNaN(acValue) || acValue <= 0) {
+                alert("Please enter a valid Abdominal Circumference.");
+                return;
+            }
+
+            if (selectedFormula === 'hadlock_ac_fl') {
+                flValue = parseFloat(document.getElementById('fl').value);
+                if (isNaN(flValue) || flValue <= 0) {
+                    alert("Please enter a valid Femur Length for Hadlock formula.");
+                    return;
+                }
+                // Hadlock (AC, FL) formula: log10(weight) = 1.304 + 0.05281*AC + 0.1938*FL - 0.004*AC*FL
+                log10_efw = 1.304 + (0.05281 * acValue) + (0.1938 * flValue) - (0.004 * acValue * flValue);
+                efw = Math.pow(10, log10_efw);
+            } else if (selectedFormula === 'shepard_bpd_ac') {
+                bpdValue = parseFloat(document.getElementById('bpd').value);
+                 if (isNaN(bpdValue) || bpdValue <= 0) {
+                    alert("Please enter a valid Biparietal Diameter for Shepard formula.");
+                    return;
+                }
+                // Shepard formula: log10(weight) = -1.7492 + 0.166*BPD + 0.046*AC - (2.646*(AC*BPD)/1000)
+                log10_efw = -1.7492 + (0.166 * bpdValue) + (0.046 * acValue) - (0.002646 * acValue * bpdValue);
+                efw = Math.pow(10, log10_efw);
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.querySelector('.efw-value').textContent = efw.toFixed(0); // EFW usually in whole grams
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

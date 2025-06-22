@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimated Due Date (EDD) Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 550px;
+            width: 100%;
+        }
+        h1 {
+            color: #495057;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .page-description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .formula-display {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #495057;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            min-height: 40px; /* Ensure consistent height */
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+            background-color: #17a2b8; /* Info blue */
+            color: #fff;
+        }
+        #result .edd-value, #result .ga-value {
+            font-size: 1.8rem; /* Adjusted for two lines of results */
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        #result .result-label {
+            font-size: 1rem;
+            font-weight: normal;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .links { text-align: center; margin-top: 2rem; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Estimated Due Date (EDD) Calculator</h1>
+        <p class="page-description">Using Naegele's Rule.</p>
+        <div class="formula-display">
+            Naegele's Rule: LMP Date - 3 Months + 7 Days + 1 Year
+        </div>
+        <form id="edd-form">
+            <div class="form-group">
+                <label for="lmp-date">First Day of Last Menstrual Period (LMP)</label>
+                <input type="date" id="lmp-date" required>
+            </div>
+            <button type="submit">Calculate EDD</button>
+        </form>
+        <div id="result">
+            <span class="result-label">Estimated Due Date (EDD):</span>
+            <span class="edd-value"></span>
+            <span class="result-label" style="margin-top:1rem;">Current Gestational Age:</span>
+            <span class="ga-value"></span>
+        </div>
+    </div>
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+        <a href="https://github.com/gwavin/Fitness/edit/main/edd-calculator.html" target="_blank">✏️ Edit this page</a>
+    </div>
+
+    <script>
+        document.getElementById('edd-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const lmpDateString = document.getElementById('lmp-date').value;
+            if (!lmpDateString) {
+                alert("Please select the LMP date.");
+                return;
+            }
+
+            // LMP date processing - Ensure it's treated as local date to avoid timezone issues
+            // Splitting the string and creating date avoids timezone interpretation by new Date(string)
+            const parts = lmpDateString.split('-');
+            const lmpYear = parseInt(parts[0]);
+            const lmpMonth = parseInt(parts[1]) - 1; // JS months are 0-indexed
+            const lmpDay = parseInt(parts[2]);
+            const lmpDate = new Date(lmpYear, lmpMonth, lmpDay);
+
+
+            // Calculate EDD using Naegele's Rule
+            let eddDate = new Date(lmpDate.getTime()); // Clone LMP date
+            eddDate.setMonth(eddDate.getMonth() - 3);
+            eddDate.setDate(eddDate.getDate() + 7);
+            eddDate.setFullYear(eddDate.getFullYear() + 1);
+
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedEdd = eddDate.toLocaleDateString('en-US', options);
+
+            // Calculate Gestational Age
+            const today = new Date();
+            today.setHours(0,0,0,0); // Normalize today's date to start of day
+
+            let gaText = "";
+            if (lmpDate > today) {
+                 gaText = "LMP is in the future.";
+            } else {
+                // Calculate difference in milliseconds first
+                const diffTime = today.getTime() - lmpDate.getTime();
+                // Convert milliseconds to days
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                const gestWeeks = Math.floor(diffDays / 7);
+                const gestDays = diffDays % 7;
+                gaText = `${gestWeeks} weeks, ${gestDays} days`;
+            }
+
+            document.getElementById('result').querySelector('.edd-value').textContent = formattedEdd;
+            document.getElementById('result').querySelector('.ga-value').textContent = gaText;
+            document.getElementById('result').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
