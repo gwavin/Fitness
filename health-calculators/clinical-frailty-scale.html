@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Frailty Scale (CFS)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .scale-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .scale-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .scale-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .scale-item.selected {
+            border-color: #007bff;
+            background-color: #e7f3ff;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+        }
+        .scale-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #0056b3;
+        }
+        .scale-description {
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Clinical Frailty Scale (CFS)</h1>
+    <p>Select the category that best describes the patient's condition based on your clinical judgment.</p>
+
+    <div class="scale-grid" id="scaleGrid">
+        </div>
+
+    <div class="footer">
+        <p>Source: Dalhousie University, Geriatric Medicine Research. Based on the work of Rockwood et al., 2005.</p>
+        <p>This tool is for clinical decision support and does not replace professional medical judgment.</p>
+    </div>
+</div>
+
+<script>
+    const scaleData = [
+        { level: 1, title: 'Very Fit', description: 'People who are robust, active, energetic and motivated. These people commonly exercise regularly. They are among the fittest for their age.' },
+        { level: 2, title: 'Well', description: 'People who have no active disease symptoms but are less fit than category 1. Often, they exercise or are very active occasionally, e.g., seasonally.' },
+        { level: 3, title: 'Managing Well', description: 'People whose medical problems are well controlled, but are not regularly active beyond routine walking.' },
+        { level: 4, title: 'Vulnerable', description: 'While not dependent on others for daily help, often symptoms limit activities. A common complaint is being “slowed up”, and/or being tired during the day.' },
+        { level: 5, title: 'Mildly Frail', description: 'These people often have more evident slowing, and need help in high order IADLs (finances, transportation, heavy housework). Typically, mild frailty progressively impairs shopping and walking outside alone, meal preparation and housework.' },
+        { level: 6, title: 'Moderately Frail', description: 'People need help with all outside activities and with keeping house. Inside, they often have problems with stairs and need help with bathing and might need minimal assistance (cuing, standby) with dressing.' },
+        { level: 7, title: 'Severely Frail', description: 'Completely dependent for personal care, from whatever cause (physical or cognitive). Even so, they seem stable and not at high risk of dying (within ~6 months).' },
+        { level: 8, title: 'Very Severely Frail', description: 'Completely dependent, approaching the end of life. Typically, they could not recover even from a minor illness.' },
+        { level: 9, title: 'Terminally Ill', description: 'Approaching the end of life. This category applies to people with a life expectancy <6 months, who are not otherwise evidently frail.' }
+    ];
+
+    const grid = document.getElementById('scaleGrid');
+    let selectedItem = null;
+
+    scaleData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'scale-item';
+        div.innerHTML = `
+            <div class="scale-title">${item.level}. ${item.title}</div>
+            <div class="scale-description">${item.description}</div>
+        `;
+        div.addEventListener('click', () => {
+            if (selectedItem) {
+                selectedItem.classList.remove('selected');
+            }
+            div.classList.add('selected');
+            selectedItem = div;
+        });
+        grid.appendChild(div);
+    });
+</script>
+
+</body>
+</html>
