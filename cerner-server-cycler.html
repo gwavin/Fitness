@@ -181,25 +181,6 @@ button.copy{background:var(--accent);color:var(--hse-light-text);border:0;paddin
 button.copy:hover{background-color:#004da7;}
 button.copy:active{transform:scale(.97)}
 
-/* New button for LLM feature */
-button.llm-explain-btn {
-    background: #FFD700; /* Gold-like color for sparkle feature */
-    color: var(--hse-dark-text);
-    border: 0;
-    padding: .35rem .9rem;
-    border-radius: 4px;
-    font-size: .85rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-left: 0.5rem; /* Space from copy button */
-}
-button.llm-explain-btn:hover {
-    background-color: #E6C200;
-}
-button.llm-explain-btn:active {
-    transform: scale(.97);
-}
-
 
 .highlighted-scenario {
     border-color: var(--highlight-border);
@@ -256,93 +237,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
         font-size: 0.9rem;
         padding: 0.6rem 1.2rem;
     }
-}
-
-/* Modal Styling */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.3s ease-in-out;
-}
-
-.modal-overlay.visible {
-    visibility: visible;
-    opacity: 1;
-}
-
-.modal-content {
-    background-color: var(--card);
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 600px;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--hse-dark-text);
-    padding: 5px;
-}
-.modal-close-btn:hover {
-    color: var(--accent);
-}
-
-.modal-title {
-    color: var(--accent);
-    margin-top: 0;
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.5rem;
-}
-
-.modal-body {
-    flex-grow: 1;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--hse-dark-text);
-}
-
-.loading-spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--accent);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-    display: none; /* Hidden by default */
-}
-
-.loading-spinner.active {
-    display: block;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 </style>
 
@@ -503,60 +397,7 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
         } catch (err) {
             console.error('Failed to copy text: ', err);
             // Fallback for browsers that don't support execCommand or when it fails
-            // In a real app, you might show a custom message box here instead of alert
             alert('Failed to copy text. Please copy manually.');
-        }
-    }
-
-    /**
-     * Calls the Gemini API to explain the given cycle entries.
-     * @param {string} entriesString A string containing the cycle entries (e.g., "100, 101, 104").
-     */
-    async function explainCycleEntries(entriesString) {
-        const modalOverlay = document.getElementById('explanationModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-
-        modalTitle.textContent = "Explaining Cycle Entries...";
-        modalBody.innerHTML = ''; // Clear previous content
-        loadingSpinner.classList.add('active'); // Show spinner
-        modalOverlay.classList.add('visible'); // Show modal
-
-        try {
-            const prompt = `Given these Cerner cycle entries: ${entriesString}, please provide a concise explanation of what each entry typically signifies in the context of Cerner server cycling, and what kind of changes or updates they are usually associated with. If you cannot provide a specific meaning for an entry, state that it's a general cycle or requires more context.`;
-
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = ""; // Canvas will provide this at runtime
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-
-            if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                const text = result.candidates[0].content.parts[0].text;
-                modalTitle.textContent = "Explanation of Cycle Entries";
-                modalBody.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`; // Display response, convert newlines to <br>
-            } else {
-                modalTitle.textContent = "Explanation Failed";
-                modalBody.textContent = "Could not get an explanation. Please try again or check the input.";
-                console.error("Gemini API response structure unexpected:", result);
-            }
-        } catch (error) {
-            modalTitle.textContent = "Error";
-            modalBody.textContent = "An error occurred while fetching the explanation. Please check your network connection or try again later.";
-            console.error("Error calling Gemini API:", error);
-        } finally {
-            loadingSpinner.classList.remove('active'); // Hide spinner
         }
     }
 
@@ -583,7 +424,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
                 const safeSectionTitle = sectionTitle.replace(/\s+/g, ''); // Remove spaces from section title for ID
                 const textareaId = `${safeDomainName}-${safeSectionTitle}-ta-${index}`;
                 const copyButtonId = `${safeDomainName}-${safeSectionTitle}-copy-btn-${index}`;
-                const explainButtonId = `${safeDomainName}-${safeSectionTitle}-explain-btn-${index}`;
 
 
                 let serverCommands = '';
@@ -596,9 +436,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
                     serverCommands += `cycle -query\n`;
                 });
 
-                // Extract just the entries for the LLM explanation
-                const entriesForLLM = scenario.entries.join(', ');
-
                 html += `
                     <details class="${isHighlighted}">
                         <summary>${scenario.summary}</summary>
@@ -606,7 +443,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
                             <div class="head">
                                 ${domainName}
                                 <button id="${copyButtonId}" class="copy" onclick="copy('${textareaId}','${copyButtonId}')">Copy</button>
-                                <button id="${explainButtonId}" class="llm-explain-btn" data-entries="${entriesForLLM}">✨ Explain Entries</button>
                             </div>
                             <textarea id="${textareaId}" readonly>${serverCommands.trim()}</textarea>
                         </div>
@@ -625,8 +461,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
         const domainConfigTextArea = document.getElementById('domainConfig');
         const applyConfigButton = document.getElementById('applyConfig');
         const dynamicContentDiv = document.getElementById('dynamicContent');
-        const modalOverlay = document.getElementById('explanationModal');
-        const modalCloseBtn = document.getElementById('modalCloseBtn');
 
         // Default configuration to pre-fill the textarea
         const defaultConfigs = [
@@ -670,14 +504,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
                     }
                 });
 
-                // Attach event listeners to the newly created "Explain Entries" buttons
-                document.querySelectorAll('.llm-explain-btn').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        const entries = event.target.dataset.entries;
-                        explainCycleEntries(entries);
-                    });
-                });
-
             } catch (e) {
                 alert('Invalid JSON format. Please check your input for syntax errors.');
                 console.error('JSON parsing error:', e);
@@ -686,18 +512,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
 
         // Attach event listener to the "Apply Configuration" button
         applyConfigButton.addEventListener('click', renderContent);
-
-        // Attach event listener to modal close button
-        modalCloseBtn.addEventListener('click', () => {
-            modalOverlay.classList.remove('visible');
-        });
-
-        // Close modal if clicked outside content
-        modalOverlay.addEventListener('click', (event) => {
-            if (event.target === modalOverlay) {
-                modalOverlay.classList.remove('visible');
-            }
-        });
 
         // Render content initially on page load
         renderContent();
@@ -725,16 +539,6 @@ footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem
         </div>
     </section>
 </main>
-
-<!-- Explanation Modal -->
-<div id="explanationModal" class="modal-overlay">
-    <div class="modal-content">
-        <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
-        <h3 id="modalTitle" class="modal-title"></h3>
-        <div id="loadingSpinner" class="loading-spinner"></div>
-        <div id="modalBody" class="modal-body"></div>
-    </div>
-</div>
 
 <footer>One-click Cerner cycling helper – generated for effortless ops.</footer>
 </body>
