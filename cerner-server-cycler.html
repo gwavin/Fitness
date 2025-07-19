@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Cerner Server Cycler – one-click cheat-sheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cerner Server Cycler – Dynamic Cheat Sheet</title>
 
 <style>
 :root{
@@ -36,6 +37,78 @@ main{max-width:1200px;
      margin:0 auto 4rem;
      padding: 0 1rem;
 }
+
+/* Input Section Styling */
+.input-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-top: 2rem; /* Added margin-top to separate from dynamic content */
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.input-section h2 {
+    color: var(--accent);
+    font-size: 1.6rem;
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.8rem;
+}
+
+.input-section p.explanation { /* Styling for the new explanation text */
+    font-size: 0.95rem;
+    color: var(--hse-dark-text);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.input-group label {
+    font-weight: 600;
+    color: var(--hse-dark-text);
+}
+
+.input-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    background-color: #fcfcfc;
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 150px; /* Minimum height for textarea */
+}
+
+.input-group button {
+    background: var(--accent);
+    color: var(--hse-light-text);
+    border: 0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    align-self: flex-end; /* Align button to the right */
+}
+
+.input-group button:hover {
+    background-color: #004da7; /* Darker blue on hover */
+}
+
+.input-group button:active {
+    transform: scale(0.98);
+}
+
+
 /* Domain card container */
 .domain-details {
     margin-bottom: 1rem;
@@ -108,6 +181,26 @@ button.copy{background:var(--accent);color:var(--hse-light-text);border:0;paddin
 button.copy:hover{background-color:#004da7;}
 button.copy:active{transform:scale(.97)}
 
+/* New button for LLM feature */
+button.llm-explain-btn {
+    background: #FFD700; /* Gold-like color for sparkle feature */
+    color: var(--hse-dark-text);
+    border: 0;
+    padding: .35rem .9rem;
+    border-radius: 4px;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-left: 0.5rem; /* Space from copy button */
+}
+button.llm-explain-btn:hover {
+    background-color: #E6C200;
+}
+button.llm-explain-btn:active {
+    transform: scale(.97);
+}
+
+
 .highlighted-scenario {
     border-color: var(--highlight-border);
     background-color: var(--highlight-bg);
@@ -134,2171 +227,515 @@ button.copy:active{transform:scale(.97)}
 }
 
 footer{font-size:.8rem;color:var(--hse-dark-text);text-align:center;padding:1rem}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .domain-summary {
+        font-size: 1.2rem;
+        padding: 0.8rem 1rem;
+    }
+    .scenarios-grid {
+        grid-template-columns: 1fr; /* Stack scenarios on small screens */
+        padding: 0.8rem;
+    }
+    summary {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.8rem;
+    }
+    .section-title {
+        font-size: 1.3rem;
+    }
+    .input-section {
+        padding: 1rem;
+    }
+    .input-group button {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+    }
+}
+
+/* Modal Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease-in-out;
+}
+
+.modal-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: var(--card);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--hse-dark-text);
+    padding: 5px;
+}
+.modal-close-btn:hover {
+    color: var(--accent);
+}
+
+.modal-title {
+    color: var(--accent);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.modal-body {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--hse-dark-text);
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--accent);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+    display: none; /* Hidden by default */
+}
+
+.loading-spinner.active {
+    display: block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 
 <script>
-function copy(id, btnId) {
-  const ta = document.getElementById(id);
-  ta.select();
-  ta.setSelectionRange(0, 99999); // For mobile devices
+    // Global scenarios data structure
+    const scenarios = {
+        "Commonly Used": [
+            {
+                summary: "Cycle servers after <strong>EKM rule edit</strong>",
+                entries: ["100", "101", "104", "105", "150", "151", "152", "175", "176", "363", "506"],
+                highlight: true
+            },
+            {
+                summary: "Cycle servers after <strong>New OC + Care Plans</strong>",
+                entries: ["50", "80", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "112", "115", "116", "117", "119", "120", "200", "205", "209", "351", "352", "357", "358", "359", "362", "378", "392", "506", "509"],
+                highlight: true
+            },
+            {
+                summary: "Cycle servers after <strong>Order Catalogue edit</strong>",
+                entries: ["80", "101", "104", "111", "112", "362", "506"],
+                highlight: true
+            },
+            {
+                summary: "Cycle servers after <strong>Order Catalog / OS / Search</strong>",
+                entries: ["362", "506"],
+                highlight: true
+            },
+            {
+                summary: "Cycle servers after <strong>Order Catalog – Full</strong>",
+                entries: ["101", "104", "111", "112", "362", "506"],
+                highlight: true
+            },
+            {
+                summary: "Cycle servers after <strong>Order Sentence change</strong>",
+                entries: ["362", "506"],
+                highlight: true
+            },
+            {
+                summary: "Cycle servers after <strong>PowerPlan edit</strong>",
+                entries: ["80", "100", "101", "102", "104", "109", "115", "116", "117", "119", "200", "362", "378", "392", "506"],
+                highlight: true
+            }
+        ],
+        "Less Commonly Used": [
+            {
+                summary: "Cycle servers after <strong>CoreCodeBuilder</strong>",
+                entries: ["88"]
+            },
+            {
+                summary: "Cycle servers after <strong>Discern Label</strong>",
+                entries: ["54", "625", "626", "640"]
+            },
+            {
+                summary: "Cycle servers after <strong>Dose-Range checking</strong>",
+                entries: ["175", "386", "362"]
+            },
+            {
+                summary: "Cycle servers after <strong>DTAs / ACE</strong>",
+                entries: ["80"]
+            },
+            {
+                summary: "Cycle servers after <strong>ESH EventCodes / EventSets & Documents</strong>",
+                entries: ["80", "200", "205", "209", "250"]
+            },
+            {
+                summary: "Cycle servers after <strong>FirstNet Tracking (Depart)</strong>",
+                entries: ["54", "55", "80", "425"]
+            },
+            {
+                summary: "Cycle servers after <strong>Frequency (PHADBFreq)</strong>",
+                entries: ["362", "625", "626"]
+            },
+            {
+                summary: "Cycle servers after <strong>Labs build change</strong>",
+                entries: ["100", "101", "104"]
+            },
+            {
+                summary: "Cycle servers after <strong>Manufacturers</strong>",
+                entries: ["80", "455"]
+            },
+            {
+                summary: "Cycle servers after <strong>MPages (widgets)</strong>",
+                entries: ["79", "84", "178", "535", "548"]
+            },
+            {
+                summary: "Cycle servers after <strong>MPages – Quick Orders</strong>",
+                entries: ["106", "535"]
+            },
+            {
+                summary: "Cycle servers after <strong>OEF edit (dcptools)</strong>",
+                entries: ["100", "101", "102", "104", "105", "106", "107", "108", "109"]
+            },
+            {
+                summary: "Cycle servers after <strong>OEF Value (Code Set) Filtering</strong>",
+                entries: ["100", "101", "102", "104"]
+            },
+            {
+                summary: "Cycle servers after <strong>PhaDBTools – Route of Admin</strong>",
+                entries: ["111", "112", "625", "626"]
+            },
+            {
+                summary: "Cycle servers after <strong>PhaDBTools – Preferences</strong>",
+                entries: ["25", "625", "626", "640"]
+            },
+            {
+                summary: "Cycle servers after <strong>PrefMaint</strong>",
+                entries: ["50"]
+            },
+            {
+                summary: "Cycle servers after <strong>PrivMaint</strong>",
+                entries: ["351", "352", "357", "358", "359", "509"]
+            },
+            {
+                summary: "Cycle servers after <strong>Related Results</strong>",
+                entries: ["53", "80"]
+            },
+            {
+                summary: "Cycle servers after <strong>SN Anesthesia</strong>",
+                entries: ["101", "104", "362", "506"]
+            },
+            {
+                summary: "Cycle servers after <strong>Task / Order change</strong>",
+                entries: ["100", "101", "102", "104", "120", "200", "351", "362", "395", "506", "625", "626"]
+            },
+            {
+                summary: "Cycle servers after <strong>Word Processing Template</strong>",
+                entries: ["55", "625", "626", "640"]
+            },
+            {
+                summary: "Cycle servers after <strong>PowerForm edit</strong>",
+                entries: ["80", "102", "106"]
+            }
+        ]
+    };
 
-  try {
-    document.execCommand("copy");
-    const btn = document.getElementById(btnId);
-    if (btn) {
-      const originalText = btn.textContent;
-      btn.textContent = "✓ Copied!";
-      setTimeout(() => btn.textContent = originalText, 1100);
+    /**
+     * Copies the text from a textarea to the clipboard and provides visual feedback.
+     * @param {string} id The ID of the textarea element.
+     * @param {string} btnId The ID of the button element.
+     */
+    function copy(id, btnId) {
+        const ta = document.getElementById(id);
+        if (!ta) {
+            console.error(`Textarea with ID "${id}" not found.`);
+            return;
+        }
+        ta.select();
+        ta.setSelectionRange(0, 99999); // For mobile devices
+
+        try {
+            document.execCommand("copy");
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = "✓ Copied!";
+                setTimeout(() => btn.textContent = originalText, 1100);
+            }
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            // Fallback for browsers that don't support execCommand or when it fails
+            // In a real app, you might show a custom message box here instead of alert
+            alert('Failed to copy text. Please copy manually.');
+        }
     }
-  } catch (err) {
-    console.error('Failed to copy text: ', err);
-  }
-}
+
+    /**
+     * Calls the Gemini API to explain the given cycle entries.
+     * @param {string} entriesString A string containing the cycle entries (e.g., "100, 101, 104").
+     */
+    async function explainCycleEntries(entriesString) {
+        const modalOverlay = document.getElementById('explanationModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        modalTitle.textContent = "Explaining Cycle Entries...";
+        modalBody.innerHTML = ''; // Clear previous content
+        loadingSpinner.classList.add('active'); // Show spinner
+        modalOverlay.classList.add('visible'); // Show modal
+
+        try {
+            const prompt = `Given these Cerner cycle entries: ${entriesString}, please provide a concise explanation of what each entry typically signifies in the context of Cerner server cycling, and what kind of changes or updates they are usually associated with. If you cannot provide a specific meaning for an entry, state that it's a general cycle or requires more context.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Canvas will provide this at runtime
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                const text = result.candidates[0].content.parts[0].text;
+                modalTitle.textContent = "Explanation of Cycle Entries";
+                modalBody.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`; // Display response, convert newlines to <br>
+            } else {
+                modalTitle.textContent = "Explanation Failed";
+                modalBody.textContent = "Could not get an explanation. Please try again or check the input.";
+                console.error("Gemini API response structure unexpected:", result);
+            }
+        } catch (error) {
+            modalTitle.textContent = "Error";
+            modalBody.textContent = "An error occurred while fetching the explanation. Please check your network connection or try again later.";
+            console.error("Error calling Gemini API:", error);
+        } finally {
+            loadingSpinner.classList.remove('active'); // Hide spinner
+        }
+    }
+
+    /**
+     * Generates the HTML content for a single domain based on provided configuration.
+     * @param {string} domainName The name of the domain (e.g., "C3046").
+     * @param {string[]} servers An array of server names (e.g., ["hseieapp4"]).
+     * @returns {string} The HTML string for the domain card.
+     */
+    function generateDomainContent(domainName, servers) {
+        let html = `
+            <details class="domain-details">
+                <summary class="domain-summary">${domainName} Domain</summary>
+        `;
+
+        // Iterate through each section (e.g., "Commonly Used", "Less Commonly Used")
+        for (const sectionTitle in scenarios) {
+            html += `<h3 class="section-title">${sectionTitle}</h3><div class="scenarios-grid">`;
+            // Iterate through each scenario within the current section
+            scenarios[sectionTitle].forEach((scenario, index) => {
+                const isHighlighted = scenario.highlight ? ' highlighted-scenario' : '';
+                // Create unique IDs for textarea and button
+                const safeDomainName = domainName.replace(/[^a-zA-Z0-9]/g, ''); // Sanitize domain name for ID
+                const safeSectionTitle = sectionTitle.replace(/\s+/g, ''); // Remove spaces from section title for ID
+                const textareaId = `${safeDomainName}-${safeSectionTitle}-ta-${index}`;
+                const copyButtonId = `${safeDomainName}-${safeSectionTitle}-copy-btn-${index}`;
+                const explainButtonId = `${safeDomainName}-${safeSectionTitle}-explain-btn-${index}`;
+
+
+                let serverCommands = '';
+                // Generate 'select' and 'cycle -entry' commands for each server
+                servers.forEach(server => {
+                    serverCommands += `select ${server}\n`;
+                    scenario.entries.forEach(entry => {
+                        serverCommands += `cycle -entry ${entry}\n`;
+                    });
+                    serverCommands += `cycle -query\n`;
+                });
+
+                // Extract just the entries for the LLM explanation
+                const entriesForLLM = scenario.entries.join(', ');
+
+                html += `
+                    <details class="${isHighlighted}">
+                        <summary>${scenario.summary}</summary>
+                        <div class="server">
+                            <div class="head">
+                                ${domainName}
+                                <button id="${copyButtonId}" class="copy" onclick="copy('${textareaId}','${copyButtonId}')">Copy</button>
+                                <button id="${explainButtonId}" class="llm-explain-btn" data-entries="${entriesForLLM}">✨ Explain Entries</button>
+                            </div>
+                            <textarea id="${textareaId}" readonly>${serverCommands.trim()}</textarea>
+                        </div>
+                    </details>
+                `;
+            });
+            html += `</div>`; // Close scenarios-grid
+        }
+
+        html += `</details>`; // Close domain-details
+        return html;
+    }
+
+    // Event listener for the "Apply Configuration" button and initial rendering
+    document.addEventListener('DOMContentLoaded', () => {
+        const domainConfigTextArea = document.getElementById('domainConfig');
+        const applyConfigButton = document.getElementById('applyConfig');
+        const dynamicContentDiv = document.getElementById('dynamicContent');
+        const modalOverlay = document.getElementById('explanationModal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+        // Default configuration to pre-fill the textarea
+        const defaultConfigs = [
+            {
+                "domainName": "C3046",
+                "servers": ["hseieapp4"]
+            },
+            {
+                "domainName": "M3046",
+                "servers": ["hseieapp4"]
+            },
+            {
+                "domainName": "P3046",
+                "servers": ["hseieapp1", "hseieapp2", "hseieapp5", "hseieapp6"]
+            },
+            {
+                "domainName": "B3046",
+                "servers": ["hseieapp3"]
+            }
+        ];
+
+        // Set default value for the textarea
+        domainConfigTextArea.value = JSON.stringify(defaultConfigs, null, 2);
+
+        // Function to render content based on current textarea value
+        function renderContent() {
+            dynamicContentDiv.innerHTML = ''; // Clear existing content
+
+            try {
+                const configs = JSON.parse(domainConfigTextArea.value);
+                if (!Array.isArray(configs)) {
+                    alert('Invalid JSON format. The input should be a JSON array of domain configurations.');
+                    return;
+                }
+                configs.forEach(config => {
+                    if (config.domainName && Array.isArray(config.servers) && config.servers.length > 0) {
+                        dynamicContentDiv.innerHTML += generateDomainContent(config.domainName, config.servers);
+                    } else {
+                        console.warn('Skipping invalid configuration entry:', config);
+                        // In a real app, you might show a more user-friendly error for specific invalid entries
+                    }
+                });
+
+                // Attach event listeners to the newly created "Explain Entries" buttons
+                document.querySelectorAll('.llm-explain-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const entries = event.target.dataset.entries;
+                        explainCycleEntries(entries);
+                    });
+                });
+
+            } catch (e) {
+                alert('Invalid JSON format. Please check your input for syntax errors.');
+                console.error('JSON parsing error:', e);
+            }
+        }
+
+        // Attach event listener to the "Apply Configuration" button
+        applyConfigButton.addEventListener('click', renderContent);
+
+        // Attach event listener to modal close button
+        modalCloseBtn.addEventListener('click', () => {
+            modalOverlay.classList.remove('visible');
+        });
+
+        // Close modal if clicked outside content
+        modalOverlay.addEventListener('click', (event) => {
+            if (event.target === modalOverlay) {
+                modalOverlay.classList.remove('visible');
+            }
+        });
+
+        // Render content initially on page load
+        renderContent();
+    });
 </script>
 </head>
 <body>
 <h1>Cerner Server Cycler</h1>
 <main>
-    <!-- Domain cards go here (C3046, M3046, P3046, B3046) -->
+    <div id="dynamicContent">
+        <!-- Dynamically generated domain cards will go here -->
+    </div>
 
-
-
-
-    <details class="domain-details">
-        <summary class="domain-summary">C3046 Domain</summary>
-        <h3 class="section-title">Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>EKM rule edit</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c2" class="copy" onclick="copy('tc2','c2')">Copy</button></div>
-                <textarea id="tc2" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -entry 105
-cycle -entry 150
-cycle -entry 151
-cycle -entry 152
-cycle -entry 175
-cycle -entry 176
-cycle -entry 363
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>New OC + Care Plans</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c6" class="copy" onclick="copy('tc6','c6')">Copy</button></div>
-                <textarea id="tc6" readonly>select hseieapp4
-cycle -entry 50
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 103
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -entry 112
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 120
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalogue edit</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c1" class="copy" onclick="copy('tc1','c1')">Copy</button></div>
-                <textarea id="tc1" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog / OS / Search</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c27" class="copy" onclick="copy('tc27','c27')">Copy</button></div>
-                <textarea id="tc27" readonly>select hseieapp4
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog – Full</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c28" class="copy" onclick="copy('tc28','c28')">Copy</button></div>
-                <textarea id="tc28" readonly>select hseieapp4
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Sentence change</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c3" class="copy" onclick="copy('tc3','c3')">Copy</button></div>
-                <textarea id="tc3" readonly>select hseieapp4
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>PowerPlan edit</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c5" class="copy" onclick="copy('tc5','c5')">Copy</button></div>
-                <textarea id="tc5" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 109
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 200
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
+    <section class="input-section">
+        <h2>Configure Domains and Servers</h2>
+        <p class="explanation">
+            To customize the domains and servers displayed, please edit the JSON text below.
+            Each entry in the list should have a "domainName" (e.g., "P3046") and an array of "servers" (e.g., ["hseieapp1", "hseieapp2"]).
+            Click "Apply Configuration" to update the page.
+        </p>
+        <div class="input-group">
+            <label for="domainConfig">Enter Domain Configurations (JSON format):</label>
+            <textarea id="domainConfig" rows="10"></textarea>
+            <button id="applyConfig">Apply Configuration</button>
         </div>
-
-        <h3 class="section-title">Less Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details>
-                <summary>Cycle servers after <strong>CoreCodeBuilder</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c26" class="copy" onclick="copy('tc26','c26')">Copy</button></div>
-                <textarea id="tc26" readonly>select hseieapp4
-cycle -entry 88
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Discern Label</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c23" class="copy" onclick="copy('tc23','c23')">Copy</button></div>
-                <textarea id="tc23" readonly>select hseieapp4
-cycle -entry 54
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Dose-Range checking</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c4" class="copy" onclick="copy('tc4','c4')">Copy</button></div>
-                <textarea id="tc4" readonly>select hseieapp4
-cycle -entry 175
-cycle -entry 386
-cycle -entry 362
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>DTAs / ACE</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c25" class="copy" onclick="copy('tc25','c25')">Copy</button></div>
-                <textarea id="tc25" readonly>select hseieapp4
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>ESH EventCodes / EventSets & Documents</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c17" class="copy" onclick="copy('tc17','c17')">Copy</button></div>
-                <textarea id="tc17" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 250
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>FirstNet Tracking (Depart)</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c10" class="copy" onclick="copy('tc10','c10')">Copy</button></div>
-                <textarea id="tc10" readonly>select hseieapp4
-cycle -entry 54
-cycle -entry 55
-cycle -entry 80
-cycle -entry 425
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Frequency (PHADBFreq)</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c9" class="copy" onclick="copy('tc9','c9')">Copy</button></div>
-                <textarea id="tc9" readonly>select hseieapp4
-cycle -entry 362
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Labs build change</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c11" class="copy" onclick="copy('tc11','c11')">Copy</button></div>
-                <textarea id="tc11" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Manufacturers</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c14" class="copy" onclick="copy('tc14','c14')">Copy</button></div>
-                <textarea id="tc14" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 455
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages (widgets)</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c19" class="copy" onclick="copy('tc19','c19')">Copy</button></div>
-                <textarea id="tc19" readonly>select hseieapp4
-cycle -entry 79
-cycle -entry 84
-cycle -entry 178
-cycle -entry 535
-cycle -entry 548
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages – Quick Orders</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c24" class="copy" onclick="copy('tc24','c24')">Copy</button></div>
-                <textarea id="tc24" readonly>select hseieapp4
-cycle -entry 106
-cycle -entry 535
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF edit (dcptools)</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c15" class="copy" onclick="copy('tc15','c15')">Copy</button></div>
-                <textarea id="tc15" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF Value (Code Set) Filtering</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c18" class="copy" onclick="copy('tc18','c18')">Copy</button></div>
-                <textarea id="tc18" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Route of Admin</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c12" class="copy" onclick="copy('tc12','c12')">Copy</button></div>
-                <textarea id="tc12" readonly>select hseieapp4
-cycle -entry 111
-cycle -entry 112
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Preferences</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c16" class="copy" onclick="copy('tc16','c16')">Copy</button></div>
-                <textarea id="tc16" readonly>select hseieapp4
-cycle -entry 25
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrefMaint</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c20" class="copy" onclick="copy('tc20','c20')">Copy</button></div>
-                <textarea id="tc20" readonly>select hseieapp4
-cycle -entry 50
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrivMaint</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c21" class="copy" onclick="copy('tc21','c21')">Copy</button></div>
-                <textarea id="tc21" readonly>select hseieapp4
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Related Results</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c13" class="copy" onclick="copy('tc13','c13')">Copy</button></div>
-                <textarea id="tc13" readonly>select hseieapp4
-cycle -entry 53
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>SN Anesthesia</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c29" class="copy" onclick="copy('tc29','c29')">Copy</button></div>
-                <textarea id="tc29" readonly>select hseieapp4
-cycle -entry 101
-cycle -entry 104
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Task / Order change</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c7" class="copy" onclick="copy('tc7','c7')">Copy</button></div>
-                <textarea id="tc7" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 120
-cycle -entry 200
-cycle -entry 351
-cycle -entry 362
-cycle -entry 395
-cycle -entry 506
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Word Processing Template</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c22" class="copy" onclick="copy('tc22','c22')">Copy</button></div>
-                <textarea id="tc22" readonly>select hseieapp4
-cycle -entry 55
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PowerForm edit</strong></summary>
-                <div class="server"><div class="head">C3046 <button id="c8" class="copy" onclick="copy('tc8','c8')">Copy</button></div>
-                <textarea id="tc8" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 102
-cycle -entry 106
-cycle -query</textarea></div>
-            </details>
-        </div>
-    </details>
-
-    <details class="domain-details">
-        <summary class="domain-summary">M3046 Domain</summary>
-        <h3 class="section-title">Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>EKM rule edit</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m2" class="copy" onclick="copy('tm2','m2')">Copy</button></div>
-                <textarea id="tm2" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -entry 105
-cycle -entry 150
-cycle -entry 151
-cycle -entry 152
-cycle -entry 175
-cycle -entry 176
-cycle -entry 363
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>New OC + Care Plans</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m6" class="copy" onclick="copy('tm6','m6')">Copy</button></div>
-                <textarea id="tm6" readonly>select hseieapp4
-cycle -entry 50
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 103
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -entry 112
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 120
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalogue edit</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m1" class="copy" onclick="copy('tm1','m1')">Copy</button></div>
-                <textarea id="tm1" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog / OS / Search</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m27" class="copy" onclick="copy('tm27','m27')">Copy</button></div>
-                <textarea id="tm27" readonly>select hseieapp4
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog – Full</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m28" class="copy" onclick="copy('tm28','m28')">Copy</button></div>
-                <textarea id="tm28" readonly>select hseieapp4
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Sentence change</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m3" class="copy" onclick="copy('tm3','m3')">Copy</button></div>
-                <textarea id="tm3" readonly>select hseieapp4
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>PowerPlan edit</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m5" class="copy" onclick="copy('tm5','m5')">Copy</button></div>
-                <textarea id="tm5" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 109
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 200
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-        </div>
-
-        <h3 class="section-title">Less Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details>
-                <summary>Cycle servers after <strong>CoreCodeBuilder</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m26" class="copy" onclick="copy('tm26','m26')">Copy</button></div>
-                <textarea id="tm26" readonly>select hseieapp4
-cycle -entry 88
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Discern Label</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m23" class="copy" onclick="copy('tm23','m23')">Copy</button></div>
-                <textarea id="tm23" readonly>select hseieapp4
-cycle -entry 54
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Dose-Range checking</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m4" class="copy" onclick="copy('tm4','m4')">Copy</button></div>
-                <textarea id="tm4" readonly>select hseieapp4
-cycle -entry 175
-cycle -entry 386
-cycle -entry 362
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>DTAs / ACE</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m25" class="copy" onclick="copy('tm25','m25')">Copy</button></div>
-                <textarea id="tm25" readonly>select hseieapp4
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>ESH EventCodes / EventSets & Documents</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m17" class="copy" onclick="copy('tm17','m17')">Copy</button></div>
-                <textarea id="tm17" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 250
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>FirstNet Tracking (Depart)</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m10" class="copy" onclick="copy('tm10','m10')">Copy</button></div>
-                <textarea id="tm10" readonly>select hseieapp4
-cycle -entry 54
-cycle -entry 55
-cycle -entry 80
-cycle -entry 425
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Frequency (PHADBFreq)</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m9" class="copy" onclick="copy('tm9','m9')">Copy</button></div>
-                <textarea id="tm9" readonly>select hseieapp4
-cycle -entry 362
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Labs build change</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m11" class="copy" onclick="copy('tm11','m11')">Copy</button></div>
-                <textarea id="tm11" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Manufacturers</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m14" class="copy" onclick="copy('tm14','m14')">Copy</button></div>
-                <textarea id="tm14" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 455
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages (widgets)</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m19" class="copy" onclick="copy('tm19','m19')">Copy</button></div>
-                <textarea id="tm19" readonly>select hseieapp4
-cycle -entry 79
-cycle -entry 84
-cycle -entry 178
-cycle -entry 535
-cycle -entry 548
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages – Quick Orders</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m24" class="copy" onclick="copy('tm24','m24')">Copy</button></div>
-                <textarea id="tm24" readonly>select hseieapp4
-cycle -entry 106
-cycle -entry 535
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF edit (dcptools)</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m15" class="copy" onclick="copy('tm15','m15')">Copy</button></div>
-                <textarea id="tm15" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF Value (Code Set) Filtering</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m18" class="copy" onclick="copy('tm18','m18')">Copy</button></div>
-                <textarea id="tm18" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Route of Admin</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m12" class="copy" onclick="copy('tm12','m12')">Copy</button></div>
-                <textarea id="tm12" readonly>select hseieapp4
-cycle -entry 111
-cycle -entry 112
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Preferences</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m16" class="copy" onclick="copy('tm16','m16')">Copy</button></div>
-                <textarea id="tm16" readonly>select hseieapp4
-cycle -entry 25
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrefMaint</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m20" class="copy" onclick="copy('tm20','m20')">Copy</button></div>
-                <textarea id="tm20" readonly>select hseieapp4
-cycle -entry 50
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrivMaint</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m21" class="copy" onclick="copy('tm21','m21')">Copy</button></div>
-                <textarea id="tm21" readonly>select hseieapp4
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Related Results</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m13" class="copy" onclick="copy('tm13','m13')">Copy</button></div>
-                <textarea id="tm13" readonly>select hseieapp4
-cycle -entry 53
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>SN Anesthesia</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m29" class="copy" onclick="copy('tm29','m29')">Copy</button></div>
-                <textarea id="tm29" readonly>select hseieapp4
-cycle -entry 101
-cycle -entry 104
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Task / Order change</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m7" class="copy" onclick="copy('tm7','m7')">Copy</button></div>
-                <textarea id="tm7" readonly>select hseieapp4
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 120
-cycle -entry 200
-cycle -entry 351
-cycle -entry 362
-cycle -entry 395
-cycle -entry 506
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Word Processing Template</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m22" class="copy" onclick="copy('tm22','m22')">Copy</button></div>
-                <textarea id="tm22" readonly>select hseieapp4
-cycle -entry 55
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PowerForm edit</strong></summary>
-                <div class="server"><div class="head">M3046 <button id="m8" class="copy" onclick="copy('tm8','m8')">Copy</button></div>
-                <textarea id="tm8" readonly>select hseieapp4
-cycle -entry 80
-cycle -entry 102
-cycle -entry 106
-cycle -query</textarea></div>
-            </details>
-        </div>
-    </details>
-
-    <details class="domain-details">
-        <summary class="domain-summary">P3046 Domain</summary>
-        <h3 class="section-title">Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>EKM rule edit</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p2" class="copy" onclick="copy('tp2','p2')">Copy</button></div>
-                <textarea id="tp2" readonly>select hseieapp1
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -entry 105
-cycle -entry 150
-cycle -entry 151
-cycle -entry 152
-cycle -entry 175
-cycle -entry 176
-cycle -entry 363
-cycle -entry 506
-cycle -query
-select hseieapp2
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -entry 105
-cycle -entry 150
-cycle -entry 151
-cycle -entry 152
-cycle -entry 175
-cycle -entry 176
-cycle -entry 363
-cycle -entry 506
-cycle -query
-select hseieapp5
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -entry 105
-cycle -entry 150
-cycle -entry 151
-cycle -entry 152
-cycle -entry 175
-cycle -entry 176
-cycle -entry 363
-cycle -entry 506
-cycle -query
-select hseieapp6
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -entry 105
-cycle -entry 150
-cycle -entry 151
-cycle -entry 152
-cycle -entry 175
-cycle -entry 176
-cycle -entry 363
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>New OC + Care Plans</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p6" class="copy" onclick="copy('tp6','p6')">Copy</button></div>
-                <textarea id="tp6" readonly>select hseieapp1
-cycle -entry 50
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 103
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -entry 112
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 120
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -entry 509
-cycle -query
-select hseieapp2
-cycle -entry 50
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 103
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -entry 112
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 120
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -entry 509
-cycle -query
-select hseieapp5
-cycle -entry 50
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 103
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -entry 112
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 120
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -entry 509
-cycle -query
-select hseieapp6
-cycle -entry 50
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 103
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -entry 112
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 120
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalogue edit</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p1" class="copy" onclick="copy('tp1','p1')">Copy</button></div>
-                <textarea id="tp1" readonly>select hseieapp1
-cycle -entry 80
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp2
-cycle -entry 80
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp5
-cycle -entry 80
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp6
-cycle -entry 80
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog / OS / Search</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p27" class="copy" onclick="copy('tp27','p27')">Copy</button></div>
-                <textarea id="tp27" readonly>select hseieapp1
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp2
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp5
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp6
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog – Full</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p28" class="copy" onclick="copy('tp28','p28')">Copy</button></div>
-                <textarea id="tp28" readonly>select hseieapp1
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp2
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp5
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp6
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Sentence change</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p3" class="copy" onclick="copy('tp3','p3')">Copy</button></div>
-                <textarea id="tp3" readonly>select hseieapp1
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp2
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp5
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp6
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>PowerPlan edit</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p5" class="copy" onclick="copy('tp5','p5')">Copy</button></div>
-                <textarea id="tp5" readonly>select hseieapp1
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 109
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 200
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -query
-select hseieapp2
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 109
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 200
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -query
-select hseieapp5
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 109
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 200
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -query
-select hseieapp6
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 109
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 200
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-        </div>
-
-        <h3 class="section-title">Less Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details>
-                <summary>Cycle servers after <strong>CoreCodeBuilder</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p26" class="copy" onclick="copy('tp26','p26')">Copy</button></div>
-                <textarea id="tp26" readonly>select hseieapp1
-cycle -entry 88
-cycle -query
-select hseieapp2
-cycle -entry 88
-cycle -query
-select hseieapp5
-cycle -entry 88
-cycle -query
-select hseieapp6
-cycle -entry 88
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Discern Label</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p23" class="copy" onclick="copy('tp23','p23')">Copy</button></div>
-                <textarea id="tp23" readonly>select hseieapp1
-cycle -entry 54
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query
-select hseieapp2
-cycle -entry 54
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query
-select hseieapp5
-cycle -entry 54
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query
-select hseieapp6
-cycle -entry 54
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Dose-Range checking</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p4" class="copy" onclick="copy('tp4','p4')">Copy</button></div>
-                <textarea id="tp4" readonly>select hseieapp1
-cycle -entry 175
-cycle -entry 386
-cycle -entry 362
-cycle -query
-select hseieapp2
-cycle -entry 175
-cycle -entry 386
-cycle -entry 362
-cycle -query
-select hseieapp5
-cycle -entry 175
-cycle -entry 386
-cycle -entry 362
-cycle -query
-select hseieapp6
-cycle -entry 175
-cycle -entry 386
-cycle -entry 362
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>DTAs / ACE</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p25" class="copy" onclick="copy('tp25','p25')">Copy</button></div>
-                <textarea id="tp25" readonly>select hseieapp1
-cycle -entry 80
-cycle -query
-select hseieapp2
-cycle -entry 80
-cycle -query
-select hseieapp5
-cycle -entry 80
-cycle -query
-select hseieapp6
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>ESH EventCodes / EventSets & Documents</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p17" class="copy" onclick="copy('tp17','p17')">Copy</button></div>
-                <textarea id="tp17" readonly>select hseieapp1
-cycle -entry 80
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 250
-cycle -query
-select hseieapp2
-cycle -entry 80
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 250
-cycle -query
-select hseieapp5
-cycle -entry 80
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 250
-cycle -query
-select hseieapp6
-cycle -entry 80
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 250
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>FirstNet Tracking (Depart)</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p10" class="copy" onclick="copy('tp10','p10')">Copy</button></div>
-                <textarea id="tp10" readonly>select hseieapp1
-cycle -entry 54
-cycle -entry 55
-cycle -entry 80
-cycle -entry 425
-cycle -query
-select hseieapp2
-cycle -entry 54
-cycle -entry 55
-cycle -entry 80
-cycle -entry 425
-cycle -query
-select hseieapp5
-cycle -entry 54
-cycle -entry 55
-cycle -entry 80
-cycle -entry 425
-cycle -query
-select hseieapp6
-cycle -entry 54
-cycle -entry 55
-cycle -entry 80
-cycle -entry 425
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Frequency (PHADBFreq)</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p9" class="copy" onclick="copy('tp9','p9')">Copy</button></div>
-                <textarea id="tp9" readonly>select hseieapp1
-cycle -entry 362
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp2
-cycle -entry 362
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp5
-cycle -entry 362
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp6
-cycle -entry 362
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Labs build change</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p11" class="copy" onclick="copy('tp11','p11')">Copy</button></div>
-                <textarea id="tp11" readonly>select hseieapp1
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -query
-select hseieapp2
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -query
-select hseieapp5
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -query
-select hseieapp6
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Manufacturers</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p14" class="copy" onclick="copy('tp14','p14')">Copy</button></div>
-                <textarea id="tp14" readonly>select hseieapp1
-cycle -entry 80
-cycle -entry 455
-cycle -query
-select hseieapp2
-cycle -entry 80
-cycle -entry 455
-cycle -query
-select hseieapp5
-cycle -entry 80
-cycle -entry 455
-cycle -query
-select hseieapp6
-cycle -entry 80
-cycle -entry 455
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages (widgets)</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p19" class="copy" onclick="copy('tp19','p19')">Copy</button></div>
-                <textarea id="tp19" readonly>select hseieapp1
-cycle -entry 79
-cycle -entry 84
-cycle -entry 178
-cycle -entry 535
-cycle -entry 548
-cycle -query
-select hseieapp2
-cycle -entry 79
-cycle -entry 84
-cycle -entry 178
-cycle -entry 535
-cycle -entry 548
-cycle -query
-select hseieapp5
-cycle -entry 79
-cycle -entry 84
-cycle -entry 178
-cycle -entry 535
-cycle -entry 548
-cycle -query
-select hseieapp6
-cycle -entry 79
-cycle -entry 84
-cycle -entry 178
-cycle -entry 535
-cycle -entry 548
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages – Quick Orders</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p24" class="copy" onclick="copy('tp24','p24')">Copy</button></div>
-                <textarea id="tp24" readonly>select hseieapp1
-cycle -entry 106
-cycle -entry 535
-cycle -query
-select hseieapp2
-cycle -entry 106
-cycle -entry 535
-cycle -query
-select hseieapp5
-cycle -entry 106
-cycle -entry 535
-cycle -query
-select hseieapp6
-cycle -entry 106
-cycle -entry 535
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF edit (dcptools)</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p15" class="copy" onclick="copy('tp15','p15')">Copy</button></div>
-                <textarea id="tp15" readonly>select hseieapp1
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -query
-select hseieapp2
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -query
-select hseieapp5
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -query
-select hseieapp6
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF Value (Code Set) Filtering</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p18" class="copy" onclick="copy('tp18','p18')">Copy</button></div>
-                <textarea id="tp18" readonly>select hseieapp1
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -query
-select hseieapp2
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -query
-select hseieapp5
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -query
-select hseieapp6
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Route of Admin</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p12" class="copy" onclick="copy('tp12','p12')">Copy</button></div>
-                <textarea id="tp12" readonly>select hseieapp1
-cycle -entry 111
-cycle -entry 112
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp2
-cycle -entry 111
-cycle -entry 112
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp5
-cycle -entry 111
-cycle -entry 112
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp6
-cycle -entry 111
-cycle -entry 112
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Preferences</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p16" class="copy" onclick="copy('tp16','p16')">Copy</button></div>
-                <textarea id="tp16" readonly>select hseieapp1
-cycle -entry 25
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query
-select hseieapp2
-cycle -entry 25
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query
-select hseieapp5
-cycle -entry 25
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query
-select hseieapp6
-cycle -entry 25
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrefMaint</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p20" class="copy" onclick="copy('tp20','p20')">Copy</button></div>
-                <textarea id="tp20" readonly>select hseieapp1
-cycle -entry 50
-cycle -query
-select hseieapp2
-cycle -entry 50
-cycle -query
-select hseieapp5
-cycle -entry 50
-cycle -query
-select hseieapp6
-cycle -entry 50
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrivMaint</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p21" class="copy" onclick="copy('tp21','p21')">Copy</button></div>
-                <textarea id="tp21" readonly>select hseieapp1
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 509
-cycle -query
-select hseieapp2
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 509
-cycle -query
-select hseieapp5
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 509
-cycle -query
-select hseieapp6
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Related Results</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p13" class="copy" onclick="copy('tp13','p13')">Copy</button></div>
-                <textarea id="tp13" readonly>select hseieapp1
-cycle -entry 53
-cycle -entry 80
-cycle -query
-select hseieapp2
-cycle -entry 53
-cycle -entry 80
-cycle -query
-select hseieapp5
-cycle -entry 53
-cycle -entry 80
-cycle -query
-select hseieapp6
-cycle -entry 53
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>SN Anesthesia</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p29" class="copy" onclick="copy('tp29','p29')">Copy</button></div>
-                <textarea id="tp29" readonly>select hseieapp1
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp2
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp5
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query
-select hseieapp6
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Task / Order change</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p7" class="copy" onclick="copy('tp7','p7')">Copy</button></div>
-                <textarea id="tp7" readonly>select hseieapp1
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 120
-cycle -entry 200
-cycle -entry 351
-cycle -entry 362
-cycle -entry 395
-cycle -entry 506
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp2
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 120
-cycle -entry 200
-cycle -entry 351
-cycle -entry 362
-cycle -entry 395
-cycle -entry 506
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp5
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 120
-cycle -entry 200
-cycle -entry 351
-cycle -entry 362
-cycle -entry 395
-cycle -entry 506
-cycle -entry 625
-cycle -entry 626
-cycle -query
-select hseieapp6
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 120
-cycle -entry 200
-cycle -entry 351
-cycle -entry 362
-cycle -entry 395
-cycle -entry 506
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Word Processing Template</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p22" class="copy" onclick="copy('tp22','p22')">Copy</button></div>
-                <textarea id="tp22" readonly>select hseieapp1
-cycle -entry 55
-cycle -query
-select hseieapp2
-cycle -entry 55
-cycle -query
-select hseieapp5
-cycle -entry 55
-cycle -query
-select hseieapp6
-cycle -entry 55
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PowerForm edit</strong></summary>
-                <div class="server"><div class="head">P3046 <button id="p8" class="copy" onclick="copy('tp8','p8')">Copy</button></div>
-                <textarea id="tp8" readonly>select hseieapp1
-cycle -entry 80
-cycle -entry 102
-cycle -entry 106
-cycle -query
-select hseieapp2
-cycle -entry 80
-cycle -entry 102
-cycle -entry 106
-cycle -query
-select hseieapp5
-cycle -entry 80
-cycle -entry 102
-cycle -entry 106
-cycle -query
-select hseieapp6
-cycle -entry 80
-cycle -entry 102
-cycle -entry 106
-cycle -query</textarea></div>
-            </details>
-        </div>
-    </details>
-
-    <details class="domain-details">
-        <summary class="domain-summary">B3046 Domain</summary>
-        <h3 class="section-title">Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>EKM rule edit</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b2" class="copy" onclick="copy('tb2','b2')">Copy</button></div>
-                <textarea id="tb2" readonly>select hseieapp3
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -entry 105
-cycle -entry 150
-cycle -entry 151
-cycle -entry 152
-cycle -entry 175
-cycle -entry 176
-cycle -entry 363
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>New OC + Care Plans</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b6" class="copy" onclick="copy('tb6','b6')">Copy</button></div>
-                <textarea id="tb6" readonly>select hseieapp3
-cycle -entry 50
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 103
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -entry 112
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 120
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalogue edit</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b1" class="copy" onclick="copy('tb1','b1')">Copy</button></div>
-                <textarea id="tb1" readonly>select hseieapp3
-cycle -entry 80
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog / OS / Search</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b27" class="copy" onclick="copy('tb27','b27')">Copy</button></div>
-                <textarea id="tb27" readonly>select hseieapp3
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Catalog – Full</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b28" class="copy" onclick="copy('tb28','b28')">Copy</button></div>
-                <textarea id="tb28" readonly>select hseieapp3
-cycle -entry 101
-cycle -entry 104
-cycle -entry 111
-cycle -entry 112
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>Order Sentence change</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b3" class="copy" onclick="copy('tb3','b3')">Copy</button></div>
-                <textarea id="tb3" readonly>select hseieapp3
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details class="highlighted-scenario">
-                <summary>Cycle servers after <strong>PowerPlan edit</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b5" class="copy" onclick="copy('tb5','b5')">Copy</button></div>
-                <textarea id="tb5" readonly>select hseieapp3
-cycle -entry 80
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 109
-cycle -entry 115
-cycle -entry 116
-cycle -entry 117
-cycle -entry 119
-cycle -entry 200
-cycle -entry 362
-cycle -entry 378
-cycle -entry 392
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-        </div>
-
-        <h3 class="section-title">Less Commonly Used</h3>
-        <div class="scenarios-grid">
-            <details>
-                <summary>Cycle servers after <strong>CoreCodeBuilder</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b26" class="copy" onclick="copy('tb26','b26')">Copy</button></div>
-                <textarea id="tb26" readonly>select hseieapp3
-cycle -entry 88
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Discern Label</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b23" class="copy" onclick="copy('tb23','b23')">Copy</button></div>
-                <textarea id="tb23" readonly>select hseieapp3
-cycle -entry 54
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Dose-Range checking</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b4" class="copy" onclick="copy('tb4','b4')">Copy</button></div>
-                <textarea id="tb4" readonly>select hseieapp3
-cycle -entry 175
-cycle -entry 386
-cycle -entry 362
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>DTAs / ACE</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b25" class="copy" onclick="copy('tb25','b25')">Copy</button></div>
-                <textarea id="tb25" readonly>select hseieapp3
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>ESH EventCodes / EventSets & Documents</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b17" class="copy" onclick="copy('tb17','b17')">Copy</button></div>
-                <textarea id="tb17" readonly>select hseieapp3
-cycle -entry 80
-cycle -entry 200
-cycle -entry 205
-cycle -entry 209
-cycle -entry 250
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>FirstNet Tracking (Depart)</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b10" class="copy" onclick="copy('tb10','b10')">Copy</button></div>
-                <textarea id="tb10" readonly>select hseieapp3
-cycle -entry 54
-cycle -entry 55
-cycle -entry 80
-cycle -entry 425
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Frequency (PHADBFreq)</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b9" class="copy" onclick="copy('tb9','b9')">Copy</button></div>
-                <textarea id="tb9" readonly>select hseieapp3
-cycle -entry 362
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Labs build change</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b11" class="copy" onclick="copy('tb11','b11')">Copy</button></div>
-                <textarea id="tb11" readonly>select hseieapp3
-cycle -entry 100
-cycle -entry 101
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Manufacturers</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b14" class="copy" onclick="copy('tb14','b14')">Copy</button></div>
-                <textarea id="tb14" readonly>select hseieapp3
-cycle -entry 80
-cycle -entry 455
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages (widgets)</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b19" class="copy" onclick="copy('tb19','b19')">Copy</button></div>
-                <textarea id="tb19" readonly>select hseieapp3
-cycle -entry 79
-cycle -entry 84
-cycle -entry 178
-cycle -entry 535
-cycle -entry 548
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>MPages – Quick Orders</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b24" class="copy" onclick="copy('tb24','b24')">Copy</button></div>
-                <textarea id="tb24" readonly>select hseieapp3
-cycle -entry 106
-cycle -entry 535
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF edit (dcptools)</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b15" class="copy" onclick="copy('tb15','b15')">Copy</button></div>
-                <textarea id="tb15" readonly>select hseieapp3
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 105
-cycle -entry 106
-cycle -entry 107
-cycle -entry 108
-cycle -entry 109
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>OEF Value (Code Set) Filtering</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b18" class="copy" onclick="copy('tb18','b18')">Copy</button></div>
-                <textarea id="tb18" readonly>select hseieapp3
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Route of Admin</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b12" class="copy" onclick="copy('tb12','b12')">Copy</button></div>
-                <textarea id="tb12" readonly>select hseieapp3
-cycle -entry 111
-cycle -entry 112
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PhaDBTools – Preferences</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b16" class="copy" onclick="copy('tb16','b16')">Copy</button></div>
-                <textarea id="tb16" readonly>select hseieapp3
-cycle -entry 25
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrefMaint</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b20" class="copy" onclick="copy('tb20','b20')">Copy</button></div>
-                <textarea id="tb20" readonly>select hseieapp3
-cycle -entry 50
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PrivMaint</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b21" class="copy" onclick="copy('tb21','b21')">Copy</button></div>
-                <textarea id="tb21" readonly>select hseieapp3
-cycle -entry 351
-cycle -entry 352
-cycle -entry 357
-cycle -entry 358
-cycle -entry 359
-cycle -entry 509
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Related Results</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b13" class="copy" onclick="copy('tb13','b13')">Copy</button></div>
-                <textarea id="tb13" readonly>select hseieapp3
-cycle -entry 53
-cycle -entry 80
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>SN Anesthesia</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b29" class="copy" onclick="copy('tb29','b29')">Copy</button></div>
-                <textarea id="tb29" readonly>select hseieapp3
-cycle -entry 101
-cycle -entry 104
-cycle -entry 362
-cycle -entry 506
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Task / Order change</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b7" class="copy" onclick="copy('tb7','b7')">Copy</button></div>
-                <textarea id="tb7" readonly>select hseieapp3
-cycle -entry 100
-cycle -entry 101
-cycle -entry 102
-cycle -entry 104
-cycle -entry 120
-cycle -entry 200
-cycle -entry 351
-cycle -entry 362
-cycle -entry 395
-cycle -entry 506
-cycle -entry 625
-cycle -entry 626
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>Word Processing Template</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b22" class="copy" onclick="copy('tb22','b22')">Copy</button></div>
-                <textarea id="tb22" readonly>select hseieapp3
-cycle -entry 55
-cycle -entry 625
-cycle -entry 626
-cycle -entry 640
-cycle -query</textarea></div>
-            </details>
-
-            <details>
-                <summary>Cycle servers after <strong>PowerForm edit</strong></summary>
-                <div class="server"><div class="head">B3046 <button id="b8" class="copy" onclick="copy('tb8','b8')">Copy</button></div>
-                <textarea id="tb8" readonly>select hseieapp3
-cycle -entry 80
-cycle -entry 102
-cycle -entry 106
-cycle -query</textarea></div>
-            </details>
-        </div>
-    </details>
-
-
-
+    </section>
 </main>
+
+<!-- Explanation Modal -->
+<div id="explanationModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+        <h3 id="modalTitle" class="modal-title"></h3>
+        <div id="loadingSpinner" class="loading-spinner"></div>
+        <div id="modalBody" class="modal-body"></div>
+    </div>
+</div>
+
 <footer>One-click Cerner cycling helper – generated for effortless ops.</footer>
 </body>
 </html>
