@@ -90,9 +90,7 @@
                 cell.classList.add('rest-day');
                 cell.innerHTML = `${dayOfMonth} ${month}<br>Rest`;
             } else {
-                const phase = Math.ceil(week / 2);
-                const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][currentDate.getDay()];
-                const link = `exercise-plan.html#phase${phase}`;
+
                 cell.innerHTML = `<a href="${link}">${dayOfMonth} ${month}<br>${dayOfWeek}</a>`;
             }
 
