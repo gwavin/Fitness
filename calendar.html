@@ -86,14 +86,15 @@
             const dayOfMonth = currentDate.getDate();
             const month = currentDate.toLocaleString('default', { month: 'short' });
 
-            if (currentDate.getDay() === 0) { // Sunday
-                cell.classList.add('rest-day');
-                cell.innerHTML = `${dayOfMonth} ${month}<br>Rest`;
-            } else {
+            const dayOfWeekIndex = currentDate.getDay();
+            if (dayOfWeekIndex === 1 || dayOfWeekIndex === 3 || dayOfWeekIndex === 5) {
                 const dayOfWeek = currentDate.toLocaleString('default', { weekday: 'short' });
                 const isoDate = currentDate.toISOString().split('T')[0];
                 const link = `workouts/${isoDate}.html`;
                 cell.innerHTML = `<a href="${link}">${dayOfMonth} ${month}<br>${dayOfWeek}</a>`;
+            } else {
+                cell.classList.add('rest-day');
+                cell.innerHTML = `${dayOfMonth} ${month}<br>Rest`;
             }
 
             row.appendChild(cell);
