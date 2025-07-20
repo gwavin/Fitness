@@ -90,9 +90,7 @@
                 cell.classList.add('rest-day');
                 cell.innerHTML = `${dayOfMonth} ${month}<br>Rest`;
             } else {
-                const dateString = currentDate.toISOString().slice(0, 10);
-                const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][currentDate.getDay()];
-                const link = `workouts/${dateString}.html`;
+
                 cell.innerHTML = `<a href="${link}">${dayOfMonth} ${month}<br>${dayOfWeek}</a>`;
             }
 
