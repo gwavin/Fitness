@@ -29,4 +29,4 @@ Other files include `sample-data.json` (used by the demo page) and an example sp
 3. Open `http://localhost:8000/index.html` in your browser.
 
 ## Contributing
-Issue reports and pull requests should be made on [GitHub](https://github.com/gwavin/Fitness). Many pages include an "Edit on GitHub" link near the bottom, or you can open the file in the repository manually to propose changes.
+Issue reports and pull requests should be made on [GitHub](https://github.com/gwavin/Fitness). Each page links to its edit form (for example in `index.html` lines 209‑210).
