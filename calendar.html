@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workout Calendar</title>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+        color: #343a40;
+    }
+    .container {
+        max-width: 920px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    h1 {
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid #dee2e6;
+        padding: 12px;
+        text-align: center;
+        vertical-align: top;
+        width: 14.28%;
+        height: 100px;
+    }
+    th {
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+    a {
+        text-decoration: none;
+        color: #0056b3;
+        font-weight: 500;
+    }
+    .today {
+        background-color: #fffbe6;
+    }
+    .rest-day {
+        background-color: #e9ecef;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Workout Calendar</h1>
+    <p><a href="exercise-plan.html">← Back to Exercise Plan</a></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+            </tr>
+        </thead>
+        <tbody id="calendar-body">
+        </tbody>
+    </table>
+</div>
+<script>
+    const startDate = new Date('2025-07-21');
+    const calendarBody = document.getElementById('calendar-body');
+    let currentDate = new Date(startDate);
+
+    for (let week = 1; week <= 8; week++) {
+        const row = document.createElement('tr');
+        for (let day = 1; day <= 7; day++) {
+            const cell = document.createElement('td');
+            const dayOfMonth = currentDate.getDate();
+            const month = currentDate.toLocaleString('default', { month: 'short' });
+
+            if (currentDate.getDay() === 0) { // Sunday
+                cell.classList.add('rest-day');
+                cell.innerHTML = `${dayOfMonth} ${month}<br>Rest`;
+            } else {
+                const dateString = currentDate.toISOString().slice(0, 10);
+                const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][currentDate.getDay()];
+                const link = `workouts/${dateString}.html`;
+                cell.innerHTML = `<a href="${link}">${dayOfMonth} ${month}<br>${dayOfWeek}</a>`;
+            }
+
+            row.appendChild(cell);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        calendarBody.appendChild(row);
+    }
+</script>
+</body>
+</html>
