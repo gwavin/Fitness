@@ -52,18 +52,12 @@
     .rest-day {
         background-color: #e9ecef;
     }
-    .barefoot-schedule {
-        display: block;
-        margin-top: 4px;
-        font-size: 0.8em;
-        color: #007bff;
-    }
 </style>
 </head>
 <body>
 <div class="container">
     <h1>Workout Calendar</h1>
-    <p><a href="exercise-plan.html">← Back to Exercise Plan</a></p>
+    <p><a href="exercise-plan.html">← Back to Exercise Plan</a> | <a href="barefoot-days.html">Barefoot details</a></p>
     <table>
         <thead>
             <tr>
@@ -85,20 +79,9 @@
     const calendarBody = document.getElementById('calendar-body');
     let currentDate = new Date(startDate);
 
-    const barefootProgression = {
-        1: 'Barefoot: daily indoors; optional 5-10 min walk.',
-        2: 'Barefoot: 2-3 x 10-15 min walks.',
-        3: 'Barefoot: 2-3 x 15-20 min walks.',
-        4: 'Barefoot: 20 min walk + 2-3 short runs.',
-        5: 'Barefoot: two run/walk sessions & extra walk.',
-        6: 'Barefoot: 10-12 min soft run; 5-8 min mixed.',
-        7: 'Barefoot: 15-20 min soft run; 8-10 min with hard surface.',
-        8: 'Barefoot: 2 mi soft & 1 mi hard run.'
-    };
-
-    for (let week = 1; week <= 8; week++) {
-        const row = document.createElement('tr');
-        for (let day = 1; day <= 7; day++) {
+        1: 'Barefoot: 1-2 × 1-min jogs after 5 min walk.',
+        2: 'Barefoot: 3 × 1-min jogs; extra walk.',
+        3: 'Barefoot: 3 × 2-min jogs or 400m.',
             const cell = document.createElement('td');
             const dayOfMonth = currentDate.getDate();
             const month = currentDate.toLocaleString('default', { month: 'short' });
@@ -111,8 +94,7 @@
                 cell.innerHTML = `<a href="${link}">${dayOfMonth} ${month}<br>${dayOfWeek}</a>`;
             } else {
                 cell.classList.add('rest-day');
-                const bf = barefootProgression[week];
-                cell.innerHTML = `${dayOfMonth} ${month}<br>Rest` + (bf ? `<span class="barefoot-schedule">${bf}</span>` : '');
+                cell.innerHTML = `${dayOfMonth} ${month}<br>Rest`;
             }
 
             row.appendChild(cell);
