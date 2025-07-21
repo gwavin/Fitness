@@ -52,6 +52,12 @@
     .rest-day {
         background-color: #e9ecef;
     }
+    .barefoot-schedule {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.8em;
+        color: #007bff;
+    }
 </style>
 </head>
 <body>
@@ -79,6 +85,17 @@
     const calendarBody = document.getElementById('calendar-body');
     let currentDate = new Date(startDate);
 
+    const barefootProgression = {
+        1: 'Barefoot: daily indoors; optional 5-10 min walk.',
+        2: 'Barefoot: 2-3 x 10-15 min walks.',
+        3: 'Barefoot: 2-3 x 15-20 min walks.',
+        4: 'Barefoot: 20 min walk + 2-3 short runs.',
+        5: 'Barefoot: two run/walk sessions & extra walk.',
+        6: 'Barefoot: 10-12 min soft run; 5-8 min mixed.',
+        7: 'Barefoot: 15-20 min soft run; 8-10 min with hard surface.',
+        8: 'Barefoot: 2 mi soft & 1 mi hard run.'
+    };
+
     for (let week = 1; week <= 8; week++) {
         const row = document.createElement('tr');
         for (let day = 1; day <= 7; day++) {
@@ -94,7 +111,8 @@
                 cell.innerHTML = `<a href="${link}">${dayOfMonth} ${month}<br>${dayOfWeek}</a>`;
             } else {
                 cell.classList.add('rest-day');
-                cell.innerHTML = `${dayOfMonth} ${month}<br>Rest`;
+                const bf = barefootProgression[week];
+                cell.innerHTML = `${dayOfMonth} ${month}<br>Rest` + (bf ? `<span class="barefoot-schedule">${bf}</span>` : '');
             }
 
             row.appendChild(cell);
