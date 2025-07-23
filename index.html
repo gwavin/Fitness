@@ -1,57 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fitness Hub</title>
-<style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        line-height: 1.6;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        color: #343a40;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-    .container {
-        max-width: 600px;
-        text-align: center;
-        padding: 40px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    }
-    h1 {
-        color: #2c3e50;
-    }
-    .links a {
-        display: inline-block;
-        margin: 10px;
-        padding: 15px 25px;
-        background-color: #007bff;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: 500;
-        transition: background-color 0.3s;
-    }
-    .links a:hover {
-        background-color: #0056b3;
-    }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8‑Week Exercise Plan</title>
+  <style>
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #343a40;
+      margin: 0;
+      line-height: 1.6;
+    }}
+    .container {{
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }}
+    h1 {{
+      color: #2c3e50;
+      text-align: center;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+    }}
+    th, td {{
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #dee2e6;
+    }}
+    th {{
+      background-color: #e9ecef;
+      color: #2c3e50;
+    }}
+    a {{
+      color: #007bff;
+      text-decoration: none;
+    }}
+    a:hover {{
+      text-decoration: underline;
+    }}
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>Fitness Hub</h1>
-    <p>Welcome to your personal fitness dashboard.</p>
-    <div class="links">
-        <a href="exercise-plan.html">View 8-Week Exercise Plan</a>
-        <a href="calendar.html">View Workout Calendar</a>
-    </div>
-</div>
+  <div class="container">
+    <h1>8‑Week Exercise Plan</h1>
+    <p>Select a session or rest day below to view details. Each week consists of three workout sessions and one rest day with barefoot training.</p>
+    <table>
+      <thead>
+        <tr><th>Week</th><th>Session 1</th><th>Session 2</th><th>Session 3</th><th>Rest Day</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Week 1</td>
+          <td><a href="week1_session1.html">Lower Body Foundation</a></td>
+          <td><a href="week1_session2.html">Upper Body & Shoulder Rehab</a></td>
+          <td><a href="week1_session3.html">Kettlebell & Core Circuit</a></td>
+          <td><a href="week1_rest.html">Rest & Barefoot</a></td>
+        </tr>
+        <tr>
+          <td>Week 2</td>
+          <td><a href="week2_session1.html">Lower Body Progression</a></td>
+          <td><a href="week2_session2.html">Push & Pull</a></td>
+          <td><a href="week2_session3.html">Full‑Body Circuit</a></td>
+          <td><a href="week2_rest.html">Rest & Barefoot</a></td>
+        </tr>
+        <tr>
+          <td>Week 3</td>
+          <td><a href="week3_session1.html">Posterior Chain & Single‑Leg Strength</a></td>
+          <td><a href="week3_session2.html">Upper Body Strength & Rehab</a></td>
+          <td><a href="week3_session3.html">Kettlebell Flow & Conditioning</a></td>
+          <td><a href="week3_rest.html">Rest & Barefoot</a></td>
+        </tr>
+        <tr>
+          <td>Week 4</td>
+          <td><a href="week4_session1.html">Lower Body Strength</a></td>
+          <td><a href="week4_session2.html">Upper Body Balance</a></td>
+          <td><a href="week4_session3.html">Kettlebell Complex & Core</a></td>
+          <td><a href="week4_rest.html">Rest & Barefoot</a></td>
+        </tr>
+        <tr>
+          <td>Week 5</td>
+          <td><a href="week5_session1.html">Deadlift & Squat Focus</a></td>
+          <td><a href="week5_session2.html">Push–Pull & Shoulder Care</a></td>
+          <td><a href="week5_session3.html">Conditioning & Core Circuit</a></td>
+          <td><a href="week5_rest.html">Rest & Barefoot</a></td>
+        </tr>
+        <tr>
+          <td>Week 6</td>
+          <td><a href="week6_session1.html">Compound Strength</a></td>
+          <td><a href="week6_session2.html">Upper Body & Overhead Work</a></td>
+          <td><a href="week6_session3.html">Kettlebell & Barbell Complex</a></td>
+          <td><a href="week6_rest.html">Rest & Barefoot</a></td>
+        </tr>
+        <tr>
+          <td>Week 7</td>
+          <td><a href="week7_session1.html">Advanced Leg Strength</a></td>
+          <td><a href="week7_session2.html">Upper Body Strength Challenge</a></td>
+          <td><a href="week7_session3.html">Mobility & Conditioning</a></td>
+          <td><a href="week7_rest.html">Rest & Barefoot</a></td>
+        </tr>
+        <tr>
+          <td>Week 8</td>
+          <td><a href="week8_session1.html">Final Leg Progression</a></td>
+          <td><a href="week8_session2.html">Upper Body Finale</a></td>
+          <td><a href="week8_session3.html">Challenge Circuit</a></td>
+          <td><a href="week8_rest.html">Rest & Barefoot</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Warm‑up thoroughly and progress gradually. Consult your doctor or physiotherapist if you experience pain【963587572219979†L210-L218】.</p>
+    <p>Return to <a href="index.html">Home</a></p>
+  </div>
 </body>
 </html>
