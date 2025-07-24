@@ -4,39 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Barefoot Running 8-Week Schedule</title>
+  <link rel="stylesheet" href="css/style/style.css">
   <style>
-    /* Base Styles */
-    body {
-      font-family: sans-serif;
-      background: #fff;
-      color: #222;
-      margin: 0;
-      padding: 20px;
-      line-height: 1.6;
-    }
-    h1 {
-      font-size: 1.8rem;
-      text-align: center;
-      margin-bottom: 1em;
-      color: #111;
-    }
-    h2, h3 {
-      color: #111;
-      margin-top: 1.2em;
-      margin-bottom: 0.5em;
-    }
-    p, li {
-      font-size: 1rem;
-    }
-    ul {
-      padding-left: 20px;
-    }
-
     /* Tab Navigation */
     .tab {
       display: flex;
       flex-wrap: wrap;
-      border-bottom: 2px solid #ccc;
+      border-bottom: 2px solid #ddd;
       background-color: #f9f9f9;
       margin-bottom: 1em;
     }
@@ -49,7 +23,8 @@
       padding: 12px 16px;
       font-size: 1rem;
       transition: background-color 0.3s;
-      border-right: 1px solid #ccc; /* Add a subtle separator */
+      border-right: 1px solid #ddd; /* Add a subtle separator */
+      color: #169B62;
     }
     .tab button:last-child {
       border-right: none; /* No separator for the last tab */
@@ -59,20 +34,21 @@
     }
     .tab button.active {
       background-color: #ffffff;
-      border-left: 1px solid #ccc;
-      border-right: 1px solid #ccc;
-      border-top: 2px solid #007bff; /* Active tab indicator */
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      border-top: 2px solid #FF883E; /* Active tab indicator */
       border-bottom: none;
       font-weight: bold;
       position: relative;
       top: -1px; /* Make it slightly pop out */
+      color: #FF883E;
     }
 
     /* Tab Content */
     .tabcontent {
       display: none;
       padding: 16px;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       border-top: none;
       background-color: #ffffff; /* Ensure content area is white */
     }
@@ -81,16 +57,13 @@
     @media (max-width: 768px) {
       .tab button {
         flex-basis: 50%; /* Two tabs per row on smaller screens */
-        border-bottom: 1px solid #ccc; /* Add bottom border for wrapped tabs */
+        border-bottom: 1px solid #ddd; /* Add bottom border for wrapped tabs */
       }
       .tab button:nth-child(odd) {
-        border-right: 1px solid #ccc;
+        border-right: 1px solid #ddd;
       }
       .tab button:nth-child(even) {
         border-right: none;
-      }
-      h1 {
-        font-size: 1.5rem;
       }
     }
     @media (max-width: 480px) {
@@ -98,24 +71,12 @@
         flex-basis: 100%; /* One tab per row on very small screens */
         border-right: none; /* No right border when full width */
       }
-      body {
-        padding: 10px;
-      }
-      h1 {
-        font-size: 1.3rem;
-      }
-      p, li {
-        font-size: 0.95rem;
-      }
-      .tab button {
-        padding: 14px 8px;
-        font-size: 0.9rem;
-      }
     }
   </style>
 </head>
 <body>
 
+<div class="container">
   <h1>8-Week Barefoot Running Schedule</h1>
 
   <div class="tab" role="tablist">
@@ -301,6 +262,10 @@
     </ul>
     <p>Remember: Discomfort during adaptation is one thing; pain is another. When in doubt, err on the side of caution. Rest, recover, and adjust your plan.</p>
   </div>
+    <div class="nav-links">
+        <a href="fitness-plan-index.html">Back to Plan</a>
+    </div>
+</div>
 
   <script>
     function openTab(evt, tabName) {

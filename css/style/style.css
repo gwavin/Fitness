@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #6dd5ed, #2193b0);
+    background-color: #ffffff;
     color: #333;
     margin: 0;
     line-height: 1.8;
@@ -16,35 +16,36 @@ body {
     width: 90%;
     max-width: 1000px;
     margin: 40px auto;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.9);
     padding: 40px 60px;
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
 }
 
 h1, h2, h3 {
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    color: #169B62; /* Green */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 h1 {
     text-align: center;
     font-size: 3em;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 2px solid #FF883E; /* Orange */
     padding-bottom: 15px;
     margin-bottom: 40px;
 }
 
 h2 {
     font-size: 2.2em;
+    color: #169B62; /* Green */
 }
 
 h3 {
     font-size: 1.6em;
-    border-left: 4px solid #fff;
+    border-left: 4px solid #FF883E; /* Orange */
     padding-left: 15px;
+    color: #169B62; /* Green */
 }
 
 ul {
@@ -54,7 +55,7 @@ ul {
 
 li {
     margin-bottom: 12px;
-    color: #eee;
+    color: #555;
 }
 
 .nav-links {
@@ -70,11 +71,11 @@ li {
     padding: 10px 20px;
     border-radius: 10px;
     transition: background-color 0.3s, transform 0.3s;
-    background: rgba(255, 255, 255, 0.2);
+    background: #169B62; /* Green */
 }
 
 .nav-links a:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: #FF883E; /* Orange */
     transform: translateY(-3px);
     text-decoration: none;
 }
@@ -83,37 +84,39 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 30px;
-    background: rgba(255, 255, 255, 0.1);
+    background: #fff;
     border-radius: 10px;
     overflow: hidden;
+    border: 1px solid #ddd;
 }
 
 th, td {
     padding: 20px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
+    border-bottom: 1px solid #ddd;
+    color: #333;
 }
 
 th {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #f7f7f7;
     font-weight: 600;
+    color: #169B62; /* Green */
 }
 
-tr {
-    transition: background-color 0.3s;
+tr:nth-child(even) {
+    background-color: #fdfdfd;
 }
 
 tr:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #f1f1f1;
 }
 
 a {
-    color: #ffc107;
+    color: #169B62; /* Green */
     transition: color 0.3s;
 }
 
 a:hover {
-    color: #fff;
+    color: #FF883E; /* Orange */
     text-decoration: none;
 }
