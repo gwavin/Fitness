@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    margin: 0;
+    line-height: 1.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px 60px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+h1, h2, h3 {
+    color: #169B62; /* Green */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+    border-bottom: 2px solid #FF883E; /* Orange */
+    padding-bottom: 15px;
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-size: 2.2em;
+    color: #169B62; /* Green */
+}
+
+h3 {
+    font-size: 1.6em;
+    border-left: 4px solid #FF883E; /* Orange */
+    padding-left: 15px;
+    color: #169B62; /* Green */
+}
+
+ul {
+    padding-left: 30px;
+    list-style-type: '➤ ';
+}
+
+li {
+    margin-bottom: 12px;
+    color: #555;
+}
+
+.nav-links {
+    margin-top: 40px;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s, transform 0.3s;
+    background: #169B62; /* Green */
+}
+
+.nav-links a:hover {
+    background-color: #FF883E; /* Orange */
+    transform: translateY(-3px);
+    text-decoration: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 20px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+th {
+    background-color: #f7f7f7;
+    font-weight: 600;
+    color: #169B62; /* Green */
+}
+
+tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+a {
+    color: #169B62; /* Green */
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #FF883E; /* Orange */
+    text-decoration: none;
+}
