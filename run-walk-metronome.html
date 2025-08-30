@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Run/Walk Cadence Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
+      text-align: center;
+      min-width: 280px;
+    }
+    h1 {
+        margin-top: 0;
+    }
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    input {
+      width: 100px;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      text-align: right;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #333;
+    }
+    .buttons {
+      margin-top: 1.5rem;
+    }
+    button {
+      margin: 0 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #fff;
+      color: #333;
+      transition: transform 0.1s ease;
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .status-display {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 1.5rem;
+    }
+    .status-item {
+        flex-basis: 50%;
+    }
+    .status-item > div:first-child {
+        font-size: 1.2rem;
+    }
+    .status-item > div:last-child {
+        font-size: 2rem;
+        font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Run/Walk Cadence Timer</h1>
+    <label>Run Seconds <input type="number" id="runSeconds" value="120" min="1" /></label>
+    <label>Walk Seconds <input type="number" id="walkSeconds" value="60" min="1" /></label>
+    <label>Cadence (BPM) <input type="number" id="bpm" value="170" min="30" /></label>
+    <label>Goal Laps <input type="number" id="goalLaps" value="3" min="1" /></label>
+    <div class="buttons">
+      <button id="startBtn">Start</button>
+      <button id="stopBtn" disabled>Stop</button>
+    </div>
+    <div class="status-display">
+        <div class="status-item">
+            <div id="phase">Stopped</div>
+            <div id="timer">0</div>
+        </div>
+        <div class="status-item">
+            <div>Lap</div>
+            <div id="laps">0</div>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    // State variables
+    let phase = 'stopped';
+    let remaining = 0;
+    let lapCount = 0;
+    
+    // User settings
+    let runSec = 120;
+    let walkSec = 60;
+    let bpm = 170;
+    let goalLaps = 3;
+
+    // Interval and Audio contexts
+    let countdownIntervalId = null;
+    let beepIntervalId = null;
+    let audioCtx = null;
+    let beatCount = 0;
+
+    // DOM Elements
+    const runSecondsEl = document.getElementById('runSeconds');
+    const walkSecondsEl = document.getElementById('walkSeconds');
+    const bpmEl = document.getElementById('bpm');
+    const goalLapsEl = document.getElementById('goalLaps');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const phaseEl = document.getElementById('phase');
+    const timerEl = document.getElementById('timer');
+    const lapsEl = document.getElementById('laps');
+
+    function createAudioContext() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+    
+    function beep() {
+      createAudioContext();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+      
+      osc.connect(gain);
+      if (panner) {
+        gain.connect(panner);
+        panner.connect(audioCtx.destination);
+      } else {
+        gain.connect(audioCtx.destination);
+      }
+
+      const isLeft = beatCount % 2 === 0;
+      osc.frequency.value = isLeft ? 880 : 800;
+      if (panner) panner.pan.value = isLeft ? -0.5 : 0.5;
+      beatCount++;
+
+      osc.start(audioCtx.currentTime);
+      gain.gain.setValueAtTime(1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+      osc.stop(audioCtx.currentTime + 0.1);
+    }
+
+    // Longer "concluding" beep for completing the goal
+    function concludingBeep() {
+      createAudioContext();
+      const freqs = [523.25, 659.25, 783.99]; // C5, E5, G5 arpeggio
+      const startTime = audioCtx.currentTime;
+      const noteDuration = 0.30; // Doubled duration for a more final sound
+
+      freqs.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const noteStartTime = startTime + i * 0.1;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.5, noteStartTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, noteStartTime + noteDuration);
+        osc.start(noteStartTime);
+        osc.stop(noteStartTime + noteDuration);
+      });
+    }
+
+    function updateDisplay() {
+      phaseEl.textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
+      timerEl.textContent = remaining;
+      lapsEl.textContent = lapCount;
+    }
+
+    function startPhase(newPhase) {
+      phase = newPhase;
+      remaining = phase === 'running' ? runSec : walkSec;
+      updateDisplay();
+
+      if (phase === 'running') {
+        beatCount = 0;
+        beepIntervalId = setInterval(beep, 60000 / bpm);
+      }
+
+      countdownIntervalId = setInterval(() => {
+        remaining--;
+        updateDisplay();
+        if (remaining <= 0) {
+          clearInterval(countdownIntervalId);
+          if (phase === 'running') {
+            clearInterval(beepIntervalId);
+            startPhase('walking');
+          } else {
+            // A lap is complete after the walk phase finishes
+            lapCount++;
+            if (lapCount >= goalLaps) {
+              // Goal reached!
+              phase = 'Completed!';
+              updateDisplay(); // Show final completed state
+              concludingBeep();
+              stopTimer(false); // Stop timers but keep final count
+            } else {
+              startPhase('running');
+            }
+          }
+        }
+      }, 1000);
+    }
+
+    function stopTimer(isManualStop = true) {
+        clearInterval(countdownIntervalId);
+        clearInterval(beepIntervalId);
+        
+        if (isManualStop) {
+          phase = 'Stopped';
+          lapCount = 0;
+        }
+        
+        remaining = 0;
+        updateDisplay();
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    }
+
+    startBtn.addEventListener('click', () => {
+      createAudioContext();
+      runSec = parseInt(runSecondsEl.value, 10);
+      walkSec = parseInt(walkSecondsEl.value, 10);
+      bpm = parseInt(bpmEl.value, 10);
+      goalLaps = parseInt(goalLapsEl.value, 10);
+      
+      lapCount = 0;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      startPhase('running');
+    });
+
+    stopBtn.addEventListener('click', () => stopTimer(true));
+    
+    updateDisplay();
+  </script>
+</body>
+</html>
+

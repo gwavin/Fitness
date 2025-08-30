@@ -6,10 +6,6 @@ body {
     color: #333;
     margin: 0;
     line-height: 1.8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
 }
 
 .container {
@@ -21,6 +17,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
+    text-align: left;
 }
 
 h1, h2, h3 {
