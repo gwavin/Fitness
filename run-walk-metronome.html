@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Run/Walk Cadence Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
+      text-align: center;
+      min-width: 260px;
+    }
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    input {
+      width: 100px;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      text-align: right;
+    }
+    .buttons {
+      margin-top: 1.5rem;
+    }
+    button {
+      margin: 0 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #fff;
+      color: #333;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #phase {
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    #timer {
+      font-size: 2rem;
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Run/Walk Cadence Timer</h1>
+    <label>Run Seconds <input type="number" id="runSeconds" value="120" min="1" /></label>
+    <label>Walk Seconds <input type="number" id="walkSeconds" value="60" min="1" /></label>
+    <label>Cadence (BPM) <input type="number" id="bpm" value="170" min="30" /></label>
+    <div class="buttons">
+      <button id="startBtn">Start</button>
+      <button id="stopBtn" disabled>Stop</button>
+    </div>
+    <div id="phase">Stopped</div>
+    <div id="timer">0</div>
+  </div>
+
+  <script>
+    let phase = 'stopped';
+    let remaining = 0;
+    let runSec = 0;
+    let walkSec = 0;
+    let bpm = 170;
+    let intervalId = null;
+    let beepIntervalId = null;
+    let audioCtx = null;
+    let beatCount = 0;
+
+    function beep() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+      osc.connect(gain);
+      if (panner) {
+        gain.connect(panner);
+        panner.connect(audioCtx.destination);
+      } else {
+        gain.connect(audioCtx.destination);
+      }
+
+      const isLeft = beatCount % 2 === 0;
+      osc.frequency.value = isLeft ? 880 : 800;
+      if (panner) {
+        panner.pan.value = isLeft ? -0.5 : 0.5;
+      }
+      beatCount++;
+
+      osc.start();
+      gain.gain.setValueAtTime(1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+      osc.stop(audioCtx.currentTime + 0.1);
+    }
+
+    function updateDisplay() {
+      document.getElementById('phase').textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
+      document.getElementById('timer').textContent = remaining;
+    }
+
+    function startPhase(newPhase) {
+      phase = newPhase;
+      remaining = phase === 'running' ? runSec : walkSec;
+      updateDisplay();
+      if (phase === 'running') {
+        beatCount = 0;
+        beepIntervalId = setInterval(beep, 60000 / bpm);
+      }
+      intervalId = setInterval(() => {
+        remaining--;
+        updateDisplay();
+        if (remaining <= 0) {
+          clearInterval(intervalId);
+          if (phase === 'running') {
+            clearInterval(beepIntervalId);
+            startPhase('walking');
+          } else {
+            startPhase('running');
+          }
+        }
+      }, 1000);
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      runSec = parseInt(document.getElementById('runSeconds').value, 10);
+      walkSec = parseInt(document.getElementById('walkSeconds').value, 10);
+      bpm = parseInt(document.getElementById('bpm').value, 10);
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('stopBtn').disabled = false;
+      startPhase('running');
+    });
+
+    document.getElementById('stopBtn').addEventListener('click', () => {
+      clearInterval(intervalId);
+      clearInterval(beepIntervalId);
+      phase = 'stopped';
+      remaining = 0;
+      beatCount = 0;
+      updateDisplay();
+      document.getElementById('startBtn').disabled = false;
+      document.getElementById('stopBtn').disabled = true;
+    });
+  </script>
+</body>
+</html>
