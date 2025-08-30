@@ -3,11 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Run/Walk Cadence Timer</title>
+  <title>Awesome Run/Walk Cadence Timer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --run-color: #ff6b6b;
+      --walk-color: #4ecdc4;
+      --bg-color-1: #1a1a3d;
+      --bg-color-2: #2a2a72;
+      --accent-color: #ffd700;
+      --text-color: #ffffff;
+      --shadow-color: rgba(0, 0, 0, 0.4);
+    }
     body {
       margin: 0;
       height: 100vh;
@@ -15,252 +24,541 @@
       align-items: center;
       justify-content: center;
       font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
+      background: linear-gradient(135deg, var(--bg-color-1) 0%, var(--bg-color-2) 100%);
+      color: var(--text-color);
+      overflow: hidden;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: pulse 10s infinite ease-in-out;
+      z-index: -1;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
     }
     .container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.15);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow-color);
+      backdrop-filter: blur(12px);
       text-align: center;
-      min-width: 280px;
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+      z-index: 1;
     }
     h1 {
-        margin-top: 0;
+      margin: 0 0 1rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(45deg, var(--run-color), var(--walk-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .timer-display {
+      position: relative;
+      margin: 2rem auto;
+      width: 220px;
+      height: 220px;
+    }
+    #progressCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotate(-90deg);
+    }
+    .timer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-shadow: 0 2px 4px var(--shadow-color);
+    }
+    #phase {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+    #timer {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .metronome {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      display: none;
+    }
+    .metronome.active {
+      display: block;
+    }
+    .metronome-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: metronome 0.5s infinite alternate;
+    }
+    .metronome-dot.left { left: 0; }
+    .metronome-dot.right { right: 0; }
+    @keyframes metronome {
+      0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-50%) scale(1.5); opacity: 1; }
+    }
+    .settings {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 1.5rem;
+      margin-bottom: 2rem;
     }
     label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1rem;
+      text-align: left;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-color);
     }
     input {
-      width: 100px;
-      padding: 0.5rem;
-      border: none;
-      border-radius: 6px;
-      text-align: right;
-      background-color: rgba(255, 255, 255, 0.8);
-      color: #333;
+      width: 100%;
+      padding: 0.6rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #1a1a3d;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      border-color: var(--accent-color);
+      outline: none;
     }
     .buttons {
-      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
     }
     button {
-      margin: 0 0.5rem;
-      padding: 0.6rem 1.2rem;
+      flex-grow: 1;
+      padding: 0.9rem 1.5rem;
       border: none;
-      border-radius: 6px;
-      font-weight: 600;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
       cursor: pointer;
-      background: #fff;
-      color: #333;
-      transition: transform 0.1s ease;
+      background: linear-gradient(45deg, var(--run-color), var(--walk-color));
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.4s ease;
+    }
+    button:hover::before {
+      left: 100%;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--shadow-color);
     }
     button:active {
-        transform: scale(0.95);
+      transform: scale(0.95);
     }
     button:disabled {
-      opacity: 0.5;
+      opacity: 0.6;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
-    .status-display {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 1.5rem;
+    .laps-display {
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 1px;
     }
-    .status-item {
-        flex-basis: 50%;
-    }
-    .status-item > div:first-child {
-        font-size: 1.2rem;
-    }
-    .status-item > div:last-child {
-        font-size: 2rem;
-        font-weight: 600;
+    #laps {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-color);
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Run/Walk Cadence Timer</h1>
-    <label>Run Seconds <input type="number" id="runSeconds" value="120" min="1" /></label>
-    <label>Walk Seconds <input type="number" id="walkSeconds" value="60" min="1" /></label>
-    <label>Cadence (BPM) <input type="number" id="bpm" value="170" min="30" /></label>
-    <label>Goal Laps <input type="number" id="goalLaps" value="3" min="1" /></label>
-    <div class="buttons">
-      <button id="startBtn">Start</button>
-      <button id="stopBtn" disabled>Stop</button>
+
+    <div class="timer-display">
+      <canvas id="progressCanvas" width="220" height="220"></canvas>
+      <div class="timer-text">
+        <div id="phase">Ready</div>
+        <div id="timer">0</div>
+      </div>
+      <div class="metronome" id="metronome">
+        <div class="metronome-dot left"></div>
+        <div class="metronome-dot right"></div>
+      </div>
     </div>
-    <div class="status-display">
-        <div class="status-item">
-            <div id="phase">Stopped</div>
-            <div id="timer">0</div>
-        </div>
-        <div class="status-item">
-            <div>Lap</div>
-            <div id="laps">0</div>
-        </div>
+    
+    <div class="settings">
+      <label for="runSeconds">Run (s)</label>
+      <input type="number" id="runSeconds" value="120" min="1" />
+      <label for="walkSeconds">Walk (s)</label>
+      <input type="number" id="walkSeconds" value="60" min="1" />
+      <label for="bpm">Cadence (BPM)</label>
+      <input type="number" id="bpm" value="170" min="30" />
+      <label for="goalLaps">Goal Laps</label>
+      <input type="number" id="goalLaps" value="3" min="1" />
+    </div>
+
+    <div class="buttons">
+      <button id="startPauseBtn">Start</button>
+      <button id="resetBtn" disabled>Reset</button>
+    </div>
+
+    <div class="laps-display">
+      Lap: <span id="laps">0 / 3</span>
     </div>
   </div>
 
   <script>
-    // State variables
-    let phase = 'stopped';
-    let remaining = 0;
+    // === DOM Elements ===
+    const getEl = (id) => document.getElementById(id);
+    const runSecondsEl = getEl('runSeconds');
+    const walkSecondsEl = getEl('walkSeconds');
+    const bpmEl = getEl('bpm');
+    const goalLapsEl = getEl('goalLaps');
+    const startPauseBtn = getEl('startPauseBtn');
+    const resetBtn = getEl('resetBtn');
+    const phaseEl = getEl('phase');
+    const timerEl = getEl('timer');
+    const lapsEl = getEl('laps');
+    const canvas = getEl('progressCanvas');
+    const ctx = canvas.getContext('2d');
+    const metronomeEl = getEl('metronome');
+
+    // === State Management ===
+    let state = 'idle'; // idle, countdown, running, walking, paused, completed
+    let currentPhase = 'running'; // running, walking
     let lapCount = 0;
-    
-    // User settings
-    let runSec = 120;
-    let walkSec = 60;
-    let bpm = 170;
-    let goalLaps = 3;
-
-    // Interval and Audio contexts
-    let countdownIntervalId = null;
-    let beepIntervalId = null;
-    let audioCtx = null;
+    let remaining = 0;
+    let phaseStartTime = 0;
+    let totalPhaseDuration = 0;
+    let nextBeepTime = 0;
     let beatCount = 0;
+    let animationFrameId = null;
+    let warningBeepsPlayed = [false, false, false]; // Tracks beeps at 3, 2, 1 seconds
 
-    // DOM Elements
-    const runSecondsEl = document.getElementById('runSeconds');
-    const walkSecondsEl = document.getElementById('walkSeconds');
-    const bpmEl = document.getElementById('bpm');
-    const goalLapsEl = document.getElementById('goalLaps');
-    const startBtn = document.getElementById('startBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const phaseEl = document.getElementById('phase');
-    const timerEl = document.getElementById('timer');
-    const lapsEl = document.getElementById('laps');
+    // === User Settings ===
+    let settings = {
+      runSec: 120,
+      walkSec: 60,
+      bpm: 170,
+      goalLaps: 3
+    };
 
-    function createAudioContext() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-    }
+    // === Audio Context ===
+    let audioCtx = null;
+    const createAudioContext = () => {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    };
     
-    function beep() {
-      createAudioContext();
+    // === Audio Functions ===
+    function playSound({ freq, duration, type = 'sine', pan = 0, finalGain = 0.001 }) {
+      if (!audioCtx) return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(finalGain, audioCtx.currentTime + duration);
       
       osc.connect(gain);
       if (panner) {
+        panner.pan.setValueAtTime(pan, audioCtx.currentTime);
         gain.connect(panner);
         panner.connect(audioCtx.destination);
       } else {
         gain.connect(audioCtx.destination);
       }
 
-      const isLeft = beatCount % 2 === 0;
-      osc.frequency.value = isLeft ? 880 : 800;
-      if (panner) panner.pan.value = isLeft ? -0.5 : 0.5;
-      beatCount++;
-
       osc.start(audioCtx.currentTime);
-      gain.gain.setValueAtTime(1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-      osc.stop(audioCtx.currentTime + 0.1);
+      osc.stop(audioCtx.currentTime + duration);
     }
+    
+    const playCadenceBeep = () => {
+      const isLeft = beatCount % 2 === 0;
+      playSound({ freq: isLeft ? 880 : 800, duration: 0.1, pan: isLeft ? -0.7 : 0.7 });
+      metronomeEl.classList.add('active');
+      setTimeout(() => metronomeEl.classList.remove('active'), 200);
+      beatCount++;
+    };
 
-    // Longer "concluding" beep for completing the goal
-    function concludingBeep() {
-      createAudioContext();
-      const freqs = [523.25, 659.25, 783.99]; // C5, E5, G5 arpeggio
-      const startTime = audioCtx.currentTime;
-      const noteDuration = 0.30; // Doubled duration for a more final sound
-
+    const playPhaseChangeSound = () => playSound({ freq: 1200, duration: 0.2, type: 'triangle' });
+    const playCountdownSound = () => playSound({ freq: 600, duration: 0.15, type: 'sine' });
+    const playWarningBeep = () => playSound({ freq: 1000, duration: 0.12, type: 'square' });
+    const playCompletedSound = () => {
+      const freqs = [523.25, 659.25, 783.99]; // C5, E5, G5
       freqs.forEach((freq, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        const noteStartTime = startTime + i * 0.1;
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.5, noteStartTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, noteStartTime + noteDuration);
-        osc.start(noteStartTime);
-        osc.stop(noteStartTime + noteDuration);
+        setTimeout(() => playSound({ freq, duration: 0.3, type: 'triangle' }), i * 150);
       });
+    };
+
+    // === Canvas Drawing ===
+    function drawProgress(progress, color) {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = centerX - 12;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background circle
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 14;
+      ctx.stroke();
+
+      // Progress arc
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI * progress);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+      ctx.stroke();
     }
 
-    function updateDisplay() {
-      phaseEl.textContent = phase.charAt(0).toUpperCase() + phase.slice(1);
+    // === UI Update Functions ===
+    const updateDisplay = () => {
       timerEl.textContent = remaining;
-      lapsEl.textContent = lapCount;
-    }
-
-    function startPhase(newPhase) {
-      phase = newPhase;
-      remaining = phase === 'running' ? runSec : walkSec;
-      updateDisplay();
-
-      if (phase === 'running') {
-        beatCount = 0;
-        beepIntervalId = setInterval(beep, 60000 / bpm);
+      lapsEl.textContent = `${lapCount} / ${settings.goalLaps}`;
+      
+      const progress = totalPhaseDuration > 0 ? (totalPhaseDuration - remaining) / totalPhaseDuration : 0;
+      let phaseColor = 'gray';
+      
+      if (state === 'running' || (state === 'paused' && currentPhase === 'running')) {
+        phaseColor = 'var(--run-color)';
+        phaseEl.textContent = state === 'paused' ? 'Paused' : 'Run';
+      } else if (state === 'walking' || (state === 'paused' && currentPhase === 'walking')) {
+        phaseColor = 'var(--walk-color)';
+        phaseEl.textContent = state === 'paused' ? 'Paused' : 'Walk';
+      } else if (state === 'countdown') {
+        phaseEl.textContent = 'Get Ready';
+        phaseColor = 'var(--accent-color)';
+      } else if (state === 'completed') {
+        phaseEl.textContent = 'Completed!';
+        phaseColor = 'var(--run-color)';
+        drawProgress(1, phaseColor);
+      } else { // idle
+        phaseEl.textContent = 'Ready';
+        timerEl.textContent = settings.runSec;
+        phaseColor = 'rgba(255, 255, 255, 0.3)';
+        drawProgress(0, phaseColor);
       }
 
-      countdownIntervalId = setInterval(() => {
-        remaining--;
-        updateDisplay();
-        if (remaining <= 0) {
-          clearInterval(countdownIntervalId);
-          if (phase === 'running') {
-            clearInterval(beepIntervalId);
-            startPhase('walking');
-          } else {
-            // A lap is complete after the walk phase finishes
-            lapCount++;
-            if (lapCount >= goalLaps) {
-              // Goal reached!
-              phase = 'Completed!';
-              updateDisplay(); // Show final completed state
-              concludingBeep();
-              stopTimer(false); // Stop timers but keep final count
-            } else {
-              startPhase('running');
-            }
-          }
-        }
-      }, 1000);
-    }
-
-    function stopTimer(isManualStop = true) {
-        clearInterval(countdownIntervalId);
-        clearInterval(beepIntervalId);
-        
-        if (isManualStop) {
-          phase = 'Stopped';
-          lapCount = 0;
-        }
-        
-        remaining = 0;
-        updateDisplay();
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-    }
-
-    startBtn.addEventListener('click', () => {
-      createAudioContext();
-      runSec = parseInt(runSecondsEl.value, 10);
-      walkSec = parseInt(walkSecondsEl.value, 10);
-      bpm = parseInt(bpmEl.value, 10);
-      goalLaps = parseInt(goalLapsEl.value, 10);
-      
-      lapCount = 0;
-      startBtn.disabled = true;
-      stopBtn.disabled = false;
-      startPhase('running');
-    });
-
-    stopBtn.addEventListener('click', () => stopTimer(true));
+      if (state !== 'completed' && state !== 'idle') {
+        drawProgress(progress, phaseColor);
+      }
+    };
     
-    updateDisplay();
+    const setInputsDisabled = (disabled) => {
+      runSecondsEl.disabled = disabled;
+      walkSecondsEl.disabled = disabled;
+      bpmEl.disabled = disabled;
+      goalLapsEl.disabled = disabled;
+    };
+
+    // === Timer Logic ===
+    function mainLoop(timestamp) {
+      if (state !== 'running' && state !== 'walking' && state !== 'countdown') return;
+
+      const elapsed = (timestamp - phaseStartTime) / 1000;
+      remaining = Math.max(0, Math.ceil(totalPhaseDuration - elapsed));
+      
+      if (state === 'running') {
+        const beepInterval = 60 / settings.bpm;
+        if (elapsed >= nextBeepTime) {
+          playCadenceBeep();
+          nextBeepTime += beepInterval;
+        }
+      } else if (state === 'walking' && remaining <= 3 && remaining > 0) {
+        const secondsLeft = Math.ceil(totalPhaseDuration - elapsed);
+        if (secondsLeft === 3 && !warningBeepsPlayed[0]) {
+          playWarningBeep();
+          warningBeepsPlayed[0] = true;
+        } else if (secondsLeft === 2 && !warningBeepsPlayed[1]) {
+          playWarningBeep();
+          warningBeepsPlayed[1] = true;
+        } else if (secondsLeft === 1 && !warningBeepsPlayed[2]) {
+          playWarningBeep();
+          warningBeepsPlayed[2] = true;
+        }
+      }
+      
+      updateDisplay();
+      
+      if (remaining <= 0) {
+        handlePhaseEnd();
+      }
+
+      animationFrameId = requestAnimationFrame(mainLoop);
+    }
+    
+    function startPhase(phase, duration) {
+      phaseStartTime = performance.now();
+      totalPhaseDuration = duration;
+      remaining = duration;
+      state = phase;
+      warningBeepsPlayed = [false, false, false]; // Reset warning beeps for new phase
+      
+      if (phase === 'running') {
+        currentPhase = 'running';
+        beatCount = 0;
+        nextBeepTime = 0;
+      } else if (phase === 'walking') {
+        currentPhase = 'walking';
+      }
+      
+      animationFrameId = requestAnimationFrame(mainLoop);
+    }
+
+    function handlePhaseEnd() {
+      playPhaseChangeSound();
+      if (state === 'countdown') {
+        startPhase('running', settings.runSec);
+      } else if (state === 'running') {
+        startPhase('walking', settings.walkSec);
+      } else if (state === 'walking') {
+        lapCount++;
+        if (lapCount >= settings.goalLaps) {
+          completeWorkout();
+        } else {
+          startPhase('running', settings.runSec);
+        }
+      }
+    }
+
+    function completeWorkout() {
+      state = 'completed';
+      cancelAnimationFrame(animationFrameId);
+      playCompletedSound();
+      startPauseBtn.textContent = 'Start';
+      setInputsDisabled(false);
+      updateDisplay();
+    }
+    
+    // === Event Handlers & Control Flow ===
+    function handleStartPause() {
+      createAudioContext();
+      
+      if (state === 'idle' || state === 'completed') {
+        loadSettingsFromUI();
+        lapCount = 0;
+        state = 'countdown';
+        startPhase('countdown', 3);
+        playCountdownSound(); // Initial sound
+        setTimeout(playCountdownSound, 1000); // 2
+        setTimeout(playCountdownSound, 2000); // 1
+        
+        startPauseBtn.textContent = 'Pause';
+        resetBtn.disabled = false;
+        setInputsDisabled(true);
+      } else if (state === 'paused') {
+        // Resuming
+        state = currentPhase;
+        phaseStartTime = performance.now() - ((totalPhaseDuration - remaining) * 1000);
+        animationFrameId = requestAnimationFrame(mainLoop);
+        startPauseBtn.textContent = 'Pause';
+      } else {
+        // Pausing
+        state = 'paused';
+        cancelAnimationFrame(animationFrameId);
+        startPauseBtn.textContent = 'Resume';
+        updateDisplay();
+      }
+    }
+
+    function handleReset() {
+      cancelAnimationFrame(animationFrameId);
+      state = 'idle';
+      currentPhase = 'running';
+      lapCount = 0;
+      remaining = 0;
+      warningBeepsPlayed = [false, false, false];
+      startPauseBtn.textContent = 'Start';
+      resetBtn.disabled = true;
+      setInputsDisabled(false);
+      updateDisplay();
+    }
+    
+    // === Settings Persistence ===
+    function saveSettings() {
+      loadSettingsFromUI();
+      localStorage.setItem('runWalkTimerSettings', JSON.stringify(settings));
+    }
+    
+    function loadSettingsFromUI() {
+      settings.runSec = parseInt(runSecondsEl.value, 10);
+      settings.walkSec = parseInt(walkSecondsEl.value, 10);
+      settings.bpm = parseInt(bpmEl.value, 10);
+      settings.goalLaps = parseInt(goalLapsEl.value, 10);
+    }
+    
+    function loadSettings() {
+      const saved = localStorage.getItem('runWalkTimerSettings');
+      if (saved) {
+        settings = JSON.parse(saved);
+      }
+      runSecondsEl.value = settings.runSec;
+      walkSecondsEl.value = settings.walkSec;
+      bpmEl.value = settings.bpm;
+      goalLapsEl.value = settings.goalLaps;
+    }
+
+    // === Initial Setup ===
+    function init() {
+      loadSettings();
+      [runSecondsEl, walkSecondsEl, bpmEl, goalLapsEl].forEach(el => {
+        el.addEventListener('change', saveSettings);
+      });
+      startPauseBtn.addEventListener('click', handleStartPause);
+      resetBtn.addEventListener('click', handleReset);
+      updateDisplay();
+    }
+
+    init();
   </script>
 </body>
 </html>
