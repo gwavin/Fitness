@@ -298,19 +298,48 @@ function loadSettings() {
 let deferredPrompt;
 const installBtn = getEl('installBtn');
 
+// iOS Detection
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  installBtn.style.display = 'block';
+  if (installBtn) {
+    installBtn.style.display = 'block';
+  }
 });
 
 if (installBtn) {
   installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const outcome = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installBtn.style.display = 'none';
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const outcome = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    } else if (isIOS && !isStandalone) {
+      // Show iOS instructions
+      alert('To install this app on iOS:\n1. Tap the Share button\n2. Select "Add to Home Screen"\n3. Tap "Add"');
+    }
+  });
+  
+  // Show install button for iOS users who haven't installed yet
+  if (isIOS && !isStandalone) {
+    installBtn.style.display = 'block';
+    installBtn.textContent = '📱 Add to Home Screen';
+  }
+}
+
+// Media Session API for better media handling
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: 'Fitness Metronome',
+    artist: 'Fitness App',
+    album: 'Training Tools',
+    artwork: [
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }
+    ]
   });
 }
 
