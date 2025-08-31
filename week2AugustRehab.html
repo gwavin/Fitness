@@ -1,39 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Week 2 – August Rehab (Shoulder + Elbow + Barefoot Run)</title>
-  <!-- Keep your external stylesheet if you use it elsewhere -->
-  <link rel="stylesheet" href="css/style/style.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Week 2 – Shoulder + Elbow Rehab with Barefoot Run</title>
+<style>
+  :root{ --bg:#0b1320; --card:#111a2c; --ink:#e9eef8; --muted:#a9b5cf; --accent:#3ddc97; --accent2:#8ab4ff; --warn:#ffd166; }
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif}
+  .wrap{max-width:980px;margin:0 auto;padding:24px}
+  header{position:sticky;top:0;background:linear-gradient(180deg,#0b1320,rgba(11,19,32,.85));backdrop-filter:blur(6px);z-index:5;border-bottom:1px solid #1f2a44}
+  header .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 24px}
+  h1{font-size:1.6rem;margin:.2rem 0}
+  .tag{font-size:.8rem;color:var(--bg);background:var(--accent);border-radius:999px;padding:.15rem .6rem;font-weight:700}
+  .card{background:var(--card);border:1px solid #1f2a44;border-radius:16px;padding:16px;margin-top:12px}
+  .muted{color:var(--muted)}
+  .pill{display:inline-block;background:#17233a;padding:.15rem .5rem;border-radius:999px;margin-left:.35rem;border:1px solid #223055}
+  details{border:1px solid #233055;border-radius:12px;padding:.6rem .8rem;background:#0e1830}
+  details+details{margin-top:10px}
+  details>summary{cursor:pointer;font-weight:700}
+  .rx{display:grid;grid-template-columns: 1fr; gap:8px;margin:.4rem 0 .6rem}
+  .list{margin:.2rem 0 0 1rem}
+  .check{list-style:"✔  ";}
+  .danger{list-style:"⚠  ";}
+  .day-controls{display:flex;gap:8px;flex-wrap:wrap;margin:.25rem 0 .5rem}
+  .button{background:#17233a;color:var(--ink);border:1px solid #2a365a;padding:.35rem .6rem;border-radius:8px;cursor:pointer}
+  .button:hover{border-color:var(--accent2)}
 
-  <!-- Page-specific styles (safe even if external CSS is missing) -->
-  <style>
-    :root{ --bg:#0b1320; --card:#111a2c; --ink:#e9eef8; --muted:#a9b5cf; --accent:#3ddc97; --accent2:#8ab4ff; --warn:#ffd166; }
-    html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif}
-    a{color:var(--accent2);text-decoration:none} a:hover{text-decoration:underline}
-    .wrap{max-width:980px;margin:0 auto;padding:24px}
-    header{position:sticky;top:0;background:linear-gradient(180deg,#0b1320,rgba(11,19,32,.85));backdrop-filter:blur(6px);z-index:5;border-bottom:1px solid #1f2a44}
-    header .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 24px}
-    h1{font-size:1.6rem;margin:.2rem 0}
-    .tag{font-size:.8rem;color:var(--bg);background:var(--accent);border-radius:999px;padding:.15rem .6rem;font-weight:700}
-    .card{background:var(--card);border:1px solid #1f2a44;border-radius:16px;padding:16px;margin-top:12px}
-    .muted{color:var(--muted)}
-    .pill{display:inline-block;background:#17233a;padding:.15rem .5rem;border-radius:999px;margin-left:.35rem;border:1px solid #223055}
-    details{border:1px solid #233055;border-radius:12px;padding:.6rem .8rem;background:#0e1830}
-    details+details{margin-top:10px}
-    details>summary{cursor:pointer;font-weight:700}
-    .rx{display:grid;grid-template-columns: 1fr; gap:8px;margin:.4rem 0 .6rem}
-    .list{margin:.2rem 0 0 1rem}
-    .check{list-style:"✔  ";}
-    .danger{list-style:"⚠  ";}
-    .day-controls{display:flex;gap:8px;flex-wrap:wrap;margin:.25rem 0 .5rem}
-    .button{background:#17233a;color:var(--ink);border:1px solid #2a365a;padding:.35rem .6rem;border-radius:8px;cursor:pointer}
-    .button:hover{border-color:var(--accent2)}
-    /* Quick list card from original page */
-    .quick-list ol{margin:0 0 0 1.25rem}
-    .nav-links{margin-top:12px}
-  </style>
+  /* Right-side Micro-Pack */
+  .microbox{background:var(--card);border:1px solid #1f2a44;border-radius:16px;padding:16px}
+  .mini{font-size:.92rem}
+  .microbox details{border:1px solid #233055;border-radius:12px;padding:.6rem .8rem;background:#0e1830}
+  .microbox details+details{margin-top:10px}
+  .microbox .list{margin:.2rem 0 0 1rem}
+  .microbox .check{list-style:"✔  ";}
+  .microbox-right{float:right;width:320px;max-width:40vw;margin:0 0 16px 16px;position:sticky;top:92px}
+  @media (max-width:1000px){.microbox-right{float:none;width:auto;position:static;margin:0 0 16px 0}}
+</style>
 </head>
 <body>
 <header>
@@ -44,50 +46,52 @@
 </header>
 
 <main class="wrap">
-
-  <!-- Original simple list preserved -->
-  <section class="card quick-list">
-    <h2>Quick Plan (from Index)</h2>
-    <ol>
-      <li>Day 1: Warm up with a 5-minute walk, then <a href="run-walk-metronome.html">jog 3 × 1-minute</a> with 1-minute walks between sets.</li>
-      <li>Day 2: Easy barefoot walk or rest for recovery.</li>
-      <li>Day 3: Repeat Day 1 with another <a href="run-walk-metronome.html">3 × 1-minute jog</a>, focusing on light steps.</li>
-    </ol>
-    <div class="nav-links">
-      <a href="fitness-plan-index.html">Back to Plan Index</a>
-    </div>
-  </section>
-
-  <!-- Rich, detailed schedule -->
-  <section class="card">
-    <b>How to use this page</b>
-    <ul>
-      <li>Click any exercise to open the <b>full how-to</b>, cues, mistakes, and regressions/progressions.</li>
-      <li>Pain rule: 0–3/10 is acceptable. Stop for sharp/catching pain or if soreness &gt;24h next day.</li>
-      <li>Progression this week is minimal: <b>+1 rep per set</b> on main lifts if Monday felt easy and next-day was clean; run intervals bump slightly.</li>
-    </ul>
-  </section>
+  <!-- Sticky right micro-pack -->
+  <aside class="microbox microbox-right mini">
+    <h3>Anytime Micro-Pack</h3>
+    <p class="muted">Always-green moves for downtime. Pain ≤3/10; stop for sharp/tingly.</p>
+    <details><summary><b>1) Scap Set + Long Exhale</b> — 6–10 breaths</summary>
+      <ul class="list check"><li>Sit tall. Gentle shrug → roll back → slide blades down into back pockets.</li><li>Quiet inhale; 6–8 s exhale; feel blades settle.</li></ul>
+    </details>
+    <details><summary><b>2) Wall/Seated “Plus”</b> — 2×8–10 easy</summary>
+      <ul class="list check"><li>Hands on wall (or elbows on thighs). Ribs down. Gently protract → return; no shrug.</li></ul>
+    </details>
+    <details><summary><b>3) Couch Pendulums</b> — 20–30 s patterns</summary>
+      <ul class="list check"><li>Support the good hand; other arm hangs. Tiny circles from body sway; then forward/back.</li></ul>
+    </details>
+    <details><summary><b>4) Wrist Extensor Calm Set</b> — 1×20–30 s</summary>
+      <ul class="list check"><li>Forearm supported, palm down. Press on knuckles with the other hand and match (3–4/10).</li></ul>
+    </details>
+    <details><summary><b>5) Seated T-Spine Rotations</b> — 5–6/side</summary>
+      <ul class="list check"><li>Hands across chest; exhale as you rotate ribs; stop before any shoulder pinch.</li></ul>
+    </details>
+    <details><summary><b>6) Short-Foot</b> — 3×10–15 s/side</summary>
+      <ul class="list check"><li>Lift arch without curling toes; breathe.</li></ul>
+    </details>
+    <details><summary><b>7) Chin-Tuck + Turn</b> — 5 slow turns/side</summary>
+      <ul class="list check"><li>Light double-chin; slow comfortable turns; relax jaw/shoulders.</li></ul>
+    </details>
+  </aside>
 
   <section class="card">
     <b>Week 2 Defaults</b>
     <ul>
-      <li><b>Goblet Squat, RDL:</b> <b>2×8 @ RPE ≤6</b> (was 2×6–8). Same tempo/cues.</li>
-      <li><b>Elbow isometrics:</b> <b>20–30s ×3–4 @ 4–5/10</b> (optional +1 hold vs W1).</li>
-      <li><b><a href="run-walk-metronome.html">Run sessions:</a></b> <b>6× (45s jog / 75s walk)</b> between 5′ warm-up/cool-down.</li>
-      <li>Grip neutral where possible; straps allowed on hinge work if elbow talks.</li>
+      <li><b>Goblet Squat, RDL:</b> <b>2×8 @ RPE ≤6</b> (was 2×6–8). Add reps before load.</li>
+      <li><b>Elbow isometrics:</b> <b>20–30s ×3–4</b> @ 4–5/10 (optional +1 hold vs W1).</li>
+      <li><b>Run:</b> <b>6× (45s jog / 75s walk)</b> with 5′ warm-up/cool-down.</li>
+      <li>Neutral grips; straps OK on hinge if elbow talks. Pain ≤3/10 during & next day.</li>
     </ul>
   </section>
 
   <section id="week2" class="card">
     <h2>Week 2 – Alternating Days (Weights ↔ Run) + Daily Shoulder Rehab</h2>
-    <p class="muted">Keep all week-1 shoulder-safe angles and cues. If any change causes &gt;3/10 pain during or next day, revert that change for the next session.</p>
-
+    <p class="muted">Use the buttons to expand/collapse details.</p>
     <div class="day-controls">
       <button type="button" class="button" onclick="toggleDetails(document.querySelector('#week2'), true)">➕ Expand all (Week 2)</button>
       <button type="button" class="button" onclick="toggleDetails(document.querySelector('#week2'), false)">➖ Collapse all (Week 2)</button>
     </div>
 
-    <!-- MONDAY -->
+    <!-- Monday -->
     <div class="card">
       <h3>Monday — Weights + Elbow Care (~35 min)</h3>
       <div class="day-controls">
@@ -96,60 +100,42 @@
       </div>
       <div class="rx">
         <details><summary><b>Pendulum Swings</b> — 30s each direction</summary>
-          <ul class="list check">
-            <li>Lean forward, hand on a table/chair. Let the affected arm hang <em>completely</em> relaxed.</li>
-            <li>Start tiny circles from your body momentum, not the shoulder muscles. Breathe slowly.</li>
-            <li>Do clockwise/counter-clockwise, then gentle forward/back and side/side if comfortable.</li>
-          </ul>
+          <ul class="list check"><li>Lean forward, support with the other hand; working arm hangs relaxed.</li><li>Tiny circles from body sway; breathe; add forward/back if easy.</li></ul>
         </details>
-        <details><summary><b>Open Books (T-spine)</b> — 6 reps/side</summary>
-          <ul class="list check">
-            <li>Lie on your side, hips/knees at 90°. Arms straight in front, palms together.</li>
-            <li>Reach top hand to the ceiling, then rotate it open toward the floor behind you.</li>
-            <li>Keep knees touching and stacked; let chest/ribs rotate. Breathe out into the stretch.</li>
-            <li>Return with control. Stop short of any pinching.</li>
-          </ul>
+        <details><summary><b>Open Books (T-spine)</b> — 6/side</summary>
+          <ul class="list check"><li>Side-lying; hips/knees 90°. Rotate top arm open while knees stay stacked; exhale into range.</li></ul>
         </details>
-        <details><summary><b>Doorway Pec Stretch (optional; safe-angle)</b> — 20–30s ×1</summary>
-          <ul class="list check">
-            <li><b>Arm angle:</b> set elbow <b>below</b> shoulder (≈45–60°), not at/above 90°.</li>
-            <li><b>Single-arm setup:</b> forearm on frame; small split stance.</li>
-            <li><b>Scapula set:</b> gently draw shoulder blade into the back pocket before leaning.</li>
-            <li><b>Ribcage rotation:</b> rotate chest slightly through the doorway rather than cranking the arm backward.</li>
-            <li><b>External rotation cue:</b> think “show the elbow pit forward.”</li>
-            <li>Intensity mild (2–3/10). Stop if pinchy/tingly.</li>
-          </ul>
+        <details><summary><b>Doorway Pec Stretch</b> (optional; safe angle) — 20–30s ×1</summary>
+          <ul class="list check"><li>Elbow below shoulder (45–60°); set scapula down/back; rotate chest through the doorway; keep it 2–3/10.</li></ul>
         </details>
         <details><summary><b>Goblet Squat</b> — <b>2×8</b> @ RPE ≤6 • 3-1-1 tempo <span class="pill">+1 rep/set vs W1</span></summary>
-          <ul class="list check"><li>Hold KB/DB at chest; feet shoulder-width; brace; sit between hips; chest tall; knees over mid-foot.</li><li>3s down • 1s pause • drive up over mid-foot. Heels stay down.</li></ul>
+          <ul class="list check"><li>KB/DB at chest; sit between hips; 3s down • 1s pause • drive up; heels down.</li></ul>
         </details>
         <details><summary><b>Romanian Deadlift (DB/KB)</b> — <b>2×8</b> very light–light <span class="pill">+1 rep/set vs W1</span></summary>
-          <ul class="list check"><li>Soft knees; hinge by pushing hips back; spine neutral; lats packed.</li><li>Weights skim thighs; stop mid-shin; 2s up. Use straps if elbow/grip protests.</li></ul>
+          <ul class="list check"><li>Soft knees; hinge hips back; lats packed; weights skim thighs; straps OK if elbow sensitive.</li></ul>
         </details>
-        <details><summary><b>Wrist Extensor Isometric</b> — 20–30s ×<b>3–4</b> @ 4–5/10 effort <span class="pill">optional +1 hold</span></summary>
-          <ul class="list check"><li>Forearm supported, palm down. Hold light DB; use the other hand to gently push down; meet the pressure without pain.</li></ul>
+        <details><summary><b>Wrist Extensor Isometric</b> — 20–30s ×<b>3–4</b> @ 4–5/10</summary>
+          <ul class="list check"><li>Forearm supported, palm down. Gently press hand into resistance; match without moving.</li></ul>
         </details>
         <details><summary><b>Triceps Isometric (wall)</b> — 15–20s ×3</summary>
-          <ul class="list check"><li>Elbow 60–90°. Palm to wall. Press as if straightening the elbow. Keep shoulder down/back.</li></ul>
+          <ul class="list check"><li>Palm to wall; elbow ~60–90°; press as if straightening; shoulder stays down/back.</li></ul>
         </details>
-        <details><summary><b>Scapular Setting</b> — 5s ×10 (daily)</summary>
-          <ul class="list check"><li>Gentle shrug → roll back → set blades down into back pockets; neck relaxed; breathe.</li><li>No pinching between blades; think width across collarbones.</li></ul>
+        <details><summary><b>Scapular Setting</b> — 5s ×10</summary>
+          <ul class="list check"><li>S hrug → roll back → set blades down into back pockets; wide collarbones; easy neck.</li></ul>
         </details>
         <details><summary><b>Band Internal Rotation</b> — 2×12–15 (very light, 3s return)</summary>
-          <ul class="list check"><li>Anchor at elbow height; elbow glued to side at 90°.</li><li>Pull forearm toward belly; pause; slowly return 3s. Chest tall; ribs down.</li></ul>
-          <ul class="list danger"><li>Elbow drifting away; shoulder rolling forward.</li></ul>
+          <ul class="list check"><li>Elbow glued to side at 90°; pull forearm toward belly; slow 3s return.</li></ul>
         </details>
         <details><summary><b>Wall Angels</b> — 2×8</summary>
-          <ul class="list check"><li>Back/head/butt to wall; ribs gently down.</li><li>Slide arms up only to the point before winging or back arch; smooth breathing.</li></ul>
-          <p><b>Regress:</b> Seated or smaller range. <b>Progress:</b> Add 2–3s pause at top without shrug.</p>
+          <ul class="list check"><li>Back/head/butt to wall; ribs down; slide to clean range; no winging.</li></ul>
         </details>
         <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary>
-          <ul class="list check"><li>Hands on wall; body straight. Perform push-up; at the top, actively <b>protract</b> shoulder blades (the “plus”).</li><li>Neck long; no rib flare. Step feet back to increase difficulty.</li></ul>
+          <ul class="list check"><li>Small push-up; at top, protract blades (the “plus”); no shrug/rib flare.</li></ul>
         </details>
       </div>
     </div>
 
-    <!-- TUESDAY -->
+    <!-- Tuesday -->
     <div class="card">
       <h3>Tuesday — Barefoot Walk–Jog + Foot/Calf Prep (~25–30 min)</h3>
       <div class="day-controls">
@@ -157,37 +143,22 @@
         <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
       </div>
       <div class="rx">
-        <details><summary><b>Short-Foot Drill</b> — 3×20s/side</summary>
-          <ul class="list check"><li>Gently lift your arch (ball of big toe toward heel) without curling toes. Hold; breathe.</li></ul>
+        <details><summary><b>Short-Foot Drill</b> — 3×20s/side</summary><ul class="list check"><li>Lift arch without toe curl; breathe.</li></ul></details>
+        <details><summary><b>Double-Leg Calf Raise</b> — 3×12 slow</summary><ul class="list check"><li>2–3s up/down; rise over big/second toe.</li></ul></details>
+        <details><summary><b>Tibialis Raise</b> — 2×15</summary><ul class="list check"><li>Back to wall; heels down; toes up controlled.</li></ul></details>
+        <details><summary><b>Run – Session A</b> — 5′ walk → <b>6× (45s jog / 75s walk)</b> → 5′ walk</summary>
+          <ul class="list check"><li>Cadence ~170–180; land under centre; quiet feet; slight forward lean from ankles.</li></ul>
+          <ul class="list danger"><li>Next-morning calf/Achilles stiffness >60 min → repeat this volume.</li></ul>
         </details>
-        <details><summary><b>Double-Leg Calf Raise</b> — 3×12 slow</summary>
-          <ul class="list check"><li>Full range up/down 2–3s each; rise over big/second toe; no bouncing.</li></ul>
-        </details>
-        <details><summary><b>Tibialis Raise</b> — 2×15</summary>
-          <ul class="list check"><li>Back to wall; heels down; lift toes toward shins; slow tempo.</li></ul>
-        </details>
-        <details><summary><b><a href="run-walk-metronome.html">Run</a> – Week 2 Session A</b> — 5’ walk → <b>6× (45s jog / 75s walk)</b> → 5’ walk <span class="pill">volume bump</span></summary>
-          <ul class="list check"><li>Cadence ~170–180; land under center; <b>quiet</b> feet; posture tall with slight forward lean from ankles.</li></ul>
-          <ul class="list danger"><li>If next-morning calf/Achilles stiffness &gt;60 min, repeat this session next time rather than progressing.</li></ul>
-        </details>
-        <details><summary><b>Scapular Setting</b> — 5s ×10 (daily)</summary>
-          <ul class="list check"><li>Gentle shrug → roll back → set blades down into back pockets; neck relaxed; breathe.</li><li>No pinching between blades; think width across collarbones.</li></ul>
-        </details>
-        <details><summary><b>Band Internal Rotation</b> — 2×12–15 (very light, 3s return)</summary>
-          <ul class="list check"><li>Anchor at elbow height; elbow glued to side at 90°.</li><li>Pull forearm toward belly; pause; slowly return 3s. Chest tall; ribs down.</li></ul>
-          <ul class="list danger"><li>Elbow drifting away; shoulder rolling forward.</li></ul>
-        </details>
-        <details><summary><b>Wall Angels</b> — 2×8</summary>
-          <ul class="list check"><li>Back/head/butt to wall; ribs gently down.</li><li>Slide arms up only to the point before winging or back arch; smooth breathing.</li></ul>
-          <p><b>Regress:</b> Seated or smaller range. <b>Progress:</b> Add 2–3s pause at top without shrug.</p>
-        </details>
-        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary>
-          <ul class="list check"><li>Hands on wall; body straight. Perform push-up; at the top, actively <b>protract</b> shoulder blades (the “plus”).</li><li>Neck long; no rib flare. Step feet back to increase difficulty.</li></ul>
-        </details>
+        <!-- Daily shoulder block -->
+        <details><summary><b>Scap Set</b> — 5s ×10</summary><ul class="list check"><li>Same cues as above; keep it smooth.</li></ul></details>
+        <details><summary><b>Band Internal Rotation</b> — 2×12–15</summary><ul class="list check"><li>Elbow glued; slow 3s return.</li></ul></details>
+        <details><summary><b>Wall Angels</b> — 2×8</summary><ul class="list check"><li>Ribs down; no winging.</li></ul></details>
+        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary><ul class="list check"><li>Protract at the top; no shrug.</li></ul></details>
       </div>
     </div>
 
-    <!-- WEDNESDAY -->
+    <!-- Wednesday -->
     <div class="card">
       <h3>Wednesday — Weights + Elbow Care (~35 min)</h3>
       <div class="day-controls">
@@ -195,51 +166,21 @@
         <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
       </div>
       <div class="rx">
-        <details><summary><b>Pendulum Swings</b> — 30s each direction</summary>
-          <ul class="list check">
-            <li>Lean forward, hand on a table/chair. Let the affected arm hang <em>completely</em> relaxed.</li>
-            <li>Start tiny circles from your body momentum, not the shoulder muscles. Breathe slowly.</li>
-            <li>Do clockwise/counter-clockwise, then gentle forward/back and side/side if comfortable.</li>
-          </ul>
-        </details>
-        <details><summary><b>Open Books (T-spine)</b> — 6 reps/side</summary>
-          <ul class="list check">
-            <li>Lie on your side, hips/knees at 90°. Arms straight in front, palms together.</li>
-            <li>Reach top hand to the ceiling, then rotate it open toward the floor behind you.</li>
-            <li>Keep knees touching and stacked; let chest/ribs rotate. Breathe out into the stretch.</li>
-            <li>Return with control. Stop short of any pinching.</li>
-          </ul>
-        </details>
-        <details><summary><b>Goblet Squat</b> — <b>2×8</b> @ RPE ≤6 • 3-1-1 tempo</summary>
-          <ul class="list check"><li>Hold KB/DB at chest; feet shoulder-width; brace; sit between hips; chest tall; knees over mid-foot.</li><li>3s down • 1s pause • drive up over mid-foot. Heels stay down.</li></ul>
-        </details>
-        <details><summary><b>Romanian Deadlift (DB/KB)</b> — <b>2×8</b> very light–light</summary>
-          <ul class="list check"><li>Soft knees; hinge by pushing hips back; spine neutral; lats packed.</li><li>Weights skim thighs; stop mid-shin; 2s up. Use straps if elbow/grip protests.</li></ul>
-        </details>
-        <details><summary><b>Wrist Extensor Isometric</b> — 20–30s ×<b>3–4</b> @ 4–5/10 effort</summary>
-          <ul class="list check"><li>Forearm supported, palm down. Hold light DB; use the other hand to gently push down; meet the pressure without pain.</li></ul>
-        </details>
-        <details><summary><b>Triceps Isometric (wall)</b> — 15–20s ×3</summary>
-          <ul class="list check"><li>Elbow 60–90°. Palm to wall. Press as if straightening the elbow. Keep shoulder down/back.</li></ul>
-        </details>
-        <details><summary><b>Scapular Setting</b> — 5s ×10 (daily)</summary>
-          <ul class="list check"><li>Gentle shrug → roll back → set blades down into back pockets; neck relaxed; breathe.</li><li>No pinching between blades; think width across collarbones.</li></ul>
-        </details>
-        <details><summary><b>Band Internal Rotation</b> — 2×12–15 (very light, 3s return)</summary>
-          <ul class="list check"><li>Anchor at elbow height; elbow glued to side at 90°.</li><li>Pull forearm toward belly; pause; slowly return 3s. Chest tall; ribs down.</li></ul>
-          <ul class="list danger"><li>Elbow drifting away; shoulder rolling forward.</li></ul>
-        </details>
-        <details><summary><b>Wall Angels</b> — 2×8</summary>
-          <ul class="list check"><li>Back/head/butt to wall; ribs gently down.</li><li>Slide arms up only to the point before winging or back arch; smooth breathing.</li></ul>
-          <p><b>Regress:</b> Seated or smaller range. <b>Progress:</b> Add 2–3s pause at top without shrug.</p>
-        </details>
-        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary>
-          <ul class="list check"><li>Hands on wall; body straight. Perform push-up; at the top, actively <b>protract</b> shoulder blades (the “plus”).</li><li>Neck long; no rib flare. Step feet back to increase difficulty.</li></ul>
-        </details>
+        <!-- same W2 weights/elbow/shoulder as Monday -->
+        <details><summary><b>Pendulum Swings</b> — 30s each</summary><ul class="list check"><li>Relaxed arm; tiny circles; breathe.</li></ul></details>
+        <details><summary><b>Open Books</b> — 6/side</summary><ul class="list check"><li>Rotate open with stacked knees; exhale into range.</li></ul></details>
+        <details><summary><b>Goblet Squat</b> — <b>2×8</b> @ RPE ≤6</summary><ul class="list check"><li>3s down • 1s pause • up smooth.</li></ul></details>
+        <details><summary><b>Romanian Deadlift</b> — <b>2×8</b></summary><ul class="list check"><li>Hips back; neutral spine; straps OK.</li></ul></details>
+        <details><summary><b>Wrist Extensor Isometric</b> — 20–30s ×3–4</summary><ul class="list check"><li>Palm down; meet pressure without motion.</li></ul></details>
+        <details><summary><b>Triceps Isometric</b> — 15–20s ×3</summary><ul class="list check"><li>Press into wall as if straightening.</li></ul></details>
+        <details><summary><b>Scap Set</b> — 5s ×10</summary><ul class="list check"><li>Down/back pockets; wide collarbones.</li></ul></details>
+        <details><summary><b>Band Internal Rotation</b> — 2×12–15</summary><ul class="list check"><li>Slow 3s return; ribs down.</li></ul></details>
+        <details><summary><b>Wall Angels</b> — 2×8</summary><ul class="list check"><li>Clean range; no winging.</li></ul></details>
+        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary><ul class="list check"><li>Protract at top; neck long.</li></ul></details>
       </div>
     </div>
 
-    <!-- THURSDAY -->
+    <!-- Thursday -->
     <div class="card">
       <h3>Thursday — Barefoot Walk–Jog + Foot/Calf Prep (~25–30 min)</h3>
       <div class="day-controls">
@@ -247,37 +188,21 @@
         <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
       </div>
       <div class="rx">
-        <details><summary><b>Short-Foot Drill</b> — 3×20s/side</summary>
-          <ul class="list check"><li>Gently lift your arch (ball of big toe toward heel) without curling toes. Hold; breathe.</li></ul>
+        <!-- same as Tuesday -->
+        <details><summary><b>Short-Foot</b> — 3×20s/side</summary><ul class="list check"><li>Lift arch; breathe.</li></ul></details>
+        <details><summary><b>Double-Leg Calf Raise</b> — 3×12 slow</summary><ul class="list check"><li>2–3s up/down; over big/second toe.</li></ul></details>
+        <details><summary><b>Tibialis Raise</b> — 2×15</summary><ul class="list check"><li>Toes to shins; slow.</li></ul></details>
+        <details><summary><b>Run – Session B</b> — 5′ walk → <b>6× (45s/75s)</b> → 5′ walk</summary>
+          <ul class="list check"><li>Quiet feet; land under centre; cadence steady.</li></ul>
         </details>
-        <details><summary><b>Double-Leg Calf Raise</b> — 3×12 slow</summary>
-          <ul class="list check"><li>Full range up/down 2–3s each; rise over big/second toe; no bouncing.</li></ul>
-        </details>
-        <details><summary><b>Tibialis Raise</b> — 2×15</summary>
-          <ul class="list check"><li>Back to wall; heels down; lift toes toward shins; slow tempo.</li></ul>
-        </details>
-        <details><summary><b><a href="run-walk-metronome.html">Run</a> – Week 2 Session B</b> — 5’ walk → <b>6× (45s jog / 75s walk)</b> → 5’ walk</summary>
-          <ul class="list check"><li>Cadence ~170–180; land under center; <b>quiet</b> feet; posture tall with slight forward lean from ankles.</li></ul>
-          <ul class="list danger"><li>Same rule: if next-morning stiffness &gt;60 min, repeat this volume before progressing.</li></ul>
-        </details>
-        <details><summary><b>Scapular Setting</b> — 5s ×10 (daily)</summary>
-          <ul class="list check"><li>Gentle shrug → roll back → set blades down into back pockets; neck relaxed; breathe.</li><li>No pinching between blades; think width across collarbones.</li></ul>
-        </details>
-        <details><summary><b>Band Internal Rotation</b> — 2×12–15 (very light, 3s return)</summary>
-          <ul class="list check"><li>Anchor at elbow height; elbow glued to side at 90°.</li><li>Pull forearm toward belly; pause; slowly return 3s. Chest tall; ribs down.</li></ul>
-          <ul class="list danger"><li>Elbow drifting away; shoulder rolling forward.</li></ul>
-        </details>
-        <details><summary><b>Wall Angels</b> — 2×8</summary>
-          <ul class="list check"><li>Back/head/butt to wall; ribs gently down.</li><li>Slide arms up only to the point before winging or back arch; smooth breathing.</li></ul>
-          <p><b>Regress:</b> Seated or smaller range. <b>Progress:</b> Add 2–3s pause at top without shrug.</p>
-        </details>
-        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary>
-          <ul class="list check"><li>Hands on wall; body straight. Perform push-up; at the top, actively <b>protract</b> shoulder blades (the “plus”).</li><li>Neck long; no rib flare. Step feet back to increase difficulty.</li></ul>
+        <!-- quick shoulder block -->
+        <details><summary><b>Scap Set • IR • Wall Angels • Push-Up Plus</b></summary>
+          <ul class="list check"><li>Keep pain-free, crisp movement.</li></ul>
         </details>
       </div>
     </div>
 
-    <!-- FRIDAY -->
+    <!-- Friday -->
     <div class="card">
       <h3>Friday — Weights + Elbow Care (~35 min)</h3>
       <div class="day-controls">
@@ -285,51 +210,18 @@
         <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
       </div>
       <div class="rx">
-        <details><summary><b>Pendulum Swings</b> — 30s each direction</summary>
-          <ul class="list check">
-            <li>Lean forward, hand on a table/chair. Let the affected arm hang <em>completely</em> relaxed.</li>
-            <li>Start tiny circles from your body momentum, not the shoulder muscles. Breathe slowly.</li>
-            <li>Do clockwise/counter-clockwise, then gentle forward/back and side/side if comfortable.</li>
-          </ul>
-        </details>
-        <details><summary><b>Open Books (T-spine)</b> — 6 reps/side</summary>
-          <ul class="list check">
-            <li>Lie on your side, hips/knees at 90°. Arms straight in front, palms together.</li>
-            <li>Reach top hand to the ceiling, then rotate it open toward the floor behind you.</li>
-            <li>Keep knees touching and stacked; let chest/ribs rotate. Breathe out into the stretch.</li>
-            <li>Return with control. Stop short of any pinching.</li>
-          </ul>
-        </details>
-        <details><summary><b>Goblet Squat</b> — <b>2×8</b> @ RPE ≤6 • 3-1-1 tempo</summary>
-          <ul class="list check"><li>Hold KB/DB at chest; feet shoulder-width; brace; sit between hips; chest tall; knees over mid-foot.</li><li>3s down • 1s pause • drive up over mid-foot. Heels stay down.</li></ul>
-        </details>
-        <details><summary><b>Romanian Deadlift (DB/KB)</b> — <b>2×8</b> very light–light</summary>
-          <ul class="list check"><li>Soft knees; hinge by pushing hips back; spine neutral; lats packed.</li><li>Weights skim thighs; stop mid-shin; 2s up. Use straps if elbow/grip protests.</li></ul>
-        </details>
-        <details><summary><b>Wrist Extensor Isometric</b> — 20–30s ×<b>3–4</b> @ 4–5/10 effort</summary>
-          <ul class="list check"><li>Forearm supported, palm down. Hold light DB; use the other hand to gently push down; meet the pressure without pain.</li></ul>
-        </details>
-        <details><summary><b>Triceps Isometric (wall)</b> — 15–20s ×3</summary>
-          <ul class="list check"><li>Elbow 60–90°. Palm to wall. Press as if straightening the elbow. Keep shoulder down/back.</li></ul>
-        </details>
-        <details><summary><b>Scapular Setting</b> — 5s ×10 (daily)</summary>
-          <ul class="list check"><li>Gentle shrug → roll back → set blades down into back pockets; neck relaxed; breathe.</li><li>No pinching between blades; think width across collarbones.</li></ul>
-        </details>
-        <details><summary><b>Band Internal Rotation</b> — 2×12–15 (very light, 3s return)</summary>
-          <ul class="list check"><li>Anchor at elbow height; elbow glued to side at 90°.</li><li>Pull forearm toward belly; pause; slowly return 3s. Chest tall; ribs down.</li></ul>
-          <ul class="list danger"><li>Elbow drifting away; shoulder rolling forward.</li></ul>
-        </details>
-        <details><summary><b>Wall Angels</b> — 2×8</summary>
-          <ul class="list check"><li>Back/head/butt to wall; ribs gently down.</li><li>Slide arms up only to the point before winging or back arch; smooth breathing.</li></ul>
-          <p><b>Regress:</b> Seated or smaller range. <b>Progress:</b> Add 2–3s pause at top without shrug.</p>
-        </details>
-        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary>
-          <ul class="list check"><li>Hands on wall; body straight. Perform push-up; at the top, actively <b>protract</b> shoulder blades (the “plus”).</li><li>Neck long; no rib flare. Step feet back to increase difficulty.</li></ul>
-        </details>
+        <!-- repeat Monday weights/elbow/shoulder -->
+        <details><summary><b>Pendulums</b> — 30s each</summary><ul class="list check"><li>Relax; tiny circles; breathe.</li></ul></details>
+        <details><summary><b>Open Books</b> — 6/side</summary><ul class="list check"><li>Rotate open; exhale into range.</li></ul></details>
+        <details><summary><b>Goblet Squat</b> — <b>2×8</b></summary><ul class="list check"><li>3-1-1 tempo; heels down.</li></ul></details>
+        <details><summary><b>RDL</b> — <b>2×8</b></summary><ul class="list check"><li>Hinge; lats on; straps OK.</li></ul></details>
+        <details><summary><b>Wrist Extensor Iso</b> — 20–30s ×3–4</summary><ul class="list check"><li>Palm down; match pressure.</li></ul></details>
+        <details><summary><b>Triceps Iso</b> — 15–20s ×3</summary><ul class="list check"><li>Press into wall.</li></ul></details>
+        <details><summary><b>Scap Set • IR • Wall Angels • Push-Up Plus</b></summary><ul class="list check"><li>Daily shoulder care.</li></ul></details>
       </div>
     </div>
 
-    <!-- SATURDAY -->
+    <!-- Saturday -->
     <div class="card">
       <h3>Saturday — Barefoot Walk–Jog + Foot/Calf Prep (~25–30 min)</h3>
       <div class="day-controls">
@@ -337,37 +229,19 @@
         <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
       </div>
       <div class="rx">
-        <details><summary><b>Short-Foot Drill</b> — 3×20s/side</summary>
-          <ul class="list check"><li>Gently lift your arch (ball of big toe toward heel) without curling toes. Hold; breathe.</li></ul>
+        <!-- same as Tue/Thu -->
+        <details><summary><b>Short-Foot</b> — 3×20s/side</summary><ul class="list check"><li>Lift arch; breathe.</li></ul></details>
+        <details><summary><b>Double-Leg Calf Raise</b> — 3×12 slow</summary><ul class="list check"><li>Controlled range; no bounce.</li></ul></details>
+        <details><summary><b>Tibialis Raise</b> — 2×15</summary><ul class="list check"><li>Toes up; slow.</li></ul></details>
+        <details><summary><b>Run – Session C</b> — 5′ walk → <b>6× (45s/75s)</b> → 5′ walk</summary>
+          <ul class="list check"><li>Quiet, centred landings; easy effort.</li></ul>
         </details>
-        <details><summary><b>Double-Leg Calf Raise</b> — 3×12 slow</summary>
-          <ul class="list check"><li>Full range up/down 2–3s each; rise over big/second toe; no bouncing.</li></ul>
-        </details>
-        <details><summary><b>Tibialis Raise</b> — 2×15</summary>
-          <ul class="list check"><li>Back to wall; heels down; lift toes toward shins; slow tempo.</li></ul>
-        </details>
-        <details><summary><b><a href="run-walk-metronome.html">Run</a> – Week 2 Session C</b> — 5’ walk → <b>6× (45s jog / 75s walk)</b> → 5’ walk</summary>
-          <ul class="list check"><li>Cadence ~170–180; land under center; <b>quiet</b> feet; posture tall with slight forward lean from ankles.</li></ul>
-          <ul class="list danger"><li>Maintain easy effort; stop early if calves complain.</li></ul>
-        </details>
-        <details><summary><b>Scapular Setting</b> — 5s ×10 (daily)</summary>
-          <ul class="list check"><li>Gentle shrug → roll back → set blades down into back pockets; neck relaxed; breathe.</li><li>No pinching between blades; think width across collarbones.</li></ul>
-        </details>
-        <details><summary><b>Band Internal Rotation</b> — 2×12–15 (very light, 3s return)</summary>
-          <ul class="list check"><li>Anchor at elbow height; elbow glued to side at 90°.</li><li>Pull forearm toward belly; pause; slowly return 3s. Chest tall; ribs down.</li></ul>
-          <ul class="list danger"><li>Elbow drifting away; shoulder rolling forward.</li></ul>
-        </details>
-        <details><summary><b>Wall Angels</b> — 2×8</summary>
-          <ul class="list check"><li>Back/head/butt to wall; ribs gently down.</li><li>Slide arms up only to the point before winging or back arch; smooth breathing.</li></ul>
-          <p><b>Regress:</b> Seated or smaller range. <b>Progress:</b> Add 2–3s pause at top without shrug.</p>
-        </details>
-        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary>
-          <ul class="list check"><li>Hands on wall; body straight. Perform push-up; at the top, actively <b>protract</b> shoulder blades (the “plus”).</li><li>Neck long; no rib flare. Step feet back to increase difficulty.</li></ul>
-        </details>
+        <!-- quick shoulder block -->
+        <details><summary><b>Scap Set • IR • Wall Angels • Push-Up Plus</b></summary><ul class="list check"><li>Quality > quantity.</li></ul></details>
       </div>
     </div>
 
-    <!-- SUNDAY -->
+    <!-- Sunday -->
     <div class="card">
       <h3>Sunday — Recovery Walk + Daily Shoulder Rehab</h3>
       <div class="day-controls">
@@ -375,42 +249,20 @@
         <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
       </div>
       <div class="rx">
-        <details><summary><b>Easy Walk</b> — 10–20 min</summary>
-          <ul class="list check"><li>Comfortable pace; breathe nasally if possible.</li></ul>
-        </details>
-        <details><summary><b>Gentle Stretch</b> — Pec & forearm, 20–30s each</summary>
-          <ul class="list check"><li>No aggressive stretching; keep it easy.</li></ul>
-        </details>
-        <details><summary><b>Scapular Setting</b> — 5s ×10 (daily)</summary>
-          <ul class="list check"><li>Gentle shrug → roll back → set blades down into back pockets; neck relaxed; breathe.</li><li>No pinching between blades; think width across collarbones.</li></ul>
-        </details>
-        <details><summary><b>Band Internal Rotation</b> — 2×12–15 (very light, 3s return)</summary>
-          <ul class="list check"><li>Anchor at elbow height; elbow glued to side at 90°.</li><li>Pull forearm toward belly; pause; slowly return 3s. Chest tall; ribs down.</li></ul>
-          <ul class="list danger"><li>Elbow drifting away; shoulder rolling forward.</li></ul>
-        </details>
-        <details><summary><b>Wall Angels</b> — 2×8</summary>
-          <ul class="list check"><li>Back/head/butt to wall; ribs gently down.</li><li>Slide arms up only to the point before winging or back arch; smooth breathing.</li></ul>
-          <p><b>Regress:</b> Seated or smaller range. <b>Progress:</b> Add 2–3s pause at top without shrug.</p>
-        </details>
-        <details><summary><b>Push-Up Plus (wall)</b> — 1×12</summary>
-          <ul class="list check"><li>Hands on wall; body straight. Perform push-up; at the top, actively <b>protract</b> shoulder blades (the “plus”).</li><li>Neck long; no rib flare. Step feet back to increase difficulty.</li></ul>
-        </details>
+        <details><summary><b>Easy Walk</b> — 10–20 min</summary><ul class="list check"><li>Comfortable pace; nasal breathing if possible.</li></ul></details>
+        <details><summary><b>Gentle Stretch</b> — Pec & forearm, 20–30s</summary><ul class="list check"><li>Keep it light; no pinching.</li></ul></details>
+        <!-- shoulder block -->
+        <details><summary><b>Scap Set • IR • Wall Angels • Push-Up Plus</b></summary><ul class="list check"><li>Keep ranges clean and pain-free.</li></ul></details>
       </div>
     </div>
-
-    <div class="nav-links">
-      <a href="run-walk-metronome.html">Open Run/Walk Metronome</a> ·
-      <a href="fitness-plan-index.html">Back to Plan Index</a>
-    </div>
   </section>
-
 </main>
 
 <script>
-  function toggleDetails(scope, open){
-    var root = scope || document;
-    root.querySelectorAll('details').forEach(function(d){ d.open = open; });
-  }
+function toggleDetails(scope, open){
+  var root = scope || document;
+  root.querySelectorAll('details').forEach(function(d){ d.open = open; });
+}
 </script>
 </body>
 </html>
