@@ -196,6 +196,7 @@ function startPhase(phase, duration) {
     nextBeepTime = 0;
   } else if (phase === 'walking') {
     currentPhase = 'walking';
+    nextBeepTime = 0; // Reset to prevent timing issues when switching back to running
   }
   
   animationFrameId = requestAnimationFrame(mainLoop);
