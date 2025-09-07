@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Week 5 – Shoulder + Elbow Rehab with Barefoot Run</title>
+<style>
+  :root{ --bg:#0b1320; --card:#111a2c; --ink:#e9eef8; --muted:#a9b5cf; --accent:#3ddc97; --accent2:#8ab4ff; --warn:#ffd166; }
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif}
+  .wrap{max-width:980px;margin:0 auto;padding:24px}
+  header{position:sticky;top:0;background:linear-gradient(180deg,#0b1320,rgba(11,19,32,.85));backdrop-filter:blur(6px);z-index:5;border-bottom:1px solid #1f2a44}
+  header .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 24px}
+  h1{font-size:1.6rem;margin:.2rem 0}
+  .tag{font-size:.8rem;color:var(--bg);background:var(--accent);border-radius:999px;padding:.15rem .6rem;font-weight:700}
+  .card{background:var(--card);border:1px solid #1f2a44;border-radius:16px;padding:16px;margin-top:12px}
+  .muted{color:var(--muted)}
+  .pill{display:inline-block;background:#17233a;padding:.15rem .5rem;border-radius:999px;margin-left:.35rem;border:1px solid #223055}
+  details{border:1px solid #233055;border-radius:12px;padding:.6rem .8rem;background:#0e1830}
+  details+details{margin-top:10px}
+  details>summary{cursor:pointer;font-weight:700}
+  .rx{display:grid;grid-template-columns: 1fr; gap:8px;margin:.4rem 0 .6rem}
+  .ok{color:var(--accent)}
+  .warn{color:var(--warn)}
+  .list{margin:.2rem 0 0 1rem}
+  .check{list-style:"✔  ";}
+  .danger{list-style:"⚠  ";}
+  .day-controls{display:flex;gap:8px;flex-wrap:wrap;margin:.25rem 0 .5rem}
+  .button{background:#17233a;color:var(--ink);border:1px solid #2a365a;padding:.35rem .6rem;border-radius:8px;cursor:pointer}
+  .button:hover{border-color:var(--accent2)}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar wrap">
+    <h1>Week 5 — Shoulder + Elbow Rehab with Barefoot Run</h1>
+    <span class="tag">Phase 2 begins — Build & Balance</span>
+  </div>
+</header>
+<main class="wrap">
+
+<section class="card callout">
+  <b>How to use this page</b>
+  <ul>
+    <li>Click any exercise to open the <b>full how‑to</b>, cues, mistakes, and regressions/progressions.</li>
+    <li>Pain rule: 0–3/10 is acceptable. Stop for sharp/catching pain or if soreness >24h next day.</li>
+    <li>Week 5 progression: keep lower‑body mains at <b>3×6–8 @ RPE 6–7</b>. Add joint‑friendly <b>neutral‑grip press</b> and keep <b>chest‑supported rows</b>. Shift elbow work to <b>heavy‑slow resistance</b> (HSR). Run intervals extend to <b>2‑minute bouts</b>.</li>
+  </ul>
+</section>
+
+<section class="card callout">
+  <b>Week 5 Defaults</b>
+  <ul>
+    <li><b>Squat (choose one):</b> Back Squat <i>if shoulders are happy</i> <b>3×6–8 @ RPE 6–7</b> • OR stay <b>Goblet/FFESS</b> same sets/reps/effort.</li>
+    <li><b>Hinge:</b> RDL <b>3×8</b> light–moderate, perfect technique.</li>
+    <li><b>Upper:</b> <b>Chest‑Supported Row</b> <b>3×10–12</b> • <b>Neutral‑Grip DB Press (slight incline)</b> <b>3×8–10</b>.</li>
+    <li><b>Cuff:</b> Band <b>ER 2–3×12</b> + <b>IR 3×10–12</b> slow 3s returns.</li>
+    <li><b>Elbow:</b> Wrist‑extensor <b>HSR 3×10–12</b> (2–3s up/3s down). Keep a single isometric calm set only if flared.</li>
+    <li><b>Run sessions:</b> <b>6–8× (2:00 jog / 1:00–2:00 walk)</b> between 5′ warm‑up/cool‑down. If next‑morning calf/Achilles stiffness >60 min, repeat same volume.</li>
+    <li>Grip neutral where possible; straps allowed on hinge work if elbow talks.</li>
+  </ul>
+</section>
+
+<section id="week5" class="card">
+  <h2>Week 5 – Alternating Days (Weights ↔ Run) + Daily Shoulder Rehab</h2>
+  <p class="muted">Progress only when next‑day symptoms are ≤3/10. Use the buttons below to expand/collapse details.</p>
+
+  <div class="day-controls">
+    <button type="button" class="button" onclick="toggleDetails(document.querySelector('#week5'), true)">➕ Expand all (Week 5)</button>
+    <button type="button" class="button" onclick="toggleDetails(document.querySelector('#week5'), false)">➖ Collapse all (Week 5)</button>
+  </div>
+
+  <!-- MONDAY -->
+  <div class="card">
+    <h3>Monday — Weights + Elbow HSR (~45–50 min)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Open Books (T‑spine)</b> — 6 reps/side</summary>
+        <ul class="list check"><li>Side‑lying; hips/knees 90°. Reach top hand to ceiling, then rotate open toward floor behind you while knees stay stacked. Exhale into range.</li><li>Stop before any shoulder pinch.</li></ul>
+      </details>
+      <details><summary><b>Squat — choose one</b> — <b>3×6–8</b> @ RPE 6–7 • 3‑1‑1 tempo</summary>
+        <ul class="list check"><li><b>Back Squat:</b> Hands comfortable width; set blades <i>down/back</i>; bar on traps; ribs down. 3s down • 1s pause • drive up over mid‑foot.</li><li><b>Goblet/FFESS:</b> If shoulders prefer, hold DB/KB at chest (or front‑foot‑elevated split squat). Same tempo and effort.</li></ul>
+        <ul class="list danger"><li>Not OK: shoulder pain with bar position, shrugging, wrist extension jam. Switch to Goblet/FFESS if any of these show up.</li></ul>
+      </details>
+      <details><summary><b>Romanian Deadlift (DB/KB or Bar)</b> — <b>3×8</b> light–moderate</summary>
+        <ul class="list check"><li>Soft knees; push hips back; spine neutral; lats packed; weights skim thighs; stop mid‑shin. 2s up.</li><li>Use straps if grip/elbow complain; neutral wrists.</li></ul>
+      </details>
+      <details><summary><b>Chest‑Supported Row (neutral grip)</b> — <b>3×10–12</b></summary>
+        <ul class="list check"><li>Bench 30–45°; chest down; palms facing. Depress/retract slightly; row elbows 30–45° from body; pause 1s; lower 2–3s. Neck long; no shrug.</li></ul>
+        <ul class="list danger"><li>Cranking with biceps; shoulders hiking; elbows flared to 90°.</li></ul>
+      </details>
+      <details><summary><b>Neutral‑Grip DB Press (slight incline)</b> — <b>3×8–10</b></summary>
+        <ul class="list check"><li>Bench 15–30°. DBs start above lower chest with palms facing (neutral). Elbows 30–45° from torso.</li><li>Lower under control (2–3s) to a <b>pain‑free</b> depth; press up without shrugging; ribs down; neck long.</li><li><b>Range rule:</b> stop 1–2 cm above any pinch; use smaller ROM and increase later.</li></ul>
+        <ul class="list danger"><li>Elbows flared wide; rib flare/over‑arching; anterior shoulder pinch. If these appear, raise the incline or lighten the load.</li></ul>
+      </details>
+      <details><summary><b>Band External Rotation (ER)</b> — <b>2–3×12</b> (slow 3s return)</summary>
+        <ul class="list check"><li>Anchor at elbow height on opposite side. Elbow glued to side at 90°. Rotate forearm out; pause; <b>slow 3s return</b>.</li><li>Keep ribs down, shoulder blade gently set down/back, neck relaxed.</li></ul>
+      </details>
+      <details><summary><b>Band Internal Rotation (IR)</b> — <b>3×10–12</b> (slow 3s return)</summary>
+        <ul class="list check"><li>Anchor at elbow height; elbow glued at 90°. Pull forearm toward belly; pause; <b>slow 3s return</b>. Maintain neutral wrist.</li></ul>
+      </details>
+      <details><summary><b>Wrist‑Extensor HSR</b> — <b>3×10–12</b> (2–3s up / 3s down)</summary>
+        <ul class="list check"><li>Forearm supported, <b>palm down</b>, wrist just off table edge. Lift weight in 2–3s; lower in 3s through a tolerable range (≤3/10).</li><li>Rest 60–90s between sets. Choose a load that makes last 2 reps challenging but clean.</li></ul>
+        <ul class="list danger"><li>Sharp pain, tingling, or next‑day pain >3/10 → reduce ROM or load; fall back to isometrics if needed.</li></ul>
+      </details>
+      <details><summary><b>Optional Calm Set (Isometric)</b> — 1×20–30s @ 3–4/10</summary>
+        <ul class="list check"><li>Back‑of‑hand press into wall with elbow at 90°, wrist neutral or ~15° extension. Match pressure so the wrist doesn’t move; breathe.</li></ul>
+      </details>
+    </div>
+  </div>
+
+  <!-- TUESDAY -->
+  <div class="card">
+    <h3>Tuesday — Barefoot Walk–Jog + Foot/Calf Prep (~30 min)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Short‑Foot Drill</b> — 3×20s/side</summary>
+        <ul class="list check"><li>Gently lift arch (ball of big toe draws toward heel) without curling toes; breathe and relax the ankle.</li></ul>
+      </details>
+      <details><summary><b>Double‑Leg Calf Raise</b> — 3×12 slow</summary>
+        <ul class="list check"><li>Full range up/down 2–3s each; rise over big/second toe; brief pause at top; no bouncing.</li></ul>
+      </details>
+      <details><summary><b>Tibialis Raise</b> — 2×15</summary>
+        <ul class="list check"><li>Back to wall; heels down; lift toes toward shins; control the lower; knees soft.</li></ul>
+      </details>
+      <details><summary><b>Run – Week 5 Session A</b> — 5’ walk → <b>6–8× (2:00 jog / 1:00–2:00 walk)</b> → 5’ walk <span class="pill">longer bouts</span></summary>
+        <ul class="list check"><li>Cadence ~170–180; land under center; <b>quiet</b> feet; posture tall with slight forward lean from ankles.</li></ul>
+        <ul class="list danger"><li>If next‑morning calf/Achilles stiffness >60 min, repeat same volume before progressing.</li></ul>
+      </details>
+      <details><summary><b>Daily Shoulder Block (quick)</b> — Scap Set • ER/IR • Wall Angels</summary>
+        <ul class="list check"><li>Keep movements easy and smooth; stop before any pinchy range.</li></ul>
+      </details>
+    </div>
+  </div>
+
+  <!-- WEDNESDAY -->
+  <div class="card">
+    <h3>Wednesday — Weights + Elbow HSR (~45–50 min)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Open Books (T‑spine)</b> — 6 reps/side</summary>
+        <ul class="list check"><li>Rotate open; breathe out into range; knees remain stacked.</li></ul>
+      </details>
+      <details><summary><b>Squat — choose one</b> — <b>3×6–8</b> @ RPE 6–7 • 3‑1‑1 tempo <span class="pill">add +1 rep on set 1 if Monday felt easy</span></summary>
+        <ul class="list check"><li>Keep bar/DB path over mid‑foot; stop 2–3 reps in reserve. Quality first; micro‑load only if reps already at top end and next‑day is clean.</li></ul>
+      </details>
+      <details><summary><b>Romanian Deadlift</b> — <b>3×8</b></summary>
+        <ul class="list check"><li>Same cues; lats packed; weights close; straps ok if elbow talks.</li></ul>
+      </details>
+      <details><summary><b>Chest‑Supported Row (neutral)</b> — <b>3×10–12</b></summary>
+        <ul class="list check"><li>Depress/retract gently; row to ribs; 2–3s lower; no shrug.</li></ul>
+      </details>
+      <details><summary><b>Neutral‑Grip DB Press (slight incline)</b> — <b>3×8–10</b></summary>
+        <ul class="list check"><li>Elbows 30–45°; neutral grip; ribs down; press smoothly. Reduce ROM if any anterior pinch.</li></ul>
+      </details>
+      <details><summary><b>Band ER</b> — <b>2–3×12</b> (3s return) • <b>Band IR</b> — <b>3×10–12</b> (3s return)</summary>
+        <ul class="list check"><li>Elbow glued to side; smooth, pain‑free arcs; slow returns build control.</li></ul>
+      </details>
+      <details><summary><b>Wrist‑Extensor HSR</b> — <b>3×10–12</b> (2–3s up / 3s down)</summary>
+        <ul class="list check"><li>Choose a load that challenges but stays ≤3/10 discomfort; rest 60–90s.</li></ul>
+      </details>
+    </div>
+  </div>
+
+  <!-- THURSDAY -->
+  <div class="card">
+    <h3>Thursday — Barefoot Walk–Jog + Foot/Calf Prep (~30 min)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Short‑Foot Drill</b> — 3×20s/side</summary>
+        <ul class="list check"><li>Lift arch gently; avoid toe curling; breathe.</li></ul>
+      </details>
+      <details><summary><b>Double‑Leg Calf Raise</b> — 3×12 slow</summary>
+        <ul class="list check"><li>Full range; 2–3s up/down; rise over big/second toe.</li></ul>
+      </details>
+      <details><summary><b>Tibialis Raise</b> — 2×15</summary>
+        <ul class="list check"><li>Back to wall; heels down; toes up under control.</li></ul>
+      </details>
+      <details><summary><b>Run – Week 5 Session B</b> — 5’ walk → <b>6–8× (2:00 jog / 1:00–2:00 walk)</b> → 5’ walk</summary>
+        <ul class="list check"><li>Cadence ~170–180; quiet midfoot landings; posture tall.</li></ul>
+        <ul class="list danger"><li>Repeat volume if next‑morning stiffness >60 min; stop early if calves/Achilles grumble.</li></ul>
+      </details>
+      <details><summary><b>Daily Shoulder Block (quick)</b> — Scap Set • ER/IR • Wall Angels</summary>
+        <ul class="list check"><li>Quality over quantity; smooth scap motion.</li></ul>
+      </details>
+    </div>
+  </div>
+
+  <!-- FRIDAY -->
+  <div class="card">
+    <h3>Friday — Weights + Elbow HSR (~45–50 min)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Open Books (T‑spine)</b> — 6 reps/side</summary>
+        <ul class="list check"><li>Rotate open; breathe out into range; knees stacked.</li></ul>
+      </details>
+      <details><summary><b>Squat — choose one</b> — <b>3×6–8</b> @ RPE 6–7 • 3‑1‑1 tempo <span class="pill">optional micro‑load or +1 rep</span></summary>
+        <ul class="list check"><li>Micro‑load (e.g., +2.5 kg total) only if all sets clean and next‑day was ≤3/10 after Wednesday. Otherwise add a single rep to set 1.</li></ul>
+      </details>
+      <details><summary><b>Romanian Deadlift</b> — <b>3×8</b></summary>
+        <ul class="list check"><li>Hinge cleanly; lats packed; weights close; straps ok if elbow talks.</li></ul>
+      </details>
+      <details><summary><b>Chest‑Supported Row (neutral)</b> — <b>3×10–12</b></summary>
+        <ul class="list check"><li>Depress/retract; row to ribs; 2–3s lower; no shrug.</li></ul>
+      </details>
+      <details><summary><b>Neutral‑Grip DB Press (slight incline)</b> — <b>3×8–10</b></summary>
+        <ul class="list check"><li>Maintain neutral grip; elbows 30–45°; stop shy of any pinch; breathe smoothly.</li></ul>
+      </details>
+      <details><summary><b>Band ER</b> — <b>2–3×12</b> • <b>Band IR</b> — <b>3×10–12</b></summary>
+        <ul class="list check"><li>Slow returns (3s); elbow glued; ribs down.</li></ul>
+      </details>
+      <details><summary><b>Wrist‑Extensor HSR</b> — <b>3×10–12</b> (2–3s up / 3s down)</summary>
+        <ul class="list check"><li>Same load/tempo rules; rest 60–90s; stop before form breaks.</li></ul>
+      </details>
+    </div>
+  </div>
+
+  <!-- SATURDAY -->
+  <div class="card">
+    <h3>Saturday — Barefoot Walk–Jog + Foot/Calf Prep (~30 min)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Short‑Foot Drill</b> — 3×20s/side</summary>
+        <ul class="list check"><li>Lift arch; toes relaxed; breathe.</li></ul>
+      </details>
+      <details><summary><b>Double‑Leg Calf Raise</b> — 3×12 slow</summary>
+        <ul class="list check"><li>Full range; 2–3s up/down; no bouncing.</li></ul>
+      </details>
+      <details><summary><b>Tibialis Raise</b> — 2×15</summary>
+        <ul class="list check"><li>Back to wall; heels down; slow, controlled reps.</li></ul>
+      </details>
+      <details><summary><b>Run – Week 5 Session C</b> — 5’ walk → <b>6–8× (2:00 jog / 1:00–2:00 walk)</b> → 5’ walk</summary>
+        <ul class="list check"><li>Quiet landings; tall posture; easy effort.</li></ul>
+        <ul class="list danger"><li>Stop early if calves/Achilles grumble; repeat volume if morning stiffness >60 min.</li></ul>
+      </details>
+      <details><summary><b>Daily Shoulder Block (quick)</b> — Scap Set • ER/IR • Wall Angels</summary>
+        <ul class="list check"><li>Keep it light and pain‑free; add an extra set of ER if shoulders feel great.</li></ul>
+      </details>
+    </div>
+  </div>
+
+  <!-- SUNDAY -->
+  <div class="card">
+    <h3>Sunday — Recovery Walk + Easy Shoulder Care</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Easy Walk</b> — 10–20 min</summary><ul class="list check"><li>Comfortable pace; breathe nasally if possible.</li></ul></details>
+      <details><summary><b>Gentle Stretch</b> — Pec & forearm, 20–30s each</summary><ul class="list check"><li>No aggressive stretching; keep it easy and non‑pinchy.</li></ul></details>
+      <details><summary><b>Daily Shoulder Block (quick)</b> — Scap Set • ER/IR • Wall Angels</summary>
+        <ul class="list check"><li>Focus on smooth scap motion; pain ≤3/10.</li></ul>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+</main>
+<script>
+function toggleDetails(scope, open){
+  var root = scope || document;
+  root.querySelectorAll('details').forEach(function(d){ d.open = open; });
+}
+</script>
+</body>
+</html>
