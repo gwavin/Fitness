@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gentamicin Calculator (HSE-style one-pager)</title>
+  <style>
+    :root{
+      --green:#00695c; /* HSE-ish deep green */
+      --light:#f5f7f9;
+      --accent:#0ea5e9;
+      --danger:#b91c1c;
+      --ok:#065f46;
+      --card:#ffffff;
+      --muted:#64748b;
+    }
+    html,body{margin:0;padding:0;background:var(--light);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a}
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+    header{display:flex;gap:16px;align-items:center;margin-bottom:16px}
+    header h1{font-size:1.6rem;margin:0;line-height:1.2}
+    header .tag{font-size:.8rem;color:#fff;background:var(--green);padding:4px 8px;border-radius:999px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{background:var(--card);border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.06);padding:16px}
+    .col-4{grid-column:span 4}
+    .col-6{grid-column:span 6}
+    .col-8{grid-column:span 8}
+    .col-12{grid-column:span 12}
+    h2{font-size:1.1rem;margin:0 0 12px}
+    h3{font-size:1rem;margin:16px 0 8px}
+    label{font-size:.9rem;color:#0f172a}
+    input, select{width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:.95rem;background:#fff}
+    input[type="number"]{appearance:textfield}
+    input::placeholder{color:#94a3b8}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .help{font-size:.82rem;color:var(--muted)}
+    .pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#e2f5f1;color:#065f46;font-size:.78rem}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;background:var(--green);color:#fff;padding:10px 14px;font-weight:600;cursor:pointer}
+    .btn.secondary{background:#0f172a}
+    .btn.ghost{background:#fff;color:var(--green);border:1px solid var(--green)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .result h3{margin:0 0 6px}
+    .result .dose{font-size:1.6rem;font-weight:800;color:var(--green)}
+    .result .line{margin:6px 0;padding:8px 10px;background:#f8fafc;border-radius:10px;border:1px dashed #e2e8f0}
+    .warn{border-left:4px solid var(--danger);background:#fff1f2;padding:10px;border-radius:10px}
+    .ok{border-left:4px solid var(--ok);background:#ecfdf5;padding:10px;border-radius:10px}
+    .small{font-size:.8rem;color:var(--muted)}
+    details{border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;background:#fff}
+    summary{cursor:pointer;font-weight:600}
+    .badge{display:inline-block;margin-left:8px;background:#e2e8f0;color:#0f172a;padding:2px 8px;border-radius:999px;font-size:.75rem}
+    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .kpi .tile{background:#f1f5f9;border-radius:12px;padding:10px;text-align:center}
+    .tile .big{font-size:1.1rem;font-weight:700}
+    footer{margin:24px 0 40px;color:var(--muted);font-size:.85rem}
+    @media (max-width:900px){.col-4,.col-6,.col-8{grid-column:span 12}.row{grid-template-columns:1fr}.kpi{grid-template-columns:1fr 1fr}}
+    code{background:#f1f5f9;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z" fill="var(--green)" opacity=".12"/><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4zm0 0v10m0 6v2" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div>
+        <h1>Gentamicin Calculator <span class="tag">prototype</span></h1>
+        <div class="small">Single-file HTML • Host anywhere (e.g., GitHub Pages) • No libraries/build step</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card col-4">
+        <h2>1) Select scenario</h2>
+        <div class="row" style="margin-bottom:8px">
+          <label><input type="radio" name="mode" value="adult" checked> Adult (extended-interval)</label>
+          <label><input type="radio" name="mode" value="endo"> Endocarditis synergy (adult)</label>
+        </div>
+        <div class="row" style="margin-bottom:8px">
+          <label><input type="radio" name="mode" value="peds"> Paediatric (≥1 month)</label>
+          <label><input type="radio" name="mode" value="neo"> Neonatal</label>
+        </div>
+        <div class="help">This tool suggests an <strong>initial dose & interval</strong> and key monitoring targets. <span class="pill">Educational / non-clinical use</span></div>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0"/>
+
+        <h2>2) Patient data</h2>
+        <div class="row"><div>
+          <label>Age <span class="small">years</span>
+            <input id="age" type="number" min="0" step="1" placeholder="e.g., 64" value="64"/>
+          </label>
+        </div><div>
+          <label>Sex at birth
+            <select id="sex"><option value="M">Male</option><option value="F">Female</option></select>
+          </label>
+        </div></div>
+
+        <div class="row"><div>
+          <label>Height <span class="small">cm</span>
+            <input id="height" type="number" min="30" step="0.1" placeholder="e.g., 172" value="172"/>
+          </label>
+        </div><div>
+          <label>Weight <span class="small">kg</span>
+            <input id="weight" type="number" min="0.3" step="0.1" placeholder="e.g., 78" value="78"/>
+          </label>
+        </div></div>
+
+        <div class="row"><div>
+          <label>Serum creatinine
+            <input id="scr" type="number" min="0" step="0.1" placeholder="e.g., 88" value="88"/>
+          </label>
+        </div><div>
+          <label>Creatinine unit
+            <select id="scrUnit"><option value="umol">µmol/L</option><option value="mgdl">mg/dL</option></select>
+          </label>
+        </div></div>
+
+        <div class="row"><div>
+          <label><input type="checkbox" id="pregnant"> Pregnant</label>
+        </div><div>
+          <label><input type="checkbox" id="breastfeeding"> Breastfeeding</label>
+        </div></div>
+
+        <div id="neoExtra" style="display:none">
+          <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0"/>
+          <div class="row"><div>
+            <label>Postnatal age <span class="small">days</span>
+              <input id="pna" type="number" min="0" step="1" placeholder="e.g., 3"/>
+            </label>
+          </div><div>
+            <label>Gestational age at birth <span class="small">weeks</span>
+              <input id="ga" type="number" min="22" step="1" placeholder="optional"/>
+            </label>
+          </div></div>
+        </div>
+
+        <div class="actions" style="margin-top:12px">
+          <button class="btn" id="calcBtn">Calculate</button>
+          <button class="btn ghost" id="resetBtn">Reset</button>
+        </div>
+        <div class="help" style="margin-top:8px">Algorithms favour <em>once-daily dosing for most indications</em>. Endocarditis uses 
+          lower, multiple daily doses (synergy) in select cases.</div>
+      </div>
+
+      <div class="card col-8 result" id="result">
+        <h2>Output</h2>
+        <div class="line">Fill patient data and click <strong>Calculate</strong>.</div>
+      </div>
+
+      <div class="card col-12">
+        <h2>Therapeutic Drug Monitoring (TDM) targets</h2>
+        <div class="kpi">
+          <div class="tile"><div class="small">Once-daily (adult)</div><div class="big">Pre-dose < 1 mg/L</div><div class="small">Take level 18–24 h after last dose; before 2nd dose</div></div>
+          <div class="tile"><div class="small">Paediatrics</div><div class="big">Trough < 1 mg/L</div><div class="small">First trough < 2 mg/L acceptable; then < 1 mg/L</div></div>
+          <div class="tile"><div class="small">Neonates</div><div class="big">Trough < 1 mg/L</div><div class="small">Before 2nd dose; hold if ≥ 1 mg/L</div></div>
+          <div class="tile"><div class="small">Synergy (endo)</div><div class="big">Peak 3–5 mg/L</div><div class="small">Trough < 1 mg/L; interval by CrCl</div></div>
+        </div>
+      </div>
+
+      <div class="card col-12">
+        <h2>Administration & precautions</h2>
+        <ul>
+          <li>IV infusion: add total dose to <strong>100 mL</strong> NaCl 0.9% or Glucose 5% and infuse over ~<strong>20 minutes</strong>. Avoid rapid bolus.</li>
+          <li>Available strength commonly: <strong>80 mg/2 mL (40 mg/mL)</strong>. Prototype rounds to nearest mL for volume display.</li>
+          <li><strong>Weight for dose</strong>: If Actual Body Weight (ABW) ≤ 120% of Ideal Body Weight (IBW) use ABW; otherwise use Dose-Determining Weight (DDW) = IBW + 0.4 × (ABW − IBW).</li>
+          <li><strong>Creatinine clearance (CrCl)</strong>: Cockcroft–Gault; defaults to IBW (or ABW if underweight). Creatinine unit auto-converted (µmol/L ↔ mg/dL).</li>
+          <li><strong>Toxicity</strong>: Nephrotoxicity & cochlear/vestibular ototoxicity risk ↑ with higher troughs, prolonged courses, renal impairment, dehydration, age, and co-nephrotoxins. Daily renal review advised during therapy.</li>
+          <li><strong>Pregnancy</strong>: Use only if benefits outweigh risks; seek specialist advice. <strong>Breastfeeding</strong>: generally compatible; monitor infant as clinically indicated.</li>
+        </ul>
+      </div>
+
+      <details class="col-12">
+        <summary>Formulas & caps <span class="badge">for transparency</span></summary>
+        <div class="grid" style="margin-top:10px">
+          <div class="col-6">
+            <h3>IBW (Devine)</h3>
+            <div class="help">Male: 50 + 2.3×(inches over 60); Female: 45.5 + 2.3×(inches over 60). Height in inches = cm / 2.54.</div>
+            <h3>Cockcroft–Gault</h3>
+            <div class="help">CrCl = ((140 − age) × weight × sexFactor) / (72 × SCr<sub>mg/dL</sub>). sexFactor = 1 (M) or 0.85 (F). Weight: IBW by default (ABW if underweight).</div>
+          </div>
+          <div class="col-6">
+            <h3>Adult dosing bands</h3>
+            <div class="help">CrCl &gt; 50 → 5 mg/kg OD (max 480 mg); 30–50 → 4 mg/kg OD; 10–30 → 3 mg/kg OD; 5–10 → 2 mg/kg stat; HD/CAPD/CVVH: consult renal.</div>
+            <h3>Paeds & Neonates</h3>
+            <div class="help">Paeds ≥1 month: 7 mg/kg every 24 h (max 560 mg) with trough-guided interval. Neonates: 5 mg/kg every 36 h if ≤6 days old, otherwise every 24 h; trough &lt;1 mg/L.</div>
+          </div>
+        </div>
+      </details>
+
+      <div class="col-12 small" style="margin-top:8px">
+        <div class="warn"><strong>Safety & scope:</strong> This prototype is for education/QA/playground use only and is not a substitute for local policies, Micro/ID/Pharmacy advice, or clinical judgment. Always check local dosing tools and TDM policies before use.</div>
+      </div>
+    </div>
+
+    <footer>
+      <div>© 2025 – Gentamicin Calculator (single-file). MIT License. Last updated: <span id="buildDate"></span></div>
+    </footer>
+  </div>
+
+<script>
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  const result = $("result");
+  const modeRadios = Array.from(document.querySelectorAll('input[name="mode"]'));
+  const neoExtra = $("neoExtra");
+  const buildDateEl = $("buildDate");
+  buildDateEl.textContent = new Date().toISOString().slice(0,10);
+
+  function inchesFromCm(cm){return cm/2.54}
+  function ibw_kg(sex, height_cm){
+    const inches = inchesFromCm(height_cm);
+    const over60 = Math.max(0, inches - 60);
+    const base = sex === 'M' ? 50 : 45.5;
+    return base + 2.3*over60;
+  }
+  function ddw_kg(ibw, abw){return ibw + 0.4*(abw-ibw)}
+  function mgdl_from_umol(umol){return umol/88.4}
+  function round(val, dp){const f=Math.pow(10,dp);return Math.round(val*f)/f}
+  function nearest(val, step){return Math.round(val/step)*step}
+
+  function currentMode(){
+    const r = modeRadios.find(r=>r.checked);
+    return r? r.value: 'adult';
+  }
+
+  function showNeoExtra(){
+    neoExtra.style.display = (currentMode()==='neo') ? 'block' : 'none';
+  }
+  modeRadios.forEach(r=>r.addEventListener('change', showNeoExtra));
+  showNeoExtra();
+
+  function cg_weight(abw, ibw){
+    // Use IBW by default; if underweight, use ABW
+    return (abw < ibw) ? abw : ibw;
+  }
+
+  function renderLines(lines){
+    result.innerHTML = '<h2>Output</h2>' + lines.map(t=>`<div class="line">${t}</div>`).join('');
+  }
+
+  function mkVolumeText(doseMg){
+    const conc = 40; // mg/mL from 80mg/2mL
+    const vol = doseMg/conc; // mL
+    const volRounded = nearest(vol,1); // nearest mL as per common local practice
+    return `${round(vol,2)} mL @ 40 mg/mL (round to ~${volRounded} mL)`
+  }
+
+  function calc(){
+    const mode = currentMode();
+    const age = parseFloat($("age").value||'0');
+    const sex = $("sex").value;
+    const height = parseFloat($("height").value||'0');
+    const weight = parseFloat($("weight").value||'0');
+    const scrVal = parseFloat($("scr").value||'0');
+    const scrUnit = $("scrUnit").value; // umol or mgdl
+    const pregnant = $("pregnant").checked;
+    const breastfeeding = $("breastfeeding").checked;
+
+    const ibw = ibw_kg(sex, height);
+    const dosingWeight = (weight <= 1.2*ibw) ? weight : ddw_kg(ibw, weight);
+
+    const scr_mgdl = (scrUnit==='umol') ? mgdl_from_umol(scrVal) : scrVal;
+    const cgW = cg_weight(weight, ibw);
+    const sexFactor = (sex==='F') ? 0.85 : 1.0;
+    const CrCl = (scr_mgdl>0) ? ((140 - age) * cgW * sexFactor) / (72 * scr_mgdl) : NaN;
+
+    const lines = [];
+    lines.push(`<strong>Scenario:</strong> ${({'adult':'Adult (extended-interval)','endo':'Endocarditis synergy (adult)','peds':'Paediatric ≥1 month','neo':'Neonatal'})[mode]}`);
+    lines.push(`<strong>Anthropometrics:</strong> IBW ≈ <strong>${round(ibw,1)} kg</strong>; Dosing weight = <strong>${round(dosingWeight,1)} kg</strong> ${weight>1.2*ibw?'<span class="pill">DDW used</span>':''}`);
+    if(!Number.isNaN(CrCl)){
+      lines.push(`<strong>Renal:</strong> Cockcroft–Gault CrCl ≈ <strong>${round(CrCl,0)} mL/min</strong> (weight for CG: ${round(cgW,1)} kg; SCr ${round(scr_mgdl,2)} mg/dL)`);
+    } else {
+      lines.push(`<strong>Renal:</strong> Creatinine not provided or zero – CrCl not calculated`);
+    }
+
+    function outDose(doseMg, interval, notes){
+      const vol = mkVolumeText(doseMg);
+      lines.push(`<div><div class="dose">${round(doseMg,0)} mg <span class="small">(${interval})</span></div><div class="small">Volume guide: ${vol}</div>${notes?`<div class="small">${notes}</div>`:''}</div>`);
+    }
+
+    // Adult extended-interval bands (CrCl + mg/kg bands)
+    function adultBands(){
+      if(Number.isNaN(CrCl)) return {msg:"Provide creatinine to determine OD dose band."};
+      let mgkg=0, interval='every 24 h';
+      if(CrCl>50){ mgkg=5; }
+      else if(CrCl>30){ mgkg=4; }
+      else if(CrCl>10){ mgkg=3; }
+      else if(CrCl>5){ mgkg=2; interval='single stat dose'; }
+      else { return {msg:"CrCl ≤5 mL/min – consult renal team for dosing; consider holding and seek specialist advice."}; }
+      let dose = mgkg * dosingWeight;
+      const maxDose = 480;
+      if(dose>maxDose){ dose = maxDose; }
+      return {dose, interval, blurb:`Initial ${mgkg} mg/kg using dosing weight; cap 480 mg.`};
+    }
+
+    // Peds once-daily
+    function pedsDose(){
+      const mgkg = 7; const max=560;
+      let dose = mgkg * dosingWeight;
+      if(dose>max) dose=max;
+      return {dose, interval:'every 24 h', blurb:`Initial 7 mg/kg (max ${max} mg). Check trough before 2nd dose; target <1 mg/L (first <2 mg/L acceptable).`}
+    }
+
+    // Neonatal
+    function neoDose(){
+      const pna = parseFloat($("pna").value||'');
+      const mgkg = 5;
+      let interval = 'every 24 h';
+      if(!Number.isFinite(pna)) return {msg:'Enter postnatal age (days).'}
+      if(pna <= 6) interval = 'every 36 h';
+      let dose = mgkg * dosingWeight;
+      return {dose, interval, blurb:`${mgkg} mg/kg with trough <1 mg/L; check before 2nd dose. Hold if ≥1 mg/L and discuss.`}
+    }
+
+    // Endocarditis synergy (adult)
+    function endoDose(){
+      if(Number.isNaN(CrCl)) return {msg:"Provide creatinine for synergy interval."};
+      let interval='q8h';
+      if(CrCl>60) interval='q8h';
+      else if(CrCl>=40) interval='q12h';
+      else if(CrCl>=30) interval='q24h';
+      else if(CrCl<20) interval='single dose; redose by levels';
+      const mgkg=1;
+      const dose = mgkg * dosingWeight;
+      return {dose, interval, blurb:`Synergy dosing ${mgkg} mg/kg; aim peak 3–5 mg/L and trough <1 mg/L. Consider β-lactam/β-lactam (e.g., ampicillin+ceftriaxone) where appropriate to minimise toxicity.`}
+    }
+
+    let res;
+    if(mode==='adult') res = adultBands();
+    if(mode==='peds') res = pedsDose();
+    if(mode==='neo') res = neoDose();
+    if(mode==='endo') res = endoDose();
+
+    if(res && res.msg){ lines.push(`<div class="warn">${res.msg}</div>`); renderLines(lines); return; }
+    if(res){ outDose(res.dose, res.interval, res.blurb); }
+
+    // TDM & flags
+    const tdm = [];
+    if(mode==='adult') tdm.push('Take level 18–24 h after last dose (before 2nd dose). Target pre-dose < 1 mg/L.');
+    if(mode==='peds') tdm.push('Take trough before 2nd dose: first <2 mg/L acceptable; on-going <1 mg/L.');
+    if(mode==='neo') tdm.push('Neonates: take trough before 2nd dose; hold dose if ≥1 mg/L; 3rd dose only after satisfactory level.');
+    if(mode==='endo') tdm.push('Synergy: check peak (30 min post-infusion) 3–5 mg/L and trough <1 mg/L; adjust interval by levels/CrCl.');
+
+    const risks = [];
+    risks.push('Review nephrotoxic co-meds (e.g., NSAIDs, ACEi/ARB, diuretics, vancomycin).');
+    risks.push('Ensure good hydration; monitor renal function daily while on therapy.');
+    if(pregnant) risks.push('Pregnancy: aminoglycosides cross placenta – use only on specialist advice.');
+    if(breastfeeding) risks.push('Breastfeeding: generally compatible – monitor infant if clinically indicated.');
+
+    if(tdm.length){ lines.push('<strong>Monitoring:</strong> '+tdm.join(' ')); }
+    lines.push('<strong>Risk notes:</strong> '+risks.join(' '));
+    lines.push('<em>Infuse in 100 mL NaCl 0.9% or Glucose 5% over ~20 minutes; avoid rapid bolus.</em>');
+
+    renderLines(lines);
+  }
+
+  $("calcBtn").addEventListener('click', calc);
+  $("resetBtn").addEventListener('click', ()=>{document.querySelector('form')?.reset; location.reload()});
+})();
+</script>
+</body>
+</html>
