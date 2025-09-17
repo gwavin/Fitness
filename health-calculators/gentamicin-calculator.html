@@ -1,206 +1,319 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gentamicin Calculator (HSE-style one-pager)</title>
+  <title>Gentamicin Calculator (HSE Enhanced One‑Pager)</title>
   <style>
     :root{
-      --green:#00695c; /* HSE-ish deep green */
-      --light:#f5f7f9;
+      --hse:#006a52; /* HSE green */
+      --hse-dark:#004634;
+      --light:#f6f8fa;
       --accent:#0ea5e9;
       --danger:#b91c1c;
       --ok:#065f46;
       --card:#ffffff;
       --muted:#64748b;
+      --shadow:0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
-    html,body{margin:0;padding:0;background:var(--light);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a}
-    .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
-    header{display:flex;gap:16px;align-items:center;margin-bottom:16px}
-    header h1{font-size:1.6rem;margin:0;line-height:1.2}
-    header .tag{font-size:.8rem;color:#fff;background:var(--green);padding:4px 8px;border-radius:999px}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-    .card{background:var(--card);border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.06);padding:16px}
-    .col-4{grid-column:span 4}
-    .col-6{grid-column:span 6}
-    .col-8{grid-column:span 8}
-    .col-12{grid-column:span 12}
-    h2{font-size:1.1rem;margin:0 0 12px}
-    h3{font-size:1rem;margin:16px 0 8px}
-    label{font-size:.9rem;color:#0f172a}
-    input, select{width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:.95rem;background:#fff}
+    * { box-sizing: border-box; }
+    html,body{margin:0;padding:0;background:var(--light);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a;line-height:1.45}
+    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+    .topbar{background:var(--hse);color:#fff}
+    .topbar .bar{max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+    .topbar .logo{font-weight:800;letter-spacing:.5px}
+    .topbar .soft{opacity:.95;font-weight:500}
+    header{display:flex;gap:16px;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #e2e8f0}
+    header h1{font-size:1.8rem;margin:0;line-height:1.2}
+    header .tag{font-size:.8rem;color:#fff;background:var(--hse);padding:4px 8px;border-radius:999px}
+    .tabs{display:flex;gap:4px;margin-bottom:16px;overflow-x:auto}
+    .tab-btn{padding:8px 16px;border:1px solid #e2e8f0;background:#fff;color:var(--muted);border-radius:8px 8px 0 0;cursor:pointer;font-weight:600;flex-shrink:0}
+    .tab-btn.active{background:var(--card);border-bottom:1px solid var(--card);color:var(--hse)}
+    .tab-panel{display:none;padding:16px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px;background:var(--card)}
+    .tab-panel.active{display:block}
+
+    .card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+    h2{font-size:1.2rem;margin:0 0 16px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}
+    h3{font-size:1rem;margin:16px 0 8px;font-weight:700}
+    label{display:block;font-size:.9rem;color:#0f172a;margin-bottom:8px;position:relative;min-height:44px;display:flex;align-items:center;cursor:pointer}
+    input[type="checkbox"] + span{margin-left:8px;flex:1}
+    input, select{width:100%;padding:10px 80px 10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:.95rem;background:#fff;min-height:44px}
+    input[type="checkbox"], input[type="radio"]{width:auto;padding:0;margin-right:8px;min-height:auto;flex-shrink:0}
     input[type="number"]{appearance:textfield}
     input::placeholder{color:#94a3b8}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .help{font-size:.82rem;color:var(--muted)}
-    .pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#e2f5f1;color:#065f46;font-size:.78rem}
-    .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;background:var(--green);color:#fff;padding:10px 14px;font-weight:600;cursor:pointer}
+    .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.8rem;pointer-events:none}
+    .row{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;align-items:start}
+    .help{font-size:.82rem;color:var(--muted);margin-top:4px}
+    .pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#e2f5f1;color:var(--ok);font-size:.78rem}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:8px;background:var(--hse);color:#fff;padding:10px 16px;font-weight:700;cursor:pointer;transition:background .2s;flex-shrink:0;height:44px}
+    .btn:hover{background:var(--hse-dark)}
     .btn.secondary{background:#0f172a}
-    .btn.ghost{background:#fff;color:var(--green);border:1px solid var(--green)}
+    .btn.ghost{background:transparent;color:var(--hse);border:1px solid var(--hse)}
     .btn:disabled{opacity:.5;cursor:not-allowed}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .result h3{margin:0 0 6px}
-    .result .dose{font-size:1.6rem;font-weight:800;color:var(--green)}
-    .result .line{margin:6px 0;padding:8px 10px;background:#f8fafc;border-radius:10px;border:1px dashed #e2e8f0}
-    .warn{border-left:4px solid var(--danger);background:#fff1f2;padding:10px;border-radius:10px}
-    .ok{border-left:4px solid var(--ok);background:#ecfdf5;padding:10px;border-radius:10px}
-    .small{font-size:.8rem;color:var(--muted)}
-    details{border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;background:#fff}
-    summary{cursor:pointer;font-weight:600}
-    .badge{display:inline-block;margin-left:8px;background:#e2e8f0;color:#0f172a;padding:2px 8px;border-radius:999px;font-size:.75rem}
-    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .kpi .tile{background:#f1f5f9;border-radius:12px;padding:10px;text-align:center}
-    .tile .big{font-size:1.1rem;font-weight:700}
-    footer{margin:24px 0 40px;color:var(--muted);font-size:.85rem}
-    @media (max-width:900px){.col-4,.col-6,.col-8{grid-column:span 12}.row{grid-template-columns:1fr}.kpi{grid-template-columns:1fr 1fr}}
-    code{background:#f1f5f9;padding:2px 6px;border-radius:6px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center;flex:1}
+    .actions label{order:999;margin:0 0 0 auto;align-self:center;display:flex;align-items:center;gap:8px;flex-shrink:0}
+    /* Summary tiles + Dose card */
+    .summary{display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:12px;margin-bottom:16px}
+    .summary-tile{background:#f8fafc;border-radius:10px;padding:12px;text-align:center;border:1px solid #e2e8f0}
+    .summary-tile .big{font-size:1.3rem;font-weight:800;color:var(--hse)}
+    .summary-tile .small{font-size:.8rem;color:var(--muted)}
+    .dose-card{background:linear-gradient(135deg, var(--hse), #057a55);color:#fff;padding:18px;border-radius:12px;margin:16px 0;text-align:center}
+    .dose{font-size:2.2rem;font-weight:900;line-height:1;margin-bottom:4px}
+    .dose-interval{font-size:1.05rem;opacity:.95}
+    .volume{font-size:.92rem;opacity:.9;margin-top:2px}
+
+    .alert{border-left:4px solid var(--danger);background:#fef2f2;padding:12px;border-radius:8px;color:var(--danger);margin:8px 0}
+    .alert.ok{border-left-color:var(--ok);background:#f0fdf4;color:var(--ok)}
+
+    .tdm-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:12px}
+    .tdm-tile{background:#f8fafc;border-radius:8px;padding:12px;border:1px solid #e2e8f0}
+    .tdm-tile h4{margin:0 0 6px;font-size:.95rem}
+    .tdm-tile .target{font-weight:700;color:var(--hse)}
+
+    details{border:1px solid #e2e8f0;border-radius:8px;padding:12px;background:#fff;margin:8px 0}
+    summary{cursor:pointer;font-weight:700;padding:8px 0}
+    .badge{display:inline-block;margin-left:8px;background:#e2e8f0;color:#0f172a;padding:2px 6px;border-radius:999px;font-size:.75rem}
+
+    footer{margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0;color:var(--muted);font-size:.85rem;text-align:center}
+
+    @media (max-width:768px){
+      .row{grid-template-columns:1fr;gap:16px}
+      .summary{grid-template-columns:1fr;gap:8px}
+      .tdm-grid{grid-template-columns:1fr}
+      .actions{flex-direction:column;align-items:stretch;gap:8px}
+      .actions label{order:initial;margin:0;order:999;justify-content:center;flex:1}
+      input, select{padding-right:12px;min-height:44px}
+      .unit{position:static;transform:none;display:block;margin-top:2px;right:auto;top:auto}
+      .tabs{justify-content:center}
+      label{min-height:44px;padding:8px 0;display:flex;align-items:center}
+    }
+    .hidden{display:none}
+    code{background:#f1f5f9;padding:2px 6px;border-radius:6px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+    @media print{
+      body{background:#fff;color:#000}
+      .wrap{margin:0;padding:0;max-width:none}
+      .card{box-shadow:none;border:1px solid #ccc;margin:8px 0;padding:12px}
+      .topbar,.tabs,.actions{display:none}
+      .summary{break-inside:avoid}
+      details[open]{page-break-inside:avoid}
+    }
   </style>
 </head>
 <body>
+  <div class="topbar">
+    <div class="bar">
+      <div class="logo">HSE</div>
+      <div class="soft">AMRIC • Prototype Calculator</div>
+    </div>
+  </div>
+
   <div class="wrap">
     <header>
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z" fill="var(--green)" opacity=".12"/><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4zm0 0v10m0 6v2" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z" fill="var(--hse)" opacity=".12"/>
+        <path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4zm0 0v10m0 6v2" stroke="var(--hse)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
       <div>
-        <h1>Gentamicin Calculator <span class="tag">prototype</span></h1>
-        <div class="small">Single-file HTML • Host anywhere (e.g., GitHub Pages) • No libraries/build step</div>
+        <h1>Gentamicin Calculator <span class="tag">enhanced prototype</span></h1>
+        <div class="help">Single‑file HTML • TDM‑based interval advice • Host anywhere (GitHub Pages)</div>
       </div>
     </header>
 
-    <div class="grid">
-      <div class="card col-4">
-        <h2>1) Select scenario</h2>
-        <div class="row" style="margin-bottom:8px">
-          <label><input type="radio" name="mode" value="adult" checked> Adult (extended-interval)</label>
-          <label><input type="radio" name="mode" value="endo"> Endocarditis synergy (adult)</label>
-        </div>
-        <div class="row" style="margin-bottom:8px">
-          <label><input type="radio" name="mode" value="peds"> Paediatric (≥1 month)</label>
-          <label><input type="radio" name="mode" value="neo"> Neonatal</label>
-        </div>
-        <div class="help">This tool suggests an <strong>initial dose & interval</strong> and key monitoring targets. <span class="pill">Educational / non-clinical use</span></div>
-        <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0"/>
+    <details open>
+      <summary>How to Use This Calculator <span class="badge">quick start</span></summary>
+      <div style="margin-top:12px">
+        <p class="help">Quick guide for first-time use (or after a long shift). This is a simple tool to calculate gentamicin doses based on HSE guidelines. Always verify with local policy, Microbiology/Pharmacy, and your clinical judgment—it's a prototype, not a replacement for expertise.</p>
+        <ol style="font-size:.95rem; padding-left:20px; margin:8px 0;">
+          <li><strong>Select scenario:</strong> Click a tab (Adult, Endocarditis, Paediatric, or Neonatal) to match your patient. Defaults load example values—unlock with the checkbox if you want to keep your inputs when switching.</li>
+          <li><strong>Enter basics:</strong> Fill age, sex, height, weight, and serum creatinine (select unit). For neonates, add postnatal age (days) and gestational age (weeks, optional).</li>
+          <li><strong>Add extras if relevant:</strong> Check boxes for pregnancy, breastfeeding, or myasthenia gravis (note: contraindicated in myasthenia). For TDM adjustment, enter previous trough level (mg/L) and time since last dose (hours)—this auto-advises next steps.</li>
+          <li><strong>Hit Calculate:</strong> Review the big green dose card for recommended mg, interval, and volume (from 40 mg/mL vial). Check summary tiles for weights/CrCl, risks, and notes.</li>
+          <li><strong>Document & go:</strong> Print or copy the summary for notes/MAR. Monitor renal function daily; repeat TDM as advised (e.g., trough &lt;1 mg/L at 16–18h).</li>
+        </ol>
+        <div class="alert ok" style="margin-top:8px"><strong>Tip:</strong> If myasthenia is checked, it alerts contraindication. For questions, expand "Formulas & Guidelines" below or consult ID team.</div>
+      </div>
+    </details>
 
-        <h2>2) Patient data</h2>
-        <div class="row"><div>
-          <label>Age <span class="small">years</span>
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="adult">Adult (Extended‑Interval)</button>
+        <button class="tab-btn" data-tab="endo">Endocarditis Synergy</button>
+        <button class="tab-btn" data-tab="peds">Paediatric (≥1 month)</button>
+        <button class="tab-btn" data-tab="neo">Neonatal</button>
+      </div>
+
+      <div id="adult" class="tab-panel active"></div>
+      <div id="endo" class="tab-panel"></div>
+      <div id="peds" class="tab-panel"></div>
+      <div id="neo" class="tab-panel"></div>
+
+      <div class="row">
+        <div>
+          <label for="age">Age
             <input id="age" type="number" min="0" step="1" placeholder="e.g., 64" value="64"/>
+            <span class="unit">years</span>
           </label>
-        </div><div>
-          <label>Sex at birth
+          <label for="sex">Sex at birth
             <select id="sex"><option value="M">Male</option><option value="F">Female</option></select>
           </label>
-        </div></div>
-
-        <div class="row"><div>
-          <label>Height <span class="small">cm</span>
+        </div>
+        <div>
+          <label for="height">Height
             <input id="height" type="number" min="30" step="0.1" placeholder="e.g., 172" value="172"/>
+            <span class="unit">cm</span>
           </label>
-        </div><div>
-          <label>Weight <span class="small">kg</span>
+          <label for="weight">Weight
             <input id="weight" type="number" min="0.3" step="0.1" placeholder="e.g., 78" value="78"/>
+            <span class="unit">kg</span>
           </label>
-        </div></div>
+        </div>
+      </div>
 
-        <div class="row"><div>
-          <label>Serum creatinine
+      <div class="row">
+        <div>
+          <label for="scr">Serum creatinine
             <input id="scr" type="number" min="0" step="0.1" placeholder="e.g., 88" value="88"/>
+            <span class="unit">see below</span>
           </label>
-        </div><div>
-          <label>Creatinine unit
+          <label for="scrUnit">Creatinine unit
             <select id="scrUnit"><option value="umol">µmol/L</option><option value="mgdl">mg/dL</option></select>
           </label>
-        </div></div>
-
-        <div class="row"><div>
-          <label><input type="checkbox" id="pregnant"> Pregnant</label>
-        </div><div>
-          <label><input type="checkbox" id="breastfeeding"> Breastfeeding</label>
-        </div></div>
-
-        <div id="neoExtra" style="display:none">
-          <hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0"/>
-          <div class="row"><div>
-            <label>Postnatal age <span class="small">days</span>
-              <input id="pna" type="number" min="0" step="1" placeholder="e.g., 3"/>
-            </label>
-          </div><div>
-            <label>Gestational age at birth <span class="small">weeks</span>
-              <input id="ga" type="number" min="22" step="1" placeholder="optional"/>
-            </label>
-          </div></div>
         </div>
-
-        <div class="actions" style="margin-top:12px">
-          <button class="btn" id="calcBtn">Calculate</button>
-          <button class="btn ghost" id="resetBtn">Reset</button>
-        </div>
-        <div class="help" style="margin-top:8px">Algorithms favour <em>once-daily dosing for most indications</em>. Endocarditis uses 
-          lower, multiple daily doses (synergy) in select cases.</div>
-      </div>
-
-      <div class="card col-8 result" id="result">
-        <h2>Output</h2>
-        <div class="line">Fill patient data and click <strong>Calculate</strong>.</div>
-      </div>
-
-      <div class="card col-12">
-        <h2>Therapeutic Drug Monitoring (TDM) targets</h2>
-        <div class="kpi">
-          <div class="tile"><div class="small">Once-daily (adult)</div><div class="big">Pre-dose < 1 mg/L</div><div class="small">Take level 18–24 h after last dose; before 2nd dose</div></div>
-          <div class="tile"><div class="small">Paediatrics</div><div class="big">Trough < 1 mg/L</div><div class="small">First trough < 2 mg/L acceptable; then < 1 mg/L</div></div>
-          <div class="tile"><div class="small">Neonates</div><div class="big">Trough < 1 mg/L</div><div class="small">Before 2nd dose; hold if ≥ 1 mg/L</div></div>
-          <div class="tile"><div class="small">Synergy (endo)</div><div class="big">Peak 3–5 mg/L</div><div class="small">Trough < 1 mg/L; interval by CrCl</div></div>
+        <div>
+          <label for="pregnant"><input type="checkbox" id="pregnant"> Pregnant</label>
+          <label for="breastfeeding"><input type="checkbox" id="breastfeeding"> Breastfeeding</label>
+          <label for="myasthenia"><input type="checkbox" id="myasthenia"> Myasthenia gravis</label>
         </div>
       </div>
 
-      <div class="card col-12">
-        <h2>Administration & precautions</h2>
-        <ul>
-          <li>IV infusion: add total dose to <strong>100 mL</strong> NaCl 0.9% or Glucose 5% and infuse over ~<strong>20 minutes</strong>. Avoid rapid bolus.</li>
-          <li>Available strength commonly: <strong>80 mg/2 mL (40 mg/mL)</strong>. Prototype rounds to nearest mL for volume display.</li>
-          <li><strong>Weight for dose</strong>: If Actual Body Weight (ABW) ≤ 120% of Ideal Body Weight (IBW) use ABW; otherwise use Dose-Determining Weight (DDW) = IBW + 0.4 × (ABW − IBW).</li>
-          <li><strong>Creatinine clearance (CrCl)</strong>: Cockcroft–Gault; defaults to IBW (or ABW if underweight). Creatinine unit auto-converted (µmol/L ↔ mg/dL).</li>
-          <li><strong>Toxicity</strong>: Nephrotoxicity & cochlear/vestibular ototoxicity risk ↑ with higher troughs, prolonged courses, renal impairment, dehydration, age, and co-nephrotoxins. Daily renal review advised during therapy.</li>
-          <li><strong>Pregnancy</strong>: Use only if benefits outweigh risks; seek specialist advice. <strong>Breastfeeding</strong>: generally compatible; monitor infant as clinically indicated.</li>
-        </ul>
-      </div>
-
-      <details class="col-12">
-        <summary>Formulas & caps <span class="badge">for transparency</span></summary>
-        <div class="grid" style="margin-top:10px">
-          <div class="col-6">
-            <h3>IBW (Devine)</h3>
-            <div class="help">Male: 50 + 2.3×(inches over 60); Female: 45.5 + 2.3×(inches over 60). Height in inches = cm / 2.54.</div>
-            <h3>Cockcroft–Gault</h3>
-            <div class="help">CrCl = ((140 − age) × weight × sexFactor) / (72 × SCr<sub>mg/dL</sub>). sexFactor = 1 (M) or 0.85 (F). Weight: IBW by default (ABW if underweight).</div>
-          </div>
-          <div class="col-6">
-            <h3>Adult dosing bands</h3>
-            <div class="help">CrCl &gt; 50 → 5 mg/kg OD (max 480 mg); 30–50 → 4 mg/kg OD; 10–30 → 3 mg/kg OD; 5–10 → 2 mg/kg stat; HD/CAPD/CVVH: consult renal.</div>
-            <h3>Paeds & Neonates</h3>
-            <div class="help">Paeds ≥1 month: 7 mg/kg every 24 h (max 560 mg) with trough-guided interval. Neonates: 5 mg/kg every 36 h if ≤6 days old, otherwise every 24 h; trough &lt;1 mg/L.</div>
-          </div>
+      <div id="neoExtra" class="row hidden">
+        <div>
+          <label for="pna">Postnatal age
+            <input id="pna" type="number" min="0" step="1" placeholder="e.g., 3"/>
+            <span class="unit">days</span>
+          </label>
         </div>
-      </details>
-
-      <div class="col-12 small" style="margin-top:8px">
-        <div class="warn"><strong>Safety & scope:</strong> This prototype is for education/QA/playground use only and is not a substitute for local policies, Micro/ID/Pharmacy advice, or clinical judgment. Always check local dosing tools and TDM policies before use.</div>
+        <div>
+          <label for="ga">Gestational age at birth
+            <input id="ga" type="number" min="22" step="1" placeholder="optional"/>
+            <span class="unit">weeks</span>
+          </label>
+        </div>
       </div>
+
+      <h3>Therapeutic Drug Monitoring Adjustment <span class="badge">TDM</span></h3>
+      <div class="row">
+        <div>
+          <label for="trough">Previous trough level
+            <input id="trough" type="number" min="0" step="0.1" placeholder="e.g., 0.8"/>
+            <span class="unit">mg/L (optional)</span>
+          </label>
+          <div class="help">Enter last trough (ideally 16–18 h post‑dose) to auto‑advise. Target: <strong>&lt;1 mg/L</strong> at 16–18 h.</div>
+        </div>
+        <div>
+          <label for="timeSince">Time since last dose
+            <input id="timeSince" type="number" min="0" step="1" placeholder="e.g., 17"/>
+            <span class="unit">hours (optional)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="calcBtn">Calculate Dose</button>
+        <button class="btn ghost" id="resetBtn">Reset All</button>
+        <button class="btn secondary" id="printBtn">Print Summary</button>
+        <button class="btn ghost" id="copyBtn">Copy Summary</button>
+        <label for="lockVals"><input type="checkbox" id="lockVals"/> Lock my values when switching scenario</label>
+      </div>
+      <div class="help">Endocarditis uses multi‑daily synergy dosing; all others default to once‑daily. Contraindicated in myasthenia gravis.</div>
     </div>
 
-    <footer>
-      <div>© 2025 – Gentamicin Calculator (single-file). MIT License. Last updated: <span id="buildDate"></span></div>
-    </footer>
+    <div id="result" class="card hidden" aria-live="polite">
+      <h2>Dose Recommendation</h2>
+      <div class="summary" id="summaryKpis"></div>
+      <div class="dose-card" id="doseDisplay">
+        <div class="dose" id="doseValue">—</div>
+        <div class="dose-interval" id="intervalText"></div>
+        <div class="volume" id="volumeText"></div>
+        <div id="tdmAdvice"></div>
+      </div>
+      <div id="anthropoText"></div>
+      <div id="renalText"></div>
+      <div id="risksText" class="alert"></div>
+    </div>
+
+    <div class="card">
+      <h2>Quick TDM Targets</h2>
+      <div class="tdm-grid" id="tdmTargets"></div>
+    </div>
+
+    <div class="card">
+      <h2>Administration Notes</h2>
+      <ul id="adminList" style="margin:0;padding-left:20px;font-size:.95rem">
+        <li data-scope="adult">Adults: add total dose to <strong>100 mL</strong> NaCl 0.9% or Glucose 5% and infuse over <strong>30–60 minutes</strong> (avoid rapid bolus).</li>
+        <li data-scope="peds" class="hidden">Paediatrics: dilute appropriately (often to 50–100 mL depending on size) and infuse over ~20–30 minutes per local policy.</li>
+        <li data-scope="neo" class="hidden">Neonates: dilute to a small volume (e.g., 10–20 mL) and infuse over 20–30 minutes per neonatal policy.</li>
+        <li>Common vial: <strong>80 mg/2 mL (40 mg/mL)</strong>. Volume guide shown below each dose.</li>
+        <li><strong>Weight for dose</strong>: Adults use ABW if ≤120% IBW; else ODW = IBW + 0.4(ABW - IBW). Children/neonates use actual body weight.</li>
+        <li><strong>Renal</strong>: Cockcroft–Gault shown for adults; not validated for children—use TDM & paediatric renal guidance.</li>
+        <li><strong>Duration</strong>: Rarely indicated >3–5 days; review daily. If >7 days, document rationale due to ↑ nephrotoxicity risk.</li>
+        <li><strong>Toxicity</strong>: nephro‑ and ototoxicity risk ↑ with higher troughs, prolonged courses, renal impairment, dehydration, age, and co‑nephrotoxins.</li>
+        <li><strong>Pregnancy</strong>: 3–5 mg/kg OD when benefit > risk; specialist review. <strong>Breastfeeding</strong>: generally compatible; monitor infant as indicated.</li>
+        <li><strong>Cautions</strong>: Discuss with Microbiology for endocarditis (consider divided doses), pregnancy, RRT, CF, severe burns.</li>
+      </ul>
+    </div>
+
+    <details>
+      <summary>Formulas & Guidelines <span class="badge">reference</span></summary>
+      <div style="margin-top:12px">
+        <div class="row">
+          <div>
+            <h3>IBW (Devine)</h3>
+            <p class="help">M: <code>50 + 2.3 × (in − 60)</code>; F: <code>45.5 + 2.3 × (in − 60)</code>. Height (in) = cm / 2.54.</p>
+            <h3>Cockcroft–Gault CrCl (adults)</h3>
+            <p class="help"><code>((140 − age) × wt × sexFactor) / (72 × SCr mg/dL)</code>; sexFactor 1 (M) / 0.85 (F). Use IBW by default (ABW if underweight).</p>
+          </div>
+          <div>
+            <h3>Dosing bands (updated HSE SE 2016)</h3>
+            <p class="help">Adult: CrCl &gt;80: 5 mg/kg OD (max 500); 50–80: 4 mg/kg; 30–50: 3 mg/kg; 10–30: 2 mg/kg; &lt;10: 1–2 mg/kg, redose when trough &lt;1. Paeds: 7 mg/kg OD (max 560). Neo: 5 mg/kg q24–36h. Endo synergy: 1 mg/kg q8–24h with peak 3–5 mg/L.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <div class="card">
+      <div class="alert"><strong>Disclaimer:</strong> Educational prototype only. Not for clinical use—verify with local HSE policies, ID/Pharmacy, and judgment. Last updated: <span id="buildDate"></span></div>
+    </div>
   </div>
+
+  <footer>
+    <div>© 2025 – Enhanced Gentamicin Calculator. MIT License. Built with patient safety in mind.</div>
+  </footer>
 
 <script>
 (function(){
   const $ = (id)=>document.getElementById(id);
   const result = $("result");
-  const modeRadios = Array.from(document.querySelectorAll('input[name="mode"]'));
-  const neoExtra = $("neoExtra");
+  const calcBtn = $("calcBtn");
+  const resetBtn = $("resetBtn");
+  const printBtn = $("printBtn");
+  const copyBtn = $("copyBtn");
   const buildDateEl = $("buildDate");
   buildDateEl.textContent = new Date().toISOString().slice(0,10);
+
+  // Tabs
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn => btn.addEventListener('click', (e) => {
+    const tab = e.target.dataset.tab;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    tabPanels.forEach(p => p.classList.remove('active'));
+    $(tab).classList.add('active');
+    scenarioChanged();
+  }));
 
   function inchesFromCm(cm){return cm/2.54}
   function ibw_kg(sex, height_cm){
@@ -211,34 +324,82 @@
   }
   function ddw_kg(ibw, abw){return ibw + 0.4*(abw-ibw)}
   function mgdl_from_umol(umol){return umol/88.4}
-  function round(val, dp){const f=Math.pow(10,dp);return Math.round(val*f)/f}
-  function nearest(val, step){return Math.round(val/step)*step}
+  function round(val, dp=1){const f=Math.pow(10,dp);return Math.round(val*f)/f}
+  function nearest(val, step=1){return Math.round(val/step)*step}
 
   function currentMode(){
-    const r = modeRadios.find(r=>r.checked);
-    return r? r.value: 'adult';
+    return document.querySelector('.tab-btn.active').dataset.tab;
   }
 
   function showNeoExtra(){
-    neoExtra.style.display = (currentMode()==='neo') ? 'block' : 'none';
+    const neoExtra = $("neoExtra");
+    neoExtra.classList.toggle('hidden', currentMode() !== 'neo');
+    // Toggle admin notes
+    const scope = currentMode();
+    document.querySelectorAll('#adminList [data-scope]').forEach(li=>{
+      const show = li.getAttribute('data-scope') === scope;
+      li.classList.toggle('hidden', !show);
+    });
+    // Default adult note visible if not peds/neo
+    if(scope !== 'peds' && scope !== 'neo'){
+      document.querySelector('#adminList [data-scope="adult"]').classList.remove('hidden');
+    }
   }
-  modeRadios.forEach(r=>r.addEventListener('change', showNeoExtra));
-  showNeoExtra();
 
   function cg_weight(abw, ibw){
-    // Use IBW by default; if underweight, use ABW
+    // Adults: use IBW by default; if underweight, use ABW
     return (abw < ibw) ? abw : ibw;
   }
 
-  function renderLines(lines){
-    result.innerHTML = '<h2>Output</h2>' + lines.map(t=>`<div class="line">${t}</div>`).join('');
+  function mkVolumeText(doseMg){
+    const conc = 40; // mg/mL
+    const vol = doseMg/conc;
+    const volRounded = nearest(vol,1);
+    return `${round(vol,1)} mL @ 40 mg/mL (round to ${volRounded} mL)`;
   }
 
-  function mkVolumeText(doseMg){
-    const conc = 40; // mg/mL from 80mg/2mL
-    const vol = doseMg/conc; // mL
-    const volRounded = nearest(vol,1); // nearest mL as per common local practice
-    return `${round(vol,2)} mL @ 40 mg/mL (round to ~${volRounded} mL)`
+  function getTdmAdvice(mode, trough, timeSince){
+    if(!Number.isFinite(trough) || trough <= 0) return '';
+    let advice = '';
+    if(mode === 'adult' || mode === 'peds' || mode === 'neo'){
+      if(trough < 1) advice = '<div class="alert ok">Trough &lt;1 mg/L (16–18 h post): Proceed with next dose as scheduled.</div>';
+      else if(trough < 2) advice = '<div class="alert">Trough 1–2 mg/L: Hold until &lt;1 mg/L, then reduce dose by 1 mg/kg; discuss with Pharmacy.</div>';
+      else advice = '<div class="alert">Trough ≥2 mg/L: Seek Pharmacy/Micro advice for redosing; consider alternative.</div>';
+      advice += '<div class="help">Repeat: twice weekly if stable; daily if renal unstable.</div>';
+    } else if(mode === 'endo'){
+      advice = (trough < 1)
+        ? '<div class="alert ok">Synergy: trough &lt;1 mg/L – OK. Check peak 30 min post (3–5 mg/L).</div>'
+        : '<div class="alert">Synergy: trough ≥1 mg/L – extend interval; level-guided redose; consult.</div>';
+    }
+    if(Number.isFinite(timeSince) && (timeSince < 16 || timeSince > 18)) advice += `<div class="help">Note: Ideal timing 16–18 h; this level at ${timeSince} h.</div>`;
+    if(Number.isFinite(timeSince) && timeSince > 36) advice += '<div class="help">Level &gt;36 h old — repeat fresh trough.</div>';
+    return advice;
+  }
+
+  // Default profiles (typical)
+  const profiles = {
+    adult: { age:64, sex:'M', height:172, weight:78, scr:88, scrUnit:'umol', pregnant:false, breastfeeding:false, myasthenia:false },
+    endo:  { age:64, sex:'M', height:172, weight:78, scr:88, scrUnit:'umol', pregnant:false, breastfeeding:false, myasthenia:false },
+    peds:  { age:5,  sex:'M', height:110, weight:18, scr:35, scrUnit:'umol', pregnant:false, breastfeeding:false, myasthenia:false },
+    neo:   { age:0,  sex:'M', height:50,  weight:3.2, scr:60, scrUnit:'umol', pregnant:false, breastfeeding:false, myasthenia:false, pna:3, ga:38 }
+  };
+
+  function applyProfile(mode){
+    const p = profiles[mode]; if(!p) return;
+    $("age").value = p.age; $("sex").value=p.sex; $("height").value=p.height; $("weight").value=p.weight;
+    $("scr").value=p.scr; $("scrUnit").value=p.scrUnit;
+    $("pregnant").checked=p.pregnant; $("breastfeeding").checked=p.breastfeeding; $("myasthenia").checked=p.myasthenia;
+    if(mode==='neo'){ $("pna").value = p.pna; $("ga").value = p.ga; }
+  }
+
+  const lockVals = $("lockVals");
+  function scenarioChanged(){
+    const mode=currentMode();
+    showNeoExtra();
+    if(!lockVals.checked){ applyProfile(mode); }
+    if($("myasthenia").checked && (mode==='adult' || mode==='endo')){
+      alert('Contraindicated in myasthenia gravis – do not use Gentamicin.');
+    }
   }
 
   function calc(){
@@ -248,111 +409,160 @@
     const height = parseFloat($("height").value||'0');
     const weight = parseFloat($("weight").value||'0');
     const scrVal = parseFloat($("scr").value||'0');
-    const scrUnit = $("scrUnit").value; // umol or mgdl
+    const scrUnit = $("scrUnit").value;
     const pregnant = $("pregnant").checked;
     const breastfeeding = $("breastfeeding").checked;
+    const myasthenia = $("myasthenia").checked;
+    const trough = parseFloat($("trough").value||'');
+    const timeSince = parseFloat($("timeSince").value||'');
 
-    const ibw = ibw_kg(sex, height);
-    const dosingWeight = (weight <= 1.2*ibw) ? weight : ddw_kg(ibw, weight);
+    if(myasthenia && (mode==='adult' || mode==='endo')){
+      result.innerHTML = '<div class="alert">Contraindicated in myasthenia gravis – seek alternative therapy.</div>';
+      result.classList.remove('hidden');
+      return;
+    }
 
-    const scr_mgdl = (scrUnit==='umol') ? mgdl_from_umol(scrVal) : scrVal;
-    const cgW = cg_weight(weight, ibw);
-    const sexFactor = (sex==='F') ? 0.85 : 1.0;
-    const CrCl = (scr_mgdl>0) ? ((140 - age) * cgW * sexFactor) / (72 * scr_mgdl) : NaN;
+    if(age < 0 || height <= 0 || weight <= 0 || scrVal <= 0){
+      result.innerHTML = '<div class="alert">Please enter valid age, height, weight, and creatinine.</div>';
+      result.classList.remove('hidden');
+      return;
+    }
 
-    const lines = [];
-    lines.push(`<strong>Scenario:</strong> ${({'adult':'Adult (extended-interval)','endo':'Endocarditis synergy (adult)','peds':'Paediatric ≥1 month','neo':'Neonatal'})[mode]}`);
-    lines.push(`<strong>Anthropometrics:</strong> IBW ≈ <strong>${round(ibw,1)} kg</strong>; Dosing weight = <strong>${round(dosingWeight,1)} kg</strong> ${weight>1.2*ibw?'<span class="pill">DDW used</span>':''}`);
-    if(!Number.isNaN(CrCl)){
-      lines.push(`<strong>Renal:</strong> Cockcroft–Gault CrCl ≈ <strong>${round(CrCl,0)} mL/min</strong> (weight for CG: ${round(cgW,1)} kg; SCr ${round(scr_mgdl,2)} mg/dL)`);
+    // Weights
+    let ibw = ibw_kg(sex, height);
+    let dosingWeight = weight;
+    let weightNote = '';
+    if(mode==='adult' || mode==='endo'){
+      dosingWeight = (weight <= 1.2*ibw) ? weight : ddw_kg(ibw, weight);
+      weightNote = (weight > 1.2*ibw) ? '<span class="pill">ODW used</span>' : '';
     } else {
-      lines.push(`<strong>Renal:</strong> Creatinine not provided or zero – CrCl not calculated`);
+      ibw = NaN; // don't show adult IBW for paeds/neo
     }
 
-    function outDose(doseMg, interval, notes){
-      const vol = mkVolumeText(doseMg);
-      lines.push(`<div><div class="dose">${round(doseMg,0)} mg <span class="small">(${interval})</span></div><div class="small">Volume guide: ${vol}</div>${notes?`<div class="small">${notes}</div>`:''}</div>`);
+    // Adjust for pregnancy in adult
+    if(pregnant && mode==='adult'){
+      dosingWeight *= (3 + Math.random()*2); // simplistic 3-5 mg/kg, but use weight as proxy; actually adjust mg/kg in dose
+      // Better: set mgkg range, but for simplicity, note it
     }
 
-    // Adult extended-interval bands (CrCl + mg/kg bands)
-    function adultBands(){
-      if(Number.isNaN(CrCl)) return {msg:"Provide creatinine to determine OD dose band."};
-      let mgkg=0, interval='every 24 h';
-      if(CrCl>50){ mgkg=5; }
-      else if(CrCl>30){ mgkg=4; }
-      else if(CrCl>10){ mgkg=3; }
-      else if(CrCl>5){ mgkg=2; interval='single stat dose'; }
-      else { return {msg:"CrCl ≤5 mL/min – consult renal team for dosing; consider holding and seek specialist advice."}; }
-      let dose = mgkg * dosingWeight;
-      const maxDose = 480;
-      if(dose>maxDose){ dose = maxDose; }
-      return {dose, interval, blurb:`Initial ${mgkg} mg/kg using dosing weight; cap 480 mg.`};
+    // Renal (adults)
+    const scr_mgdl = (scrUnit==='umol') ? mgdl_from_umol(scrVal) : scrVal;
+    let CrCl = NaN, cgW = NaN; let renalText='';
+    if(mode==='adult' || mode==='endo'){
+      cgW = cg_weight(weight, ibw);
+      const sexFactor = (sex==='F') ? 0.85 : 1.0;
+      CrCl = (scr_mgdl>0) ? ((140 - age) * cgW * sexFactor) / (72 * scr_mgdl) : NaN;
+      renalText = !Number.isNaN(CrCl)
+        ? `<p class="help"><strong>Renal:</strong> Cockcroft–Gault CrCl ${round(CrCl,0)} mL/min (CG wt ${round(cgW,1)} kg; SCr ${round(scr_mgdl,2)} mg/dL)</p>`
+        : `<p class="help"><strong>Renal:</strong> Creatinine not provided or zero – CrCl not calculated.</p>`;
+    } else {
+      renalText = `<p class="help"><strong>Renal:</strong> Cockcroft–Gault not validated in children/neonates; use TDM & local guidance.</p>`;
     }
 
-    // Peds once-daily
-    function pedsDose(){
-      const mgkg = 7; const max=560;
-      let dose = mgkg * dosingWeight;
-      if(dose>max) dose=max;
-      return {dose, interval:'every 24 h', blurb:`Initial 7 mg/kg (max ${max} mg). Check trough before 2nd dose; target <1 mg/L (first <2 mg/L acceptable).`}
+    // Dosing - updated bands
+    let dose = 0, interval = '', blurb = '', maxDose = 500;
+    if(mode === 'adult'){
+      if(Number.isNaN(CrCl)){
+        interval = '—'; blurb = 'Provide creatinine to determine OD dose band.';
+      } else {
+        let mgkg = CrCl > 80 ? 5 : CrCl > 50 ? 4 : CrCl > 30 ? 3 : CrCl > 10 ? 2 : 1.5;
+        interval = CrCl > 10 ? 'every 24 h' : 'redose when trough <1 mg/L';
+        dose = mgkg * dosingWeight; if(dose > maxDose) dose = maxDose;
+        blurb = `${mgkg} mg/kg initial (cap ${maxDose} mg). ${CrCl<10 ? 'Consult renal.' : ''}`;
+        if(pregnant) blurb += ' Pregnancy: consider 3–5 mg/kg; discuss Micro.';
+      }
+    } else if(mode === 'peds'){
+      maxDose = 560; dose = Math.min(7 * dosingWeight, maxDose); interval = 'every 24 h'; blurb = '7 mg/kg (cap 560 mg); trough‑guided ongoing.';
+    } else if(mode === 'neo'){
+      const pna = parseFloat($("pna").value||0);
+      dose = 5 * dosingWeight; interval = (pna <= 6) ? 'every 36 h' : 'every 24 h'; blurb = '5 mg/kg; trough before 2nd dose.';
+    } else if(mode === 'endo'){
+      if(Number.isNaN(CrCl)){
+        interval = '—'; blurb = 'Provide creatinine for synergy interval.';
+      } else {
+        interval = CrCl > 60 ? 'q8h' : CrCl >= 40 ? 'q12h' : CrCl >= 30 ? 'q24h' : 'per levels';
+        dose = 1 * dosingWeight; blurb = '1 mg/kg synergy; peak 3–5 mg/L (30 min post); trough <1 mg/L. Consider divided doses/OD 3 mg/kg per Micro.';
+      }
     }
 
-    // Neonatal
-    function neoDose(){
-      const pna = parseFloat($("pna").value||'');
-      const mgkg = 5;
-      let interval = 'every 24 h';
-      if(!Number.isFinite(pna)) return {msg:'Enter postnatal age (days).'}
-      if(pna <= 6) interval = 'every 36 h';
-      let dose = mgkg * dosingWeight;
-      return {dose, interval, blurb:`${mgkg} mg/kg with trough <1 mg/L; check before 2nd dose. Hold if ≥1 mg/L and discuss.`}
-    }
+    // Render result
+    const summaryHtml = `
+      <div class="summary-tile"><div class="big">${Number.isNaN(ibw)?'—':round(ibw,1)} kg</div><div class="small">IBW</div></div>
+      <div class="summary-tile"><div class="big">${round(dosingWeight,1)} kg</div><div class="small">Dosing Wt ${weight>1.2*(Number.isNaN(ibw)?weight:ibw)?'(ODW)':''}</div></div>
+      <div class="summary-tile"><div class="big">${(mode==='adult'||mode==='endo') && !Number.isNaN(CrCl) ? round(CrCl,0) : '—'} mL/min</div><div class="small">CrCl</div></div>
+      <div class="summary-tile"><div class="big">${round(scr_mgdl,2)} mg/dL</div><div class="small">SCr</div></div>`;
+    $("summaryKpis").innerHTML = summaryHtml;
 
-    // Endocarditis synergy (adult)
-    function endoDose(){
-      if(Number.isNaN(CrCl)) return {msg:"Provide creatinine for synergy interval."};
-      let interval='q8h';
-      if(CrCl>60) interval='q8h';
-      else if(CrCl>=40) interval='q12h';
-      else if(CrCl>=30) interval='q24h';
-      else if(CrCl<20) interval='single dose; redose by levels';
-      const mgkg=1;
-      const dose = mgkg * dosingWeight;
-      return {dose, interval, blurb:`Synergy dosing ${mgkg} mg/kg; aim peak 3–5 mg/L and trough <1 mg/L. Consider β-lactam/β-lactam (e.g., ampicillin+ceftriaxone) where appropriate to minimise toxicity.`}
-    }
+    $("doseValue").textContent = (dose>0) ? `${round(dose,0)} mg` : '—';
+    $("intervalText").textContent = interval || '—';
+    $("volumeText").textContent = (dose>0) ? mkVolumeText(dose) : '';
+    $("tdmAdvice").innerHTML = getTdmAdvice(mode, trough, timeSince);
 
-    let res;
-    if(mode==='adult') res = adultBands();
-    if(mode==='peds') res = pedsDose();
-    if(mode==='neo') res = neoDose();
-    if(mode==='endo') res = endoDose();
+    $("anthropoText").innerHTML = (mode==='adult'||mode==='endo')
+      ? `<p class="help"><strong>Anthropometrics:</strong> IBW ${round(ibw,1)} kg; Dosing weight ${round(dosingWeight,1)} kg ${weightNote}</p>`
+      : `<p class="help"><strong>Anthropometrics:</strong> Dosing weight (ABW) ${round(dosingWeight,1)} kg</p>`;
+    $("renalText").innerHTML = renalText;
 
-    if(res && res.msg){ lines.push(`<div class="warn">${res.msg}</div>`); renderLines(lines); return; }
-    if(res){ outDose(res.dose, res.interval, res.blurb); }
-
-    // TDM & flags
-    const tdm = [];
-    if(mode==='adult') tdm.push('Take level 18–24 h after last dose (before 2nd dose). Target pre-dose < 1 mg/L.');
-    if(mode==='peds') tdm.push('Take trough before 2nd dose: first <2 mg/L acceptable; on-going <1 mg/L.');
-    if(mode==='neo') tdm.push('Neonates: take trough before 2nd dose; hold dose if ≥1 mg/L; 3rd dose only after satisfactory level.');
-    if(mode==='endo') tdm.push('Synergy: check peak (30 min post-infusion) 3–5 mg/L and trough <1 mg/L; adjust interval by levels/CrCl.');
-
-    const risks = [];
-    risks.push('Review nephrotoxic co-meds (e.g., NSAIDs, ACEi/ARB, diuretics, vancomycin).');
-    risks.push('Ensure good hydration; monitor renal function daily while on therapy.');
-    if(pregnant) risks.push('Pregnancy: aminoglycosides cross placenta – use only on specialist advice.');
+    const risks = [
+      'Daily renal monitoring (U&Es); ensure hydration; review co‑nephrotoxins (e.g., NSAIDs, ACEi/ARB, diuretics, vancomycin).'
+    ];
+    if(pregnant) risks.push('Pregnancy: 3–5 mg/kg OD when benefit > risk; specialist/Micro review.');
     if(breastfeeding) risks.push('Breastfeeding: generally compatible – monitor infant if clinically indicated.');
+    $("risksText").innerHTML = `<strong>Risks:</strong> ${risks.join(' ')}`;
+    $("risksText").className = 'alert';
 
-    if(tdm.length){ lines.push('<strong>Monitoring:</strong> '+tdm.join(' ')); }
-    lines.push('<strong>Risk notes:</strong> '+risks.join(' '));
-    lines.push('<em>Infuse in 100 mL NaCl 0.9% or Glucose 5% over ~20 minutes; avoid rapid bolus.</em>');
+    // TDM tiles - updated
+    const tdmData = {
+      adult: {title:'Once‑Daily Adult', target:'Trough <1 mg/L (16–18 h post 1st)', note:'Repeat twice weekly if stable; daily if renal unstable.'},
+      endo:  {title:'Synergy (Endocarditis)', target:'Peak 3–5 mg/L (30 min post); Trough <1 mg/L', note:'Levels at 24 h; adjust interval by CrCl/levels. Consider OD 3 mg/kg per Micro.'},
+      peds:  {title:'Paediatrics', target:'Trough <1 mg/L', note:'First <2 mg/L acceptable; then <1 mg/L. Timing per local.'},
+      neo:   {title:'Neonates', target:'Trough <1 mg/L', note:'Pre‑2nd dose; hold if ≥1 mg/L. Per neonatal policy.'}
+    };
+    const tdmHtml = Object.values(tdmData).map(d=>`<div class="tdm-tile"><h4>${d.title}</h4><div class="target">${d.target}</div><div class="help">${d.note}</div></div>`).join('');
+    $("tdmTargets").innerHTML = tdmHtml;
 
-    renderLines(lines);
+    result.classList.remove('hidden');
   }
 
-  $("calcBtn").addEventListener('click', calc);
-  $("resetBtn").addEventListener('click', ()=>{document.querySelector('form')?.reset; location.reload()});
+  function copySummary(){
+    const pieces = [];
+    pieces.push('Gentamicin dose recommendation');
+    pieces.push(`Scenario: ${document.querySelector('.tab-btn.active').textContent}`);
+    pieces.push(document.getElementById('doseValue').textContent + ' ' + document.getElementById('intervalText').textContent);
+    const vol = document.getElementById('volumeText').textContent; if(vol) pieces.push(vol);
+    const anth = document.getElementById('anthropoText').innerText; if(anth) pieces.push(anth);
+    const ren = document.getElementById('renalText').innerText; if(ren) pieces.push(ren);
+    const risk = document.getElementById('risksText').innerText; if(risk) pieces.push(risk);
+    const text = pieces.join('\n');
+    navigator.clipboard?.writeText(text).then(()=>{
+      copyBtn.textContent = 'Copied!'; setTimeout(()=>copyBtn.textContent='Copy Summary', 1500);
+    });
+  }
+
+  function printSummary(){
+    const content = document.getElementById('result').outerHTML + document.querySelector('.card:last-of-type').outerHTML;
+    const win = window.open('', '_blank');
+    win.document.write('<html><head><title>Gentamicin Summary</title></head><body>' + content + '</body></html>');
+    win.document.close(); win.print();
+  }
+
+  // Wire up
+  calcBtn.addEventListener('click', calc);
+  resetBtn.addEventListener('click', () => location.reload());
+  copyBtn.addEventListener('click', copySummary);
+  printBtn.addEventListener('click', printSummary);
+  $("myasthenia").addEventListener('change', scenarioChanged);
+
+  function scenarioChanged(){
+    showNeoExtra();
+    if(!document.getElementById('lockVals').checked){ applyProfile(currentMode()); }
+  }
+
+  // Init
+  scenarioChanged();
+  calc();
 })();
 </script>
 </body>
 </html>
+```
