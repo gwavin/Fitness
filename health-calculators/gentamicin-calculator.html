@@ -439,12 +439,6 @@
       ibw = NaN; // don't show adult IBW for paeds/neo
     }
 
-    // Adjust for pregnancy in adult
-    if(pregnant && mode==='adult'){
-      dosingWeight *= (3 + Math.random()*2); // simplistic 3-5 mg/kg, but use weight as proxy; actually adjust mg/kg in dose
-      // Better: set mgkg range, but for simplicity, note it
-    }
-
     // Renal (adults)
     const scr_mgdl = (scrUnit==='umol') ? mgdl_from_umol(scrVal) : scrVal;
     let CrCl = NaN, cgW = NaN; let renalText='';
@@ -498,9 +492,15 @@
     $("volumeText").textContent = (dose>0) ? mkVolumeText(dose) : '';
     $("tdmAdvice").innerHTML = getTdmAdvice(mode, trough, timeSince);
 
-    $("anthropoText").innerHTML = (mode==='adult'||mode==='endo')
-      ? `<p class="help"><strong>Anthropometrics:</strong> IBW ${round(ibw,1)} kg; Dosing weight ${round(dosingWeight,1)} kg ${weightNote}</p>`
-      : `<p class="help"><strong>Anthropometrics:</strong> Dosing weight (ABW) ${round(dosingWeight,1)} kg</p>`;
+    if(mode==='adult' || mode==='endo'){
+      const anthropoBits = [`<strong>Anthropometrics:</strong> IBW ${round(ibw,1)} kg; Dosing weight ${round(dosingWeight,1)} kg ${weightNote}`];
+      if(pregnant && mode==='adult'){
+        anthropoBits.push('Pregnancy: standard dosing weight (ABW/ODW) retained; confirm 3–5 mg/kg with specialist.');
+      }
+      $("anthropoText").innerHTML = `<p class="help">${anthropoBits.join(' ')}</p>`;
+    } else {
+      $("anthropoText").innerHTML = `<p class="help"><strong>Anthropometrics:</strong> Dosing weight (ABW) ${round(dosingWeight,1)} kg</p>`;
+    }
     $("renalText").innerHTML = renalText;
 
     const risks = [
