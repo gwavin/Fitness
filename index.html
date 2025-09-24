@@ -2,66 +2,293 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <title>Fitness Metronome</title>
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#1a1a3d">
-  
-  <!-- iOS specific -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Metronome">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  
-  <!-- Fonts -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fitness & Rehab Landing Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Styles -->
-  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/landing.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Run/Walk Cadence Timer</h1>
-
-    <div class="timer-display">
-      <canvas id="progressCanvas" width="220" height="220"></canvas>
-      <div class="timer-text">
-        <div id="phase">Ready</div>
-        <div id="timer">0</div>
+  <header class="hero">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="hero__eyebrow">Curated performance toolkit</p>
+        <h1>All fitness, rehab and reference content in one launchpad.</h1>
+        <p>Jump straight into interval timers, strength programming, medical calculators, barefoot running rehab and even family recipes. Everything is grouped so you can move from planning to action without hunting for files.</p>
+        <div class="hero__actions">
+          <a class="button" href="apps/run-walk-metronome/index.html">
+            <span>▶</span>
+            Launch Run/Walk Timer
+          </a>
+          <a class="button button--ghost" href="#tools">Browse the library</a>
+        </div>
       </div>
-      <div class="metronome" id="metronome">
-        <div class="metronome-dot left"></div>
-        <div class="metronome-dot right"></div>
+    </div>
+  </header>
+
+  <nav class="subnav">
+    <div class="subnav__inner">
+      <a href="#tools">Tools &amp; Apps</a>
+      <a href="#programs">Training Programs</a>
+      <a href="#resources">Reference Library</a>
+      <a href="#recipes">Recipes</a>
+      <a href="#downloads">Downloads</a>
+      <a href="#structure">Directory map</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="tools" class="section">
+      <h2>Tools &amp; Progressive Web Apps</h2>
+      <p class="section__lead">Quickly open the interactive utilities that support day-to-day training, coaching and clinical work. Everything loads in place—no more digging for single HTML files.</p>
+      <div class="card-grid">
+        <article class="card">
+          <div class="card__title">
+            <a href="apps/run-walk-metronome/index.html">Run/Walk Cadence Timer</a>
+            <span class="card__badge">PWA</span>
+          </div>
+          <p>Interval timer with audio cadence cues, lap tracking and offline support. Built for alternating running and walking blocks during rehab.</p>
+          <p class="card__meta"><a href="apps/run-walk-metronome/manifest.webmanifest">Install manifest</a> · <a href="apps/run-walk-metronome/legacy.html">Legacy single-file version</a></p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="apps/exercise-calculators/index.html">Exercise Calculators</a>
+            <span class="card__badge">Training</span>
+          </div>
+          <p>Strength and conditioning tools including barbell complexes, tempo timers and rehab progressions to plan gym and home sessions.</p>
+          <p class="card__meta">Directory: <code>apps/exercise-calculators/</code></p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="apps/health-calculators/index.html">Health Calculators</a>
+            <span class="card__badge">Clinical</span>
+          </div>
+          <p>Clinical decision aids such as NEWS2, CHA<sup>2</sup>DS<sup>2</sup>-VASc, EDD and neonatal calculators—ready for quick reference in clinic.</p>
+          <p class="card__meta">Directory: <code>apps/health-calculators/</code></p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="apps/cerner-server-cycler.html">Cerner Server Cycler</a>
+            <span class="card__badge">IT Ops</span>
+          </div>
+          <p>Interactive cheat sheet for hospital server rotations, featuring colour-coded tiers, escalation contacts and shift checklists.</p>
+          <p class="card__meta">Use this from a desktop for the full table layout.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="apps/demo/index.html">Demo Playground</a>
+            <span class="card__badge">Prototype</span>
+          </div>
+          <p>Theme-switching sandbox that demonstrates dynamic content loading from <code>sample-data.json</code>—handy for testing component ideas.</p>
+          <p class="card__meta">Data source: <code>apps/demo/sample-data.json</code></p>
+        </article>
       </div>
-    </div>
-    
-    <div class="settings">
-      <label for="runSeconds">Run (s)</label>
-      <input type="number" id="runSeconds" value="120" min="1" />
-      <label for="walkSeconds">Walk (s)</label>
-      <input type="number" id="walkSeconds" value="60" min="1" />
-      <label for="bpm">Cadence (BPM)</label>
-      <input type="number" id="bpm" value="170" min="30" />
-      <label for="goalLaps">Goal Laps</label>
-      <input type="number" id="goalLaps" value="3" min="1" />
-    </div>
+    </section>
 
-    <div class="buttons">
-      <button id="startPauseBtn">Start</button>
-      <button id="resetBtn" disabled>Reset</button>
-    </div>
+    <section id="programs" class="section">
+      <h2>Training Programs &amp; Weekly Plans</h2>
+      <p class="section__lead">Structured programming for rehab, strength and conditioning lives under <code>plans/</code>. Start with the 12-week shoulder and barefoot running rebuild, then explore the classic 8-week strength block.</p>
 
-    <div class="laps-display">
-      Lap: <span id="laps">0 / 3</span>
-    </div>
-    
-    <button id="installBtn" style="display:none">📱 Install App</button>
-  </div>
+      <div class="card-grid" style="margin-bottom:1.8rem;">
+        <article class="card">
+          <div class="card__title">
+            <a href="plans/fitness-plan-index.html">12-Week August Rehab</a>
+            <span class="card__badge">Flagship</span>
+          </div>
+          <p>Integrated plan blending shoulder rehab, cadence work and progressive barefoot running. Each week drills into run scripts, strength priorities and recovery notes.</p>
+          <p class="card__meta">See detailed week breakdown below.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="plans/fitness-index.html">8-Week Strength &amp; Conditioning</a>
+            <span class="card__badge">Strength</span>
+          </div>
+          <p>A pre-hab friendly lifting block with three weekly sessions and structured rest. Perfect when transitioning away from the rehab plan.</p>
+          <p class="card__meta">Includes session-by-session links to the workout library.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="plans/workouts/integrated-rehab-and-strength-plan.html">Workout Library</a>
+            <span class="card__badge">Reference</span>
+          </div>
+          <p>Individual session write-ups, ankle rehab templates and rest-day barefoot protocols. Reuse components to build your own mesocycles.</p>
+          <p class="card__meta">Directory: <code>plans/workouts/</code></p>
+        </article>
+      </div>
 
-  <script src="/main.js"></script>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Week</th>
+              <th scope="col">Focus</th>
+              <th scope="col">Quick Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Foundation building</td><td><a href="plans/august-rehab/week01.html">Week 1 Schedule</a></td></tr>
+            <tr><td>2</td><td>Volume progression</td><td><a href="plans/august-rehab/week02.html">Week 2 Schedule</a></td></tr>
+            <tr><td>3</td><td>Endurance building</td><td><a href="plans/august-rehab/week03.html">Week 3 Schedule</a></td></tr>
+            <tr><td>4</td><td>Longer intervals</td><td><a href="plans/august-rehab/week04.html">Week 4 Schedule</a></td></tr>
+            <tr><td>5</td><td>Endurance + shoulder stability</td><td><a href="plans/august-rehab/week05.html">Week 5 Schedule</a></td></tr>
+            <tr><td>6</td><td>Longer intervals + shoulder strength</td><td><a href="plans/august-rehab/week06.html">Week 6 Schedule</a></td></tr>
+            <tr><td>7</td><td>Volume build with upper-body focus</td><td><a href="plans/august-rehab/week07.html">Week 7 Schedule</a></td></tr>
+            <tr><td>8</td><td>Functional strength &amp; long bouts</td><td><a href="plans/august-rehab/week08.html">Week 8 Schedule</a></td></tr>
+            <tr><td>9</td><td>Advanced shoulder work</td><td><a href="plans/august-rehab/week09.html">Week 9 Schedule</a></td></tr>
+            <tr><td>10</td><td>Extended intervals + integration</td><td><a href="plans/august-rehab/week10.html">Week 10 Schedule</a></td></tr>
+            <tr><td>11</td><td>Peak volume tuning</td><td><a href="plans/august-rehab/week11.html">Week 11 Schedule</a></td></tr>
+            <tr><td>12</td><td>Continuous running finish</td><td><a href="plans/august-rehab/week12.html">Week 12 Schedule</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="detail-grid">
+        <details>
+          <summary>Template builders</summary>
+          <p>Use <a href="plans/workout-template.html">workout-template.html</a> to clone new sessions and <a href="plans/exercise-plan.html">exercise-plan.html</a> for documenting bespoke blocks.</p>
+        </details>
+        <details>
+          <summary>Transition planning</summary>
+          <p><a href="plans/fitness-index.html">The 8-week strength block</a> and <a href="resources/barefoot-running-schedule.html">barefoot running progression</a> help bridge from rehab to continuous running.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="resources" class="section">
+      <h2>Reference Library</h2>
+      <p class="section__lead">Context pieces, daily checklists and supporting documents live under <code>resources/</code>. These pages add colour to the raw programming.</p>
+      <div class="card-grid">
+        <article class="card">
+          <div class="card__title">
+            <a href="resources/fitness-hub.html">Fitness Hub Overview</a>
+            <span class="card__badge">Dashboard</span>
+          </div>
+          <p>Central hub tying together the PWA, rehab weeks and calculators with quick calls-to-action and install instructions.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="resources/fitness.html">Fitness Quick Index</a>
+            <span class="card__badge">Index</span>
+          </div>
+          <p>Legacy directory of training resources, now updated to link into the reorganised structure.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="resources/barefoot-running-schedule.html">Barefoot Running Schedule</a>
+            <span class="card__badge">Guide</span>
+          </div>
+          <p>Step-by-step barefoot progression with rest-day integrations and cadence cues for smooth adaptation.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="resources/barefoot-days.html">Barefoot Rest Day Drills</a>
+            <span class="card__badge">Checklist</span>
+          </div>
+          <p>Week-by-week add-ons for rest days, helping you maintain foot strength and cadence awareness.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="resources/calendar.html">Training Calendar Prototype</a>
+            <span class="card__badge">Planning</span>
+          </div>
+          <p>Experiment with scheduling views before porting events into your preferred calendar app.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="resources/my-plan.html">"Watson" Documentary Treatment</a>
+            <span class="card__badge">Story</span>
+          </div>
+          <p>Long-form narrative plan—kept here as a creative companion piece to the athletic programming.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="recipes" class="section">
+      <h2>Fuel &amp; Family Recipes</h2>
+      <p class="section__lead">Because the kitchen matters too. Keep the classics in easy reach.</p>
+      <div class="card-grid">
+        <article class="card">
+          <div class="card__title">
+            <a href="recipes/waffles.html">Weekend Waffles</a>
+            <span class="card__badge">Breakfast</span>
+          </div>
+          <p>Original crispy waffle formula—perfect post-long-run comfort food.</p>
+        </article>
+        <article class="card">
+          <div class="card__title">
+            <a href="recipes/waffles2.html">Make-Ahead Waffles</a>
+            <span class="card__badge">Prep</span>
+          </div>
+          <p>Batch-friendly waffle upgrade with freezer tips for busy training weeks.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="downloads" class="section">
+      <h2>Downloads &amp; Text References</h2>
+      <p class="section__lead">Static files that support training administration live here.</p>
+      <div class="detail-grid">
+        <details>
+          <summary>Warm-up sequence (TXT)</summary>
+          <p><a href="resources/warmup.txt">Download warmup.txt</a> for the dynamic mobility circuit used before strength work.</p>
+        </details>
+        <details>
+          <summary>Analytics export (XLSX)</summary>
+          <p><a href="Train%20Domain%20Discern%20Reports%20-%20Admin%202024%20-%20Post%20Refresh%20-%20All%20PDP.xlsx">Train Domain Discern Reports spreadsheet</a> – raw data captured during platform refresh testing.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="structure" class="section">
+      <h2>Directory Map</h2>
+      <p class="section__lead">Everything has a home. Use this tree when adding new content.</p>
+      <pre class="directory">apps/
+├── run-walk-metronome/
+│   ├── index.html
+│   ├── metronome.css
+│   ├── metronome.js
+│   ├── manifest.webmanifest
+│   ├── sw.js
+│   └── legacy.html
+├── exercise-calculators/
+├── health-calculators/
+├── cerner-server-cycler.html
+└── demo/
+    ├── index.html
+    └── sample-data.json
+
+plans/
+├── august-rehab/
+│   └── week01.html … week12.html
+├── workouts/
+├── exercise-plan.html
+├── fitness-index.html
+├── fitness-plan-index.html
+└── workout-template.html
+
+resources/
+├── barefoot-days.html
+├── barefoot-running-schedule.html
+├── calendar.html
+├── fitness-hub.html
+├── fitness.html
+├── my-plan.html
+└── warmup.txt
+
+recipes/
+├── waffles.html
+└── waffles2.html
+
+assets/
+└── css/
+    └── landing.css
+</pre>
+    </section>
+  </main>
+
+  <footer>
+    Curated by the Fitness project. Need to add something? Drop new files into the right folder and link them here for instant visibility.
+  </footer>
 </body>
 </html>
