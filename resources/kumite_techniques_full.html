@@ -1,245 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kumite Techniques &amp; Session Builder</title>
-  <link rel="stylesheet" href="../css/style/style.css">
-  <style>
-    .lead {
-      font-size: 1.05rem;
-      line-height: 1.7;
-      max-width: 720px;
-    }
-
-    .toc {
-      margin: 2rem 0;
-      padding: 1.2rem 1.5rem;
-      border-radius: 12px;
-      background: #f6f9ff;
-      border: 1px solid #d9e3ff;
-    }
-
-    .toc h2 {
-      margin-top: 0;
-      font-size: 1.2rem;
-    }
-
-    .toc ul {
-      margin: 0;
-      padding-left: 1.25rem;
-      columns: 2;
-      column-gap: 2rem;
-    }
-
-    @media (max-width: 640px) {
-      .toc ul {
-        columns: 1;
-      }
-    }
-
-    .module-grid {
-      display: grid;
-      gap: 1.5rem;
-      margin: 2rem 0 2.5rem;
-    }
-
-    @media (min-width: 880px) {
-      .module-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .module {
-      border: 1px solid #e2e2e2;
-      border-radius: 14px;
-      padding: 1.35rem 1.5rem;
-      background: #ffffff;
-      box-shadow: 0 12px 28px rgba(15, 25, 45, 0.06);
-    }
-
-    .module h2 {
-      margin-top: 0;
-      font-size: 1.35rem;
-    }
-
-    .module ul {
-      padding-left: 1.25rem;
-      margin-bottom: 0;
-    }
-
-    .module li + li {
-      margin-top: 0.6rem;
-    }
-
-    .callout {
-      background: #e9f7ef;
-      border-left: 4px solid #1b9c6f;
-      padding: 1.2rem 1.45rem;
-      border-radius: 12px;
-      margin: 2.5rem 0;
-    }
-
-    .practice-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 2rem 0 2.5rem;
-    }
-
-    .practice-table th,
-    .practice-table td {
-      border: 1px solid #e2e2e2;
-      padding: 0.9rem 1rem;
-      vertical-align: top;
-    }
-
-    .practice-table thead th {
-      background: #f5fdf8;
-      font-weight: 600;
-      color: #1b9c6f;
-    }
-
-    .nav-links {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 3rem;
-    }
-
-    .micro-list {
-      margin: 0.6rem 0 0;
-      padding-left: 1.2rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Kihon Ippon Kumite Techniques (Full Directions)</title>
+<style>
+  body { background-color:#fef9f2; font-family:Arial, Helvetica, sans-serif; line-height:1.5; color:#2c2c2c; margin:20px; }
+  h1 { color:#cc0000; margin-bottom:0.2em; }
+  h2 { color:#cc5500; margin-top:1.2em; }
+  h3 { color:#333333; margin-bottom:0.3em; }
+  .technique { border:1px solid #e6c5a4; padding:12px 18px; margin-bottom:20px; background-color:#fffdfa; border-radius:8px; }
+  .jp { font-family:"Yu Mincho", "Hiragino Mincho Pro", serif; color:#cc0000; margin-left:8px; font-size:1.1em; }
+  ul { list-style-type:square; margin-left:1.2em; }
+  .footnote { font-size:0.8em; color:#8a6d3b; margin-top:30px; border-top:1px dashed #d5b59c; padding-top:8px; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Kumite Techniques &amp; Session Builder</h1>
-    <p class="lead">Use this guide to move from warm-up to live kumite with intention. Each block highlights the technical focus, key cues, and simple volume targets so you can scale intensity for solo, pad or partner practice. Pair it with the <a href="karate-warmup.html">Karate Warm-Up Flow</a> to keep sessions joint-friendly.</p>
+<h1>基本一本組手 (Kihon Ippon Kumite) – Full Directions</h1>
+<p>"Kihon Ippon Kumite" is the basic one‑step sparring drill in Shotokan karate.  One person delivers a predefined attack and the partner counters with a block and a single decisive counter‑attack.  Practicing from both sides builds correct stances, breathing, etiquette and awareness【465065069210784†L61-L96】.  The techniques below are split into units for easier study, and colours inspired by Shotokan (reds and earthy tones) highlight each section.</p>
 
-    <nav class="toc" aria-label="Kumite session sections">
-      <h2>Session structure</h2>
-      <ul>
-        <li><a href="#warmup">Prime &amp; breathe</a></li>
-        <li><a href="#footwork">Footwork foundations</a></li>
-        <li><a href="#entries">Angles &amp; entries</a></li>
-        <li><a href="#striking">Core striking combinations</a></li>
-        <li><a href="#defence">Defence &amp; counters</a></li>
-        <li><a href="#partner">Partner reaction drills</a></li>
-        <li><a href="#conditioning">Conditioning finisher</a></li>
-        <li><a href="#weekly">Weekly emphasis planner</a></li>
-        <li><a href="#reflection">Cool-down &amp; reflection</a></li>
-      </ul>
-    </nav>
+<div class="technique">
+  <h2>A. High‑Level Lunge Punches (Jōdan Oi‑Zuki 上段追い突き)</h2>
 
-    <section id="warmup" class="callout">
-      <h2>Prime &amp; breathe (10 minutes)</h2>
-      <p>Flow directly from the <a href="karate-warmup.html">warm-up sequence</a> into light shadowboxing. Focus on nasal breathing, loose shoulders and clean hip rotation. Finish with 2 × 60 seconds of easy jab–reverse punch shadow rounds to set rhythm.</p>
-    </section>
+  <h3>1. "Up‑and‑Over" – Jōdan Oi‑Zuki #1 <span class="jp">上段追い突き①</span></h3>
+  <ul>
+    <li><strong>Attacker (攻):</strong> Begin in the ready stance (yoi).  Step your lead foot straight back into a long forward stance (zenkutsu‑dachi) while performing a downward sweeping block with the lead arm (gedan barai).  Immediately drive forward, shifting your weight to the front leg and delivering a high lunge punch (jōdan oi‑zuki) aimed at the opponent’s head.  After the punch lands, withdraw by pulling the front leg back and returning to the natural ready stance【465065069210784†L120-L136】.</li>
+    <li><strong>Defender (受):</strong> Stay relaxed in the ready stance until the attack begins.  As the punch approaches, lift the front arm into a rising block (age‑uke) to shield the head【336612086674552†L351-L352】.  Immediately counter by twisting the hips and punching with the rear hand to the opponent’s mid‑section (chūdan gyaku‑zuki)【680396993223075†L97-L100】.  Hold the finishing posture briefly, then return to yoi【465065069210784†L138-L156】.</li>
+  </ul>
 
-    <div class="module-grid">
-      <section id="footwork" class="module">
-        <h2>Footwork foundations</h2>
-        <ul>
-          <li><strong>Guard settling:</strong> 3 × 30 seconds stance holds, check even pressure through the feet.</li>
-          <li><strong>Forward/back slides:</strong> 3 × 20 steps keeping head level, snap back to guard.</li>
-          <li><strong>Lateral shuffles:</strong> 4 × 15 seconds per side, finish with a sharp half-step.</li>
-          <li><strong>Triangle steps:</strong> 3 × 40 seconds, emphasise leading with the hips not the shoulders.</li>
-        </ul>
-      </section>
+  <h3>2. "Knife‑Hand Intercept" – Jōdan Oi‑Zuki #2 <span class="jp">上段追い突き②</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Start from yoi.  Step back into a forward stance (zenkutsu‑dachi), sweeping the front arm down in a downward block.  Immediately shift your body weight forward and punch to the opponent’s head with a high lunge punch (jōdan oi‑zuki).  After impact, bring the front leg back and return to the ready position【465065069210784†L160-L176】.</li>
+    <li><strong>Defender:</strong> Remain in the ready stance.  As the punch comes in, rotate your torso and place both hands vertical with the lead hand acting as a knife‑hand block (tate shuto‑uke) while shifting into back stance (kokutsu‑dachi)【336612086674552†L403-L406】.  Immediately counter with the rear hand by executing a high knife‑hand strike (gyaku jōdan shuto‑uchi) to the attacker’s neck.  Recover by bringing the back leg forward to yoi【465065069210784†L188-L196】.</li>
+  </ul>
 
-      <section id="entries" class="module">
-        <h2>Angles &amp; entries</h2>
-        <ul>
-          <li><strong>V-step with jab:</strong> 3 × 10 reps, push off rear leg and recover with small shuffle.</li>
-          <li><strong>Switch-step burst:</strong> 3 × 6 reps, add gyaku-zuki as you land in orthodox.</li>
-          <li><strong>Pivot exit drill:</strong> 3 × 8 reps, rotate on lead foot after combination, eyes up.</li>
-          <li><strong>Feint &amp; draw:</strong> 2 × 1 minute, light feints to bait a response before entering.</li>
-        </ul>
-      </section>
+  <h3>3. "Side‑Kick Surprise" – Jōdan Oi‑Zuki #3 <span class="jp">上段追い突き③</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From the ready stance, step back into a forward stance with a downward sweep (gedan barai).  Immediately thrust forward, shifting your centre and performing a high lunge punch towards the head.  After striking, pull the punching arm back and return your front leg to the ready stance【465065069210784†L200-L217】.</li>
+    <li><strong>Defender:</strong> Maintain yoi until the attack initiates.  As the punch nears, step to the side into a slightly closed stance and perform a side rising block (sokumen jōdan‑uke) to deflect the punch【465065069210784†L228-L231】.  Without hesitation, lift the leg closest to the opponent and execute a snapping side kick (yoko‑geri keage【336612086674552†L454-L455】) to the attacker’s ribs.  Land in horse stance (kiba‑dachi) and finish with a side elbow strike (yoko enpi‑uchi) before returning to yoi【465065069210784†L232-L236】.</li>
+  </ul>
 
-      <section id="striking" class="module">
-        <h2>Core striking combinations</h2>
-        <ul>
-          <li><strong>Oi-zuki repetition:</strong> 4 × 6 reps each side, drive from hips, exhale on impact.</li>
-          <li><strong>Gyaku-zuki focus:</strong> 4 × 8 reps, retract quickly, check guard every time.</li>
-          <li><strong>Mae-geri mechanics:</strong> 3 × 6 per leg, snap the kick then control the chamber.</li>
-          <li><strong>Jab → gyaku-zuki → mawashi-geri:</strong> 3 × 8 sequences, land balanced.</li>
-          <li><strong>Lead hook kick setups:</strong> 3 × 6 sequences using feint jab to create space.</li>
-        </ul>
-      </section>
+  <h3>4. "Roundhouse Elbow Clinch" – Jōdan Oi‑Zuki #4 <span class="jp">上段追い突き④</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Begin in yoi.  Step back with the lead foot into a long forward stance while executing a downward sweep.  Immediately lunge forward and punch to the head with a high lunge punch.  After the strike, retract the front leg to return to yoi【465065069210784†L242-L258】.</li>
+    <li><strong>Defender:</strong> As the attacker moves forward, step back into forward stance and cross your wrists to form a back‑hand X‑block (haishu juji‑uke).  Counter with a roundhouse kick (mawashi‑geri【17407332669578†L0-L9】) to the attacker’s ribs, grab their wrist (te zukami) to control their arm, then pivot and deliver a roundhouse elbow strike (mawashi enpi‑uchi).  Release and return to yoi【465065069210784†L270-L279】.</li>
+  </ul>
 
-      <section id="defence" class="module">
-        <h2>Defence &amp; counters</h2>
-        <ul>
-          <li><strong>High guard parry:</strong> 3 × 10 reps, redirect straight punch with minimal movement.</li>
-          <li><strong>Slip outside reverse punch:</strong> 3 × 8 reps each side, counter with gyaku-zuki.</li>
-          <li><strong>Mae-geri check:</strong> 3 × 6 per leg, catch with rear hand and step offline.</li>
-          <li><strong>Cover &amp; angle out:</strong> 3 × 5 sequences, shield then pivot to open counter line.</li>
-        </ul>
-      </section>
+  <h3>5. "Upward Block & Kick" – Jōdan Oi‑Zuki #5 <span class="jp">上段追い突き⑤</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From the ready position, step back with a downward sweep into forward stance.  Immediately shift forward with a high lunge punch aimed at the defender’s head, then withdraw by bringing the front leg back into yoi【465065069210784†L286-L302】.</li>
+    <li><strong>Defender:</strong> As the attacker lunges, take a small step back and perform an upward block (age‑uke).  Follow with a front kick (mae‑geri【680396993223075†L45-L51】) delivered with the rear leg to the attacker’s abdomen.  Immediately drop into a strong forward stance and finish with a vertical elbow strike (tate enpi‑uchi) to the chin before returning to ready stance【465065069210784†L314-L324】.</li>
+  </ul>
+</div>
 
-      <section id="partner" class="module">
-        <h2>Partner reaction drills</h2>
-        <ul>
-          <li><strong>Call &amp; respond:</strong> 3 × 90 seconds, partner calls technique and you execute instantly.</li>
-          <li><strong>Tag sparring:</strong> 3 × 2 minutes at 40% intensity, focus on clean touches not power.</li>
-          <li><strong>Counter for counter:</strong> 4 × 45 seconds, trade controlled counters with preset pattern.</li>
-          <li><strong>Scenario start:</strong> 3 × 1 minute from clinch or corner positions to practice resets.</li>
-        </ul>
-      </section>
+<div class="technique">
+  <h2>B. Mid‑Level Lunge Punches (Chūdan Oi‑Zuki 中段追い突き)</h2>
 
-      <section id="conditioning" class="module">
-        <h2>Conditioning finisher</h2>
-        <ul>
-          <li><strong>30 seconds:</strong> Fast jab–cross shadowboxing.</li>
-          <li><strong>30 seconds:</strong> Alternating mae-geri with guard recovery.</li>
-          <li><strong>30 seconds:</strong> Sprawl to fighting stance.</li>
-          <li><strong>Rest 30 seconds</strong> and repeat the circuit 3–4 times based on energy.</li>
-        </ul>
-      </section>
-    </div>
+  <h3>1. "Outer Block & Reverse" – Chūdan Oi‑Zuki #1 <span class="jp">中段追い突き①</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Starting from yoi, step back into a forward stance and sweep the lead hand downward (gedan barai).  Immediately shift the body forward and punch to the mid‑section (chūdan oi‑zuki).  Retract by bringing the front leg back to yoi【465065069210784†L330-L346】.</li>
+    <li><strong>Defender:</strong> Remain in yoi.  As the punch arrives, step back into a forward stance and deflect it using an outside fore‑arm block (soto‑ude‑uke)【336612086674552†L353-L354】.  Immediately counter with a middle reverse punch to the attacker’s solar plexus and then return to ready【465065069210784†L350-L362】.</li>
+  </ul>
 
-    <section id="weekly">
-      <h2>Weekly emphasis planner</h2>
-      <table class="practice-table">
-        <thead>
-          <tr>
-            <th scope="col">Session</th>
-            <th scope="col">Primary focus</th>
-            <th scope="col">Key cues</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Day 1</td>
-            <td>Footwork mechanics</td>
-            <td>Stay relaxed, rehearse entries at 70% speed before adding strikes.</td>
-          </tr>
-          <tr>
-            <td>Day 2</td>
-            <td>Combination polish</td>
-            <td>Record 2 rounds of pad work, review hip rotation and guard recovery.</td>
-          </tr>
-          <tr>
-            <td>Day 3</td>
-            <td>Defence &amp; reaction</td>
-            <td>Alternate rounds of tag sparring and counter-for-counter work.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+  <h3>2. "Horse‑Stance Elbow" – Chūdan Oi‑Zuki #2 <span class="jp">中段追い突き②</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From the ready position, step back into a forward stance while sweeping down with the lead arm.  Immediately thrust forward and punch to the opponent’s mid‑section (chūdan oi‑zuki), then bring the front leg back to yoi【465065069210784†L370-L386】.</li>
+    <li><strong>Defender:</strong> Step back into a forward stance and perform an outside fore‑arm block (soto‑ude‑uke).  Slide both feet forward (yori‑ashi) into horse stance (kiba‑dachi), twist the hips and strike with a side elbow (yoko enpi‑uchi) to the attacker’s ribs【465065069210784†L398-L407】.  Recover to yoi.</li>
+  </ul>
 
-    <section id="reflection" class="callout">
-      <h2>Cool-down &amp; reflection</h2>
-      <p>Close the session with 3 minutes of slow shadowboxing, then revisit two static stretches from the warm-up to reset posture. Capture quick notes:</p>
-      <ul class="micro-list">
-        <li>What felt sharp or sluggish today?</li>
-        <li>Which entries landed cleanly?</li>
-        <li>One adjustment for your next session.</li>
-      </ul>
-    </section>
+  <h3>3. "Inside‑Jab Reverse" – Chūdan Oi‑Zuki #3 <span class="jp">中段追い突き③</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From yoi, step back with the lead foot into forward stance and sweep down with a downward block.  Immediately drive forward and punch to the opponent’s mid‑section (chūdan oi‑zuki).  After punching, pull the front leg back to return to the ready stance【465065069210784†L412-L428】.</li>
+    <li><strong>Defender:</strong> As the attacker steps, step back into forward stance and perform an inside fore‑arm block (uchi‑ude‑uke)【336612086674552†L355-L356】.  With no pause, jab with the front hand to the opponent’s face (jōdan kizami‑zuki【336612086674552†L292-L296】) and then drive a middle reverse punch with the rear hand【465065069210784†L440-L449】.  Resume the ready stance.</li>
+  </ul>
 
-    <p class="nav-links"><a href="fitness.html">⬅ Back to Fitness Resources</a><a href="../index.html">Home</a></p>
-  </div>
+  <h3>4. "Knife‑Hand Spear" – Chūdan Oi‑Zuki #4 <span class="jp">中段追い突き④</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Begin in yoi.  Step back, sweep down with the lead arm and lunge forward with a punch to the mid‑section.  After punching, retreat by pulling the front leg back to yoi【465065069210784†L456-L472】.</li>
+    <li><strong>Defender:</strong> Pivot 45° into back stance (kokutsu‑dachi) and perform a knife‑hand block (shuto‑uke)【336612086674552†L363-L364】.  Snap a front kick (kizami mae‑geri) to the attacker’s abdomen, then thrust your fingers forward in a reverse spear‑hand (gyaku yōhan nukite) aimed at the throat【680396993223075†L108-L110】【465065069210784†L484-L492】.  Recover to the ready stance.</li>
+  </ul>
+
+  <h3>5. "Pivot & Rear Elbow" – Chūdan Oi‑Zuki #5 <span class="jp">中段追い突き⑤</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From the ready stance, step back into forward stance with a downward sweep.  Immediately advance and punch to the mid‑section (chūdan oi‑zuki), then pull the front leg back to the ready position【465065069210784†L498-L515】.</li>
+    <li><strong>Defender:</strong> Move into horse stance and execute an elbow block (enpi‑uke)【336612086674552†L381-L384】.  Perform a tenshin (pivot) by turning on the ball of the front foot, allowing your body to rotate 180°.  From this turned position, deliver a rear roundhouse elbow strike (ushiro mawashi enpi‑uchi) toward the attacker【465065069210784†L530-L538】.  Finish by stepping back to yoi.</li>
+  </ul>
+</div>
+
+<div class="technique">
+  <h2>C. Front‑Kick Counters (Mae‑Geri 前蹴り)</h2>
+
+  <h3>1. "Low Sweep & Punch" – Mae‑Geri #1 <span class="jp">前蹴り①</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From yoi, step back into forward stance with both fists lowered (ryōwan gedan gamae).  Kick forward with the rear leg using a mid‑level front kick (chūdan mae‑geri) and land into forward stance.  After the kick, return the front leg to yoi【680396993223075†L45-L51】【465065069210784†L544-L560】.</li>
+    <li><strong>Defender:</strong> Remain in natural stance.  As the kick comes, step back into forward stance and sweep the kicking leg aside using a downward sweeping block (gedan barai).  Immediately punch the attacker’s mid‑section with a reverse punch (chūdan gyaku‑zuki) and return to yoi【465065069210784†L572-L579】.</li>
+  </ul>
+
+  <h3>2. "Reverse Sweep Combo" – Mae‑Geri #2 <span class="jp">前蹴り②</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Adopt the ready position.  Step back with the lead foot into forward stance and lower both fists.  Deliver a mid‑level front kick (chūdan mae‑geri) with the rear leg, placing it forward.  After the kick, pull the front leg back and return to yoi【465065069210784†L584-L600】.</li>
+    <li><strong>Defender:</strong> As the kick approaches, step back and perform a reverse downward sweep (gyaku gedan barai), moving into forward stance.  Counter with a jabbing punch to the face (jōdan kizami‑zuki), then twist the hips and deliver a reverse punch to the torso (gyaku‑zuki).  Finish by stepping back to the ready stance【465065069210784†L612-L622】.</li>
+  </ul>
+
+  <h3>3. "Cross‑Block Smash" – Mae‑Geri #3 <span class="jp">前蹴り③</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Stand in yoi.  Step back into a forward stance with both fists lowered.  Fire a mid‑level front kick (chūdan mae‑geri) with the rear leg toward the defender’s abdomen.  Replace the foot forward in forward stance and then bring it back to return to the ready position【465065069210784†L628-L644】.</li>
+    <li><strong>Defender:</strong> As the attack begins, draw the front foot back into a long front stance, crossing your forearms into a low X‑block (gedan juji‑uke) to catch and redirect the kick【465065069210784†L656-L658】.  Immediately twist the hips forward and strike the attacker’s head with a double knife‑hand strike (jōdan shuto juji uchi)【465065069210784†L660-L662】.  Keep the feet planted in the stance during the strike, then step forward with the rear leg to return to yoi【465065069210784†L664-L665】.</li>
+    <li><em>Footwork note:</em> Stepping the front foot back lengthens your stance and loads the rear leg.  After blocking and striking, bring the rear foot forward to reset.</li>
+  </ul>
+
+  <h3>4. "Cat‑Stance Elbow" – Mae‑Geri #4 <span class="jp">前蹴り④</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From yoi, step back into forward stance with hands low, then kick forward with the rear leg using a mid‑level front kick (chūdan mae‑geri).  Land forward, then return the front leg to yoi【465065069210784†L668-L684】.</li>
+    <li><strong>Defender:</strong> Slide your body to the side into a cat stance (neko‑ashi‑dachi), and use a low sweeping block (gedan barai) to deflect the kick.  Immediately execute a reverse vertical knife‑hand strike (gyaku tate shuto) to the attacker’s face【336612086674552†L403-L406】.  Follow with a forward elbow strike (mae enpi‑uchi) to the chest and return to the ready stance【465065069210784†L696-L706】.</li>
+  </ul>
+
+  <h3>5. "Scooping Counter" – Mae‑Geri #5 <span class="jp">前蹴り⑤</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From the ready stance, step back into forward stance with hands down.  Launch a mid‑level front kick (chūdan mae‑geri) using the rear leg, place it forward and then withdraw back to yoi【465065069210784†L712-L728】.</li>
+    <li><strong>Defender:</strong> Drop into back stance (kokutsu‑dachi) as the kick comes and perform a scooping block (sukui‑uke)【336612086674552†L403-L404】, lifting and guiding the kicking leg away.  Immediately thrust your rear fist into the attacker’s abdomen with a reverse punch (gyaku‑zuki).  Release and recover to ready position【465065069210784†L740-L746】.</li>
+  </ul>
+</div>
+
+<div class="technique">
+  <h2>D. Side‑Thrust Kick Counters (Yoko‑Geri Kekomi 横蹴り蹴込)</h2>
+
+  <h3>1. "Outer Block & Punch" – Yoko‑Geri Kekomi #1 <span class="jp">横蹴り蹴込①</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From yoi, step back into forward stance with hands lowered, then thrust the rear leg into a side thrust kick (yoko‑geri kekomi – thrusting side kick【336612086674552†L454-L457】) aimed at the defender’s mid‑section.  Replace the kicking foot forward and return to yoi【465065069210784†L752-L764】.</li>
+    <li><strong>Defender:</strong> Step back into forward stance and perform an outside fore‑arm block (soto‑ude‑uke) to intercept the side kick.  Immediately counter with a middle reverse punch to the solar plexus and return to the ready stance【465065069210784†L780-L785】.</li>
+  </ul>
+
+  <h3>2. "Ridge‑Hand Reply" – Yoko‑Geri Kekomi #2 <span class="jp">横蹴り蹴込②</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Assume the ready stance, step back into forward stance and deliver a side thrust kick (yoko‑geri kekomi) using the rear leg, place it forward and then withdraw to yoi【465065069210784†L792-L807】.</li>
+    <li><strong>Defender:</strong> As the kick approaches, sweep it away with the back of the arm (haiwan ude barai).  Step forward into forward stance and deliver a high ridge‑hand strike (haito‑uchi【336612086674552†L339-L340】) to the neck.  Return to ready stance【465065069210784†L820-L826】.</li>
+  </ul>
+
+  <h3>3. "Rear Block & Elbow" – Yoko‑Geri Kekomi #3 <span class="jp">横蹴り蹴込③</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Begin in yoi.  Step back into forward stance and thrust a side kick (yoko‑geri kekomi) with the rear leg toward the defender’s torso.  Replace the leg forward and then return to ready position【465065069210784†L832-L848】.</li>
+    <li><strong>Defender:</strong> Move sideways, stepping the rear foot diagonally back and performing a rear downward sweep (ushiro gedan barai) to deflect the kick【336612086674552†L403-L404】.  Fire your own side thrust kick (yoko‑geri kekomi) into the attacker’s mid‑section, then land in horse stance and strike with a side elbow (yoko enpi‑uchi).  Recover to the ready stance【465065069210784†L860-L867】.</li>
+  </ul>
+</div>
+
+<div class="technique">
+  <h2>E. Roundhouse Kick Counters (Mawashi‑Geri 回し蹴り)</h2>
+
+  <h3>1. "Forearm Block & Punch" – Mawashi‑Geri #1 <span class="jp">回し蹴り①</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> From yoi, step back with the lead leg into forward stance.  Launch a high roundhouse kick (jōdan mawashi‑geri – roundhouse kick【537935796467567†L96-L101】) with the rear leg toward the defender’s head or ribs and return the kicking foot forward.  Recover to yoi【465065069210784†L874-L888】.</li>
+    <li><strong>Defender:</strong> Step slightly off the line of attack, turning your body to avoid the kick.  Block the roundhouse using the back of the arm (haiwan uchi ude uke) by sweeping your forearm across.  Immediately counter with a middle reverse punch to the attacker’s exposed torso.  Finish by returning to the ready stance【465065069210784†L902-L907】.</li>
+  </ul>
+
+  <h3>2. "Double Knife‑Hand & Elbow" – Mawashi‑Geri #2 <span class="jp">回し蹴り②</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Stand in yoi.  Step back into forward stance and unleash a high roundhouse kick (jōdan mawashi‑geri) with the rear leg.  Place the foot forward and then bring it back to the ready stance【465065069210784†L914-L929】.</li>
+    <li><strong>Defender:</strong> Drop back to a 45° angle while raising both hands in a vertical parallel double knife‑hand block (tate heikō morote shuto‑uke)【336612086674552†L403-L406】【336612086674552†L397-L398】 to catch the incoming leg.  Immediately glide forward with a sliding step (suri‑ashi), land in horse stance and strike with a side elbow (yoko enpi‑uchi).  Adjust your feet (small back‑and‑forth steps) to maintain balance and then return to the ready stance【465065069210784†L944-L959】.</li>
+  </ul>
+
+  <h3>3. "Block, Jab Kick & Punch" – Mawashi‑Geri #3 <span class="jp">回し蹴り③</span></h3>
+  <ul>
+    <li><strong>Attacker:</strong> Adopt the ready stance.  Step back into forward stance and throw a high roundhouse kick (jōdan mawashi‑geri) with the rear leg, landing the foot forward and then withdrawing to the ready stance【465065069210784†L960-L977】.</li>
+    <li><strong>Defender:</strong> Step back 45° into horse stance and perform an outer fore‑arm block (jōdan soto‑ude‑uke) to intercept the kick.  Quickly snap a front kick (kizami mae‑geri) with your front leg to the attacker’s mid‑section, then plant the foot forward and deliver a middle reverse punch with your rear hand.  Recover to yoi【465065069210784†L990-L1000】.</li>
+  </ul>
+</div>
+
+<div class="footnote">
+<p><strong>Footnotes &amp; Sources:</strong>  The descriptions above summarise the attacker and defender sequences from the Shotokan Karate Academy page on Kihon Ippon Kumite【465065069210784†L120-L156】【465065069210784†L330-L366】.  Translations for Japanese terms (stances, blocks, punches, kicks and strikes) are drawn from recognised Shotokan terminology resources【336612086674552†L351-L358】【680396993223075†L97-L100】.  Roundhouse kick translation from Black Belt Wiki【537935796467567†L96-L101】.</p>
+</div>
 </body>
 </html>
