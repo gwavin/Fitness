@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shotokan — Sanbon Kumite #1–#5 (Sidedness + Footwork Aide-Mémoire)</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121821; --ink:#ecf2ff; --muted:#a7b1c2;
+    --edge:#223040; --glow:rgba(255,255,255,.03);
+    --a1:#9bb7ff; --a2:#ffd37a; --a3:#8df0a9; --a4:#f6b84c; --a5:#5bd3c7;
+    --ok:#7ee081; --warn:#ffcc66; --cue:#8fb3ff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif;
+    color:var(--ink); background:linear-gradient(180deg,#0a0e13,#0b1119 30%, #0e1520);
+    padding:22px;
+  }
+  .wrap{max-width:1120px;margin:0 auto}
+  header{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:12px}
+  header h1{font-size:clamp(22px,3.2vw,34px);margin:0}
+  header .tag{font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid #243040;border-radius:999px}
+  .controls{
+    display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 18px;
+    padding:10px 12px;border:1px solid #243040;border-radius:12px;background:#0f1622;
+  }
+  .controls label{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#dfe7ff}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+  .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:12px;border:1px solid #2a3b55;background:#101621;color:#a7b1c2}
+  .pill.a1{border-color:color-mix(in oklab,var(--a1) 65%,#000);color:#dfe9ff}
+  .pill.a2{border-color:color-mix(in oklab,var(--a2) 65%,#000);color:#fff4dc}
+  .pill.a3{border-color:color-mix(in oklab,var(--a3) 65%,#000);color:#eafff0}
+  .pill.a4{border-color:color-mix(in oklab,var(--a4) 65%,#000);color:#fff6e4}
+  .pill.a5{border-color:color-mix(in oklab,var(--a5) 65%,#000);color:#eafffb}
+  .grid{display:grid;gap:18px}
+  @media (min-width:940px){ .grid{grid-template-columns:1fr 1fr} }
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+    border:1px solid var(--edge); border-radius:18px; padding:18px 16px 14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25), inset 0 1px 0 var(--glow);
+  }
+  h2{margin:0 0 8px 0; font-size:clamp(18px,2.4vw,24px)}
+  .mnemonic{
+    display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:12px;
+    background:#0e1622; border:1px dashed #2a3b55; color:var(--muted); margin:8px 0 12px;
+  }
+  .mnemonic strong{color:#fff}
+  .step{
+    display:grid; gap:10px; grid-template-columns: 38px 1fr; align-items:start;
+    padding:10px 12px; border:1px solid #27364a; border-radius:12px; margin:10px 0; background:rgba(255,255,255,0.02)
+  }
+  .n{
+    width:28px;height:28px; border-radius:8px; display:grid; place-items:center; font-weight:700;
+    background:#1a2433; color:var(--cue); border:1px solid #2d3e57;
+  }
+  .attack b,.def b{color:#fff}
+  .attack .tr{color:var(--muted)}
+  .def{color:var(--muted)}
+  .def mark{background:transparent; color:#fff; padding:0 .1rem; font-weight:700}
+  .stance{opacity:.9}
+  .counter{
+    margin-top:10px; padding:10px 12px; border:1px solid #2c3c50; border-radius:10px;
+    background:linear-gradient(180deg,#0f1825,#0d1420);
+  }
+  .counter strong{color:var(--ok)}
+  .kiai{color:var(--warn); font-weight:700}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media (max-width:640px){ .cols{grid-template-columns:1fr} }
+  .key{font-size:13px;color:var(--muted)}
+  .key b{color:#fff}
+  .acc1{border-color:color-mix(in oklab,var(--a1) 65%,#000)}
+  .acc2{border-color:color-mix(in oklab,var(--a2) 65%,#000)}
+  .acc3{border-color:color-mix(in oklab,var(--a3) 65%,#000)}
+  .acc4{border-color:color-mix(in oklab,var(--a4) 65%,#000)}
+  .acc5{border-color:color-mix(in oklab,var(--a5) 65%,#000)}
+  .cue{font-size:13px;opacity:.95}
+  .var{margin-top:6px;padding:8px 10px;border:1px dashed #3a4a66;border-radius:10px;background:#0b1320}
+  .foot{font-size:13px}
+  .foot b{color:#dfe7ff}
+  .angle{font-variant-numeric:tabular-nums}
+  details{margin-top:12px}
+  summary{cursor:pointer;color:#dfe7ff}
+  footer{margin-top:20px;color:#8ba1bb;font-size:13px}
+
+  /* Sidedness visibility */
+  .side-R,.side-L{display:none}
+  .start-R .side-R{display:block}
+  .start-L .side-L{display:block}
+
+  /* Print */
+  @media print{
+    :root{--bg:#fff;--ink:#111;--muted:#444;--edge:#ddd}
+    body{background:#fff;color:#111;padding:0}
+    .card{box-shadow:none;background:#fff}
+    .mnemonic{background:#fafafa;border:1px dashed #ccc}
+    header .tag,.pill,.controls{border-color:#ccc;background:#f6f6f6;color:#333}
+    .controls{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body class="start-R">
+<div class="wrap">
+  <header>
+    <h1>Sanbon Kumite — #1 to #5 (with Sidedness & Footwork)</h1>
+    <span class="tag">3-step pre-arranged sparring • English translations • precise footwork</span>
+  </header>
+
+  <div class="controls" role="group" aria-label="Sidedness controls">
+    <label>
+      <input type="radio" name="side" value="R" checked>
+      Attacker pattern: <b>R-L-R</b> (common start: attacker begins in left stance, steps <b>Right</b> first)
+    </label>
+    <label>
+      <input type="radio" name="side" value="L">
+      Attacker pattern: <b>L-R-L</b> (mirrored)
+    </label>
+    <span class="pill">Convention: Defender retreats the attacking-side foot to land in the <b>opposite-front</b> stance and blocks with the <b>opposite/front</b> arm (e.g., right punch → step right back → <i>left</i> zenkutsu → <i>left</i> block).</span>
+  </div>
+
+  <div class="legend">
+    <span class="pill a1">#1 Zenkutsu basics</span>
+    <span class="pill a2">#2 Zenkutsu + inside block & jab</span>
+    <span class="pill a3">#3 Kokutsu (back stance) set</span>
+    <span class="pill a4">#4 Kiba (horse stance) + empi</span>
+    <span class="pill a5">#5 Turn before each defense</span>
+    <span class="pill">Kiai on 3rd attack & on finish</span>
+  </div>
+
+  <div class="grid">
+    <!-- === #1 === -->
+    <section class="card acc1" id="sanbon-1">
+      <h2>#1 — Zenkutsu Basics: Age → Soto-uke → Gedan ⇒ <strong>Gyaku-tsuki</strong></h2>
+      <div class="mnemonic">
+        <div>🧠</div>
+        <div><strong>Hook:</strong> <mark>High–Mid–Low</mark> in <b>zenkutsu-dachi</b> (front stance). Finish with a solid <b>reverse punch</b>.
+          <div class="cue">Attacks: Jōdan oi-tsuki (upper lunge punch) → Chūdan oi-tsuki (middle) → Chūdan mae-geri (front kick).</div>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="n">1</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b> to right zenkutsu; punch <b>right</b> jōdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Left</b> to left zenkutsu; punch <b>left</b> jōdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; block <mark>age-uke</mark> with <b>left</b> forearm (front arm).</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; block <mark>age-uke</mark> with <b>right</b> forearm (front arm).</span>
+            <div class="var foot">
+              <b>Footwork:</b> Retreat ~1 stance length on the center line; rear foot angled ~<span class="angle">30°</span> out, front foot ~<span class="angle">10–15°</span> in; knee tracks over toes; hips square.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="n">2</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>soto-ude-uke</mark> (outside block) with <b>right</b> arm.</span>
+            <span class="side-L">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>soto-ude-uke</mark> with <b>left</b> arm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Same retreat; keep stance length consistent; front hip slightly closed to lock the block.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="n">3</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> with <b>left</b> arm (sweep down the kicking line).</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> with <b>right</b> arm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Retreat slightly <i>off the center</i> ~<span class="angle">10–15°</span> to the outside of the kicking leg; weight drops to absorb impact.
+            </div>
+          </div>
+          <div class="counter">
+            <b>Counter:</b>
+            <span class="side-R">From <b>left</b> zenkutsu, punch <strong>right</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">From <b>right</b> zenkutsu, punch <strong>left</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cols key">
+        <div><b>Movement cue:</b> Long, even retreats; front knee over toes; keep head level.</div>
+        <div><b>Timing cue:</b> Block as the attack commits—don’t reach for it.</div>
+      </div>
+    </section>
+
+    <!-- === #2 === -->
+    <section class="card acc2" id="sanbon-2">
+      <h2>#2 — Zenkutsu Variation: Age → <span title="inside forearm block">Uchi-uke</span> → Gedan (outside leg) ⇒ <strong>Kizami + Gyaku</strong></h2>
+      <div class="mnemonic">
+        <div>🧠</div>
+        <div><strong>Hook:</strong> Same attacks as #1; switch mid-block to <b>uchi-ude-uke</b>, then sweep to the <b>outside</b> of the kick and go <b>jab → reverse</b>.</div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="n">1</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>age-uke</mark> with <b>left</b> arm.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>age-uke</mark> with <b>right</b> arm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Retreat ~1 stance; rear foot ~<span class="angle">30°</span> out; keep hips square.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="n">2</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>uchi-ude-uke</mark> with <b>right</b> arm.</span>
+            <span class="side-L">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>uchi-ude-uke</mark> with <b>left</b> arm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Slight inward hip set to power the inside block; elbow path tight.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="n">3</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> with <b>left</b> arm to the <b>outside</b> of the kicking leg.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> with <b>right</b> arm to the <b>outside</b> of the kicking leg.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Retreat <i>slightly</i> off-line ~<span class="angle">15°</span> to the outside; keep shoulders relaxed.
+            </div>
+          </div>
+          <div class="counter">
+            <b>Counter:</b>
+            <span class="side-R"><strong>Kizami-tsuki</strong> (left jab) → <strong>Gyaku-tsuki</strong> (right) <span class="kiai">KIAI</span>.</span>
+            <span class="side-L"><strong>Kizami-tsuki</strong> (right jab) → <strong>Gyaku-tsuki</strong> (left) <span class="kiai">KIAI</span>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cols key">
+        <div><b>Angle cue:</b> On the kick, sweep outside to clear the line for the jab.</div>
+        <div><b>Rhythm cue:</b> Jab snaps from the front hip; reverse punch lands as weight settles.</div>
+      </div>
+    </section>
+
+    <!-- === #3 === -->
+    <section class="card acc3" id="sanbon-3">
+      <h2>#3 — Kokutsu Set: Haiwan → Morote Uchi-uke → Sukui ⇒ <strong>Gyaku (shift to zenkutsu)</strong></h2>
+      <div class="mnemonic">
+        <div>🧠</div>
+        <div><strong>Hook:</strong> Three <b>blocks in kokutsu-dachi</b> (back stance, ~70/30); after the last block, glide to <b>zenkutsu</b> to punch.</div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="n">1</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>jōdan haiwan-uke</mark> (high back-forearm shield) with <b>left</b> forearm.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>jōdan haiwan-uke</mark> with <b>right</b> forearm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Rear foot near <span class="angle">90°</span>; front foot ~<span class="angle">30°</span> in; sit the hips back (weight ~70% rear).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="n">2</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>morote uchi-ude-uke</mark> (reinforced inside block) with <b>right</b> arm.</span>
+            <span class="side-L">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>morote uchi-ude-uke</mark> with <b>left</b> arm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Keep the rear knee soft; elbows “stacked” to avoid over-rotation.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="n">3</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>sukui-uke</mark> (scooping block) with <b>left</b> arm.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>sukui-uke</mark> with <b>right</b> arm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Slight outside line (∼<span class="angle">10–15°</span>) to meet the kick; keep torso upright.
+            </div>
+          </div>
+          <div class="counter">
+            <b>Counter:</b>
+            <span class="side-R">Glide forward to <b>right</b> zenkutsu and punch <strong>left</strong> gyaku-tsuki <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Glide forward to <b>left</b> zenkutsu and punch <strong>right</strong> gyaku-tsuki <span class="kiai">KIAI</span>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cols key">
+        <div><b>Structure cue:</b> Rear hip loaded; front hip free—quick shift into zenkutsu for the punch.</div>
+        <div><b>Breath cue:</b> Gentle inhale on retreat; short, sharp exhale on counter.</div>
+      </div>
+    </section>
+
+    <!-- === #4 === -->
+    <section class="card acc4" id="sanbon-4">
+      <h2>#4 — Kiba Focus: Yama → Teishō → Gedan ⇒ <strong>Empi-uchi</strong></h2>
+      <div class="mnemonic">
+        <div>🧠</div>
+        <div><strong>Hook:</strong> <mark>Mountain–Palm–Sweep</mark> from <b>kiba-dachi</b> (horse stance). Slide in with a sharp <b>elbow</b>.</div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="n">1</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Drop into <b>kiba-dachi</b>; <mark>yama-uke</mark> with <b>left</b> lead (double forearm).</span>
+            <span class="side-L">Drop into <b>kiba-dachi</b>; <mark>yama-uke</mark> with <b>right</b> lead.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Step slightly <i>sideways</i> toward the blocking side; feet parallel (or toes slightly in), knees pushed out; weight centered.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="n">2</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Stay in <b>kiba</b>; <mark>teishō-uke</mark> (palm-heel) with <b>right</b> hand forward.</span>
+            <span class="side-L">Stay in <b>kiba</b>; <mark>teishō-uke</mark> with <b>left</b> hand forward.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Tiny heel-toe adjustment only; keep hips level—avoid bobbing.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="n">3</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R">Remain in <b>kiba</b>; <mark>gedan-barai</mark> with <b>right</b> arm.</span>
+            <span class="side-L">Remain in <b>kiba</b>; <mark>gedan-barai</mark> with <b>left</b> arm.</span>
+            <div class="var foot">
+              <b>Footwork:</b> Micro-shift toward the <i>outside</i> of the kick; sit deeper to absorb power.
+            </div>
+          </div>
+          <div class="counter">
+            <b>Counter:</b>
+            <span class="side-R">Slide in (same line) and strike <strong>right</strong> <b>empi-uchi</b> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Slide in and strike <strong>left</strong> <b>empi-uchi</b> <span class="kiai">KIAI</span>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cols key">
+        <div><b>Structure cue:</b> Knees out, tailbone heavy; spine tall; elbows tight on the blocks.</div>
+        <div><b>Entry cue:</b> Empi travels along the shortest path—no wind-up.</div>
+      </div>
+    </section>
+
+    <!-- === #5 === -->
+    <section class="card acc5" id="sanbon-5">
+      <h2>#5 — Turning Set: Turn+Age → Turn+Uchi-uke → Turn+Gedan ⇒ <strong>Gyaku-tsuki</strong></h2>
+      <div class="mnemonic">
+        <div>🧭</div>
+        <div><strong>Hook:</strong> <mark>Turn High → Turn Mid → Turn Low</mark>. Keep your center level; finish with a decisive reverse punch.</div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="n">1</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R"><mark>Turn</mark> <b>clockwise</b> ~<span class="angle">90°</span> on the <b>left</b> ball of foot, then step the <b>right</b> foot back to <b>left</b> zenkutsu; block <mark>age-uke</mark> (left).</span>
+            <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> ~<span class="angle">90°</span> on the <b>right</b> ball, then step the <b>left</b> foot back to <b>right</b> zenkutsu; block <mark>age-uke</mark> (right).</span>
+            <div class="var foot">
+              <b>Footwork:</b> Pivot first (keep head level), then place the retreating foot on the new line; rear foot ~<span class="angle">30°</span> out.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="n">2</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> zenkutsu; <mark>uchi-ude-uke</mark> (right).</span>
+            <span class="side-L"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> zenkutsu; <mark>uchi-ude-uke</mark> (left).</span>
+            <div class="var foot">
+              <b>Footwork:</b> Turn first, then place; keep hip height constant—no bounce.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="n">3</div><div>
+          <div class="attack"><b>Attack:</b>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+          </div>
+          <div class="def"><b>Defend:</b>
+            <span class="side-R"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> (left).</span>
+            <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> (right).</span>
+            <div class="var foot">
+              <b>Footwork:</b> After the turn, place the retreating foot slightly <i>outside</i> the kick’s line; settle weight, then block.
+            </div>
+          </div>
+          <div class="counter">
+            <b>Counter:</b>
+            <span class="side-R">Drive in and punch <strong>left</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Drive in and punch <strong>right</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cols key">
+        <div><b>Balance cue:</b> Pivot on the <i>ball</i> of the front foot; spine tall; eyes on attacker throughout the turn.</div>
+        <div><b>Timing cue:</b> Turn late enough to “catch” the attack in your window, then step back and set the block.</div>
+      </div>
+    </section>
+  </div>
+
+  <details>
+    <summary><strong>Glossary (JP → EN)</strong></summary>
+    <div class="key" style="margin-top:8px">
+      <b>Stances:</b> Zenkutsu-dachi = front stance; Kokutsu-dachi = back stance; Kiba-dachi = horse stance.<br/>
+      <b>Attacks:</b> Jōdan/Chūdan = upper/middle level; Oi-tsuki = lunge (stepping) punch; Mae-geri = front kick; Kizami-tsuki = jab (lead hand); Gyaku-tsuki = reverse punch (rear hand).<br/>
+      <b>Blocks:</b> Age-uke = rising; Soto-ude-uke = outside forearm; Uchi-ude-uke = inside forearm; Gedan-barai = downward sweep; Yama-uke = “mountain” double-forearm; Teishō-uke = palm-heel; Haiwan-uke = back-forearm shield (high); Morote uchi-uke = reinforced inside forearm; Sukui-uke = scooping block.<br/>
+      <b>Cues:</b> Ma-ai = distance; Kiai = spirited shout.
+    </div>
+  </details>
+
+  <details>
+    <summary><strong>Conventions & Notes on Sidedness</strong></summary>
+    <div class="key" style="margin-top:8px">
+      • This sheet uses the common pattern where the <b>attacker steps R-L-R</b> (toggle above). Mirroring yields L-R-L.<br/>
+      • The defender always retreats the <b>same side</b> as the attack, so the <b>front arm</b> performs the block each time.<br/>
+      • For kicks (step 3), retreat <i>slightly</i> to the outside of the kicking line for clearance and stability.<br/>
+      • Degrees (10°, 15°, 30°, 90°) are cues, not absolutes—adjust for your body and dojo conventions.
+    </div>
+  </details>
+
+  <footer>
+    <div>Practice notes: Keep head level, breathe naturally, maintain <em>ma-ai</em>, and give a crisp kiai on the third attack and the finish.</div>
+  </footer>
+</div>
+
+<script>
+  // Sidedness toggle: add class to <body> to switch between R-L-R and L-R-L blocks of text
+  const radios = document.querySelectorAll('input[name="side"]');
+  radios.forEach(r => r.addEventListener('change', e => {
+    document.body.classList.toggle('start-R', e.target.value === 'R');
+    document.body.classList.toggle('start-L', e.target.value === 'L');
+  }));
+</script>
+</body>
+</html>
