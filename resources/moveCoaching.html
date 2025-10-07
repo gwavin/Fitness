@@ -19,6 +19,22 @@
     padding:22px;
   }
   .wrap{max-width:1120px;margin:0 auto}
+  .jp-term{
+    display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;
+    font-size:14px;color:var(--muted);line-height:1.2;vertical-align:baseline;
+    margin:0 .12em;padding:.1rem .2rem;border-radius:6px;background:rgba(20,28,40,0.55);
+  }
+  .jp-term ruby{color:#fff;font-size:1rem;font-weight:600;line-height:1.1}
+  .jp-term ruby rt{font-size:11px;color:var(--muted);letter-spacing:.03em;font-weight:400}
+  .jp-term .en{font-size:12px;color:var(--muted);text-transform:none;line-height:1.1}
+  .glossary{margin-top:12px;display:grid;gap:16px}
+  .glossary h3{margin:0;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#dfe7ff;opacity:.9}
+  .glossary-items{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .glossary-items .jp-term{width:100%;max-width:240px;background:#0d1520;border:1px solid #243040}
+  @media (max-width:600px){
+    .jp-term{font-size:13px;margin:.08em 0;}
+    .jp-term ruby{font-size:.95rem}
+  }
   header{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:12px}
   header h1{font-size:clamp(22px,3.2vw,34px);margin:0}
   header .tag{font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid #243040;border-radius:999px}
@@ -116,26 +132,26 @@
       <input type="radio" name="side" value="L">
       Attacker pattern: <b>L-R-L</b> (mirrored)
     </label>
-    <span class="pill">Convention: Defender retreats the attacking-side foot to land in the <b>opposite-front</b> stance and blocks with the <b>opposite/front</b> arm (e.g., right punch → step right back → <i>left</i> zenkutsu → <i>left</i> block).</span>
+    <span class="pill">Convention: Defender retreats the attacking-side foot to land in the <b>opposite-front</b> stance and blocks with the <b>opposite/front</b> arm (e.g., right punch → step right back → <i>left</i> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> → <i>left</i> block).</span>
   </div>
 
   <div class="legend">
-    <span class="pill a1">#1 Zenkutsu basics</span>
-    <span class="pill a2">#2 Zenkutsu + inside block & jab</span>
-    <span class="pill a3">#3 Kokutsu (back stance) set</span>
-    <span class="pill a4">#4 Kiba (horse stance) + empi</span>
+    <span class="pill a1">#1 <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> basics</span>
+    <span class="pill a2">#2 <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> + <span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside block</span></span> & jab</span>
+    <span class="pill a3">#3 <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span> set</span>
+    <span class="pill a4">#4 <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span> + <span class="jp-term"><ruby>猿臂打ち<rt>empi-uchi</rt></ruby><span class="en">elbow strike</span></span></span>
     <span class="pill a5">#5 Turn before each defense</span>
-    <span class="pill">Kiai on 3rd attack & on finish</span>
+    <span class="pill"><span class="jp-term"><ruby>気合<rt>kiai</rt></ruby><span class="en">spirit shout</span></span> on 3rd attack & on finish</span>
   </div>
 
   <div class="grid">
     <!-- === #1 === -->
     <section class="card acc1" id="sanbon-1">
-      <h2>#1 — Zenkutsu Basics: Age → Soto-uke → Gedan ⇒ <strong>Gyaku-tsuki</strong></h2>
+      <h2>#1 — <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance basics</span></span>: <span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span> → <span class="jp-term"><ruby>外腕受け<rt>soto-ude-uke</rt></ruby><span class="en">outside block</span></span> → <span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">low sweep</span></span> ⇒ <strong><span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span></strong></h2>
       <div class="mnemonic">
         <div>🧠</div>
-        <div><strong>Hook:</strong> <mark>High–Mid–Low</mark> in <b>zenkutsu-dachi</b> (front stance). Finish with a solid <b>reverse punch</b>.
-          <div class="cue">Attacks: Jōdan oi-tsuki (upper lunge punch) → Chūdan oi-tsuki (middle) → Chūdan mae-geri (front kick).</div>
+        <div><strong>Hook:</strong> <mark>High–Mid–Low</mark> in <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>. Finish with a solid <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span>.
+          <div class="cue">Attacks: <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span> → <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span> → <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span>.</div>
         </div>
       </div>
 
@@ -143,12 +159,12 @@
       <div class="step">
         <div class="n">1</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b> to right zenkutsu; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b> to left zenkutsu; punch <b>left</b> jōdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Right</b> to right <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; punch <b>right</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Left</b> to left <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; punch <b>left</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; block <mark>age-uke</mark> with <b>left</b> forearm (front arm).</span>
-            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; block <mark>age-uke</mark> with <b>right</b> forearm (front arm).</span>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; block <mark><span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span></mark> with <b>left</b> forearm (front arm).</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; block <mark><span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span></mark> with <b>right</b> forearm (front arm).</span>
             <div class="var foot">
               <b>Footwork:</b> Retreat ~1 stance length on the center line; rear foot angled ~<span class="angle">30°</span> out, front foot ~<span class="angle">10–15°</span> in; knee tracks over toes; hips square.
             </div>
@@ -160,12 +176,12 @@
       <div class="step">
         <div class="n">2</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>soto-ude-uke</mark> (outside block) with <b>right</b> arm.</span>
-            <span class="side-L">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>soto-ude-uke</mark> with <b>left</b> arm.</span>
+            <span class="side-R">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>外腕受け<rt>soto-ude-uke</rt></ruby><span class="en">outside forearm block</span></span></mark> with <b>right</b> arm.</span>
+            <span class="side-L">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>外腕受け<rt>soto-ude-uke</rt></ruby><span class="en">outside forearm block</span></span></mark> with <b>left</b> arm.</span>
             <div class="var foot">
               <b>Footwork:</b> Same retreat; keep stance length consistent; front hip slightly closed to lock the block.
             </div>
@@ -177,20 +193,20 @@
       <div class="step">
         <div class="n">3</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> with <b>left</b> arm (sweep down the kicking line).</span>
-            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> with <b>right</b> arm.</span>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> with <b>left</b> arm (sweep down the kicking line).</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> with <b>right</b> arm.</span>
             <div class="var foot">
               <b>Footwork:</b> Retreat slightly <i>off the center</i> ~<span class="angle">10–15°</span> to the outside of the kicking leg; weight drops to absorb impact.
             </div>
           </div>
           <div class="counter">
             <b>Counter:</b>
-            <span class="side-R">From <b>left</b> zenkutsu, punch <strong>right</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">From <b>right</b> zenkutsu, punch <strong>left</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">From <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>, punch <strong>right</strong> <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">From <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>, punch <strong>left</strong> <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
         </div>
       </div>
@@ -203,22 +219,22 @@
 
     <!-- === #2 === -->
     <section class="card acc2" id="sanbon-2">
-      <h2>#2 — Zenkutsu Variation: Age → <span title="inside forearm block">Uchi-uke</span> → Gedan (outside leg) ⇒ <strong>Kizami + Gyaku</strong></h2>
+      <h2>#2 — <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance variation</span></span>: <span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span> → <span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside block</span></span> → <span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">outside sweep</span></span> ⇒ <strong><span class="jp-term"><ruby>刻み突き<rt>kizami-tsuki</rt></ruby><span class="en">lead jab</span></span> + <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span></strong></h2>
       <div class="mnemonic">
         <div>🧠</div>
-        <div><strong>Hook:</strong> Same attacks as #1; switch mid-block to <b>uchi-ude-uke</b>, then sweep to the <b>outside</b> of the kick and go <b>jab → reverse</b>.</div>
+        <div><strong>Hook:</strong> Same attacks as #1; switch mid-block to <span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside block</span></span>, sweep outside the kick, then fire <span class="jp-term"><ruby>刻み突き<rt>kizami-tsuki</rt></ruby><span class="en">lead jab</span></span> → <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span>.</div>
       </div>
 
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>age-uke</mark> with <b>left</b> arm.</span>
-            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>age-uke</mark> with <b>right</b> arm.</span>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span></mark> with <b>left</b> arm.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span></mark> with <b>right</b> arm.</span>
             <div class="var foot">
               <b>Footwork:</b> Retreat ~1 stance; rear foot ~<span class="angle">30°</span> out; keep hips square.
             </div>
@@ -230,12 +246,12 @@
       <div class="step">
         <div class="n">2</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>uchi-ude-uke</mark> with <b>right</b> arm.</span>
-            <span class="side-L">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>uchi-ude-uke</mark> with <b>left</b> arm.</span>
+            <span class="side-R">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside forearm block</span></span></mark> with <b>right</b> arm.</span>
+            <span class="side-L">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside forearm block</span></span></mark> with <b>left</b> arm.</span>
             <div class="var foot">
               <b>Footwork:</b> Slight inward hip set to power the inside block; elbow path tight.
             </div>
@@ -247,20 +263,20 @@
       <div class="step">
         <div class="n">3</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> with <b>left</b> arm to the <b>outside</b> of the kicking leg.</span>
-            <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> with <b>right</b> arm to the <b>outside</b> of the kicking leg.</span>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> to the <b>outside</b> of the kicking leg.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> to the <b>outside</b> of the kicking leg.</span>
             <div class="var foot">
               <b>Footwork:</b> Retreat <i>slightly</i> off-line ~<span class="angle">15°</span> to the outside; keep shoulders relaxed.
             </div>
           </div>
           <div class="counter">
             <b>Counter:</b>
-            <span class="side-R"><strong>Kizami-tsuki</strong> (left jab) → <strong>Gyaku-tsuki</strong> (right) <span class="kiai">KIAI</span>.</span>
-            <span class="side-L"><strong>Kizami-tsuki</strong> (right jab) → <strong>Gyaku-tsuki</strong> (left) <span class="kiai">KIAI</span>.</span>
+            <span class="side-R"><span class="jp-term"><ruby>刻み突き<rt>kizami-tsuki</rt></ruby><span class="en">left jab</span></span> → <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">right reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L"><span class="jp-term"><ruby>刻み突き<rt>kizami-tsuki</rt></ruby><span class="en">right jab</span></span> → <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">left reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
         </div>
       </div>
@@ -273,22 +289,22 @@
 
     <!-- === #3 === -->
     <section class="card acc3" id="sanbon-3">
-      <h2>#3 — Kokutsu Set: Haiwan → Morote Uchi-uke → Sukui ⇒ <strong>Gyaku (shift to zenkutsu)</strong></h2>
+      <h2>#3 — <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance set</span></span>: <span class="jp-term"><ruby>上段背腕受け<rt>jōdan haiwan-uke</rt></ruby><span class="en">high back-forearm block</span></span> → <span class="jp-term"><ruby>諸手内受け<rt>morote uchi-ude-uke</rt></ruby><span class="en">reinforced inside block</span></span> → <span class="jp-term"><ruby>掬い受け<rt>sukui-uke</rt></ruby><span class="en">scooping block</span></span> ⇒ <strong>shift to <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> + <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span></strong></h2>
       <div class="mnemonic">
         <div>🧠</div>
-        <div><strong>Hook:</strong> Three <b>blocks in kokutsu-dachi</b> (back stance, ~70/30); after the last block, glide to <b>zenkutsu</b> to punch.</div>
+        <div><strong>Hook:</strong> Hold <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance (70/30)</span></span> for three blocks, then glide into <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> for the counter punch.</div>
       </div>
 
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>jōdan haiwan-uke</mark> (high back-forearm shield) with <b>left</b> forearm.</span>
-            <span class="side-L">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>jōdan haiwan-uke</mark> with <b>right</b> forearm.</span>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span>; <mark><span class="jp-term"><ruby>上段背腕受け<rt>jōdan haiwan-uke</rt></ruby><span class="en">high back-forearm block</span></span></mark> with <b>left</b> forearm.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span>; <mark><span class="jp-term"><ruby>上段背腕受け<rt>jōdan haiwan-uke</rt></ruby><span class="en">high back-forearm block</span></span></mark> with <b>right</b> forearm.</span>
             <div class="var foot">
               <b>Footwork:</b> Rear foot near <span class="angle">90°</span>; front foot ~<span class="angle">30°</span> in; sit the hips back (weight ~70% rear).
             </div>
@@ -300,12 +316,12 @@
       <div class="step">
         <div class="n">2</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>morote uchi-ude-uke</mark> (reinforced inside block) with <b>right</b> arm.</span>
-            <span class="side-L">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>morote uchi-ude-uke</mark> with <b>left</b> arm.</span>
+            <span class="side-R">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span>; <mark><span class="jp-term"><ruby>諸手内受け<rt>morote uchi-ude-uke</rt></ruby><span class="en">reinforced inside block</span></span></mark> with <b>right</b> arm.</span>
+            <span class="side-L">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span>; <mark><span class="jp-term"><ruby>諸手内受け<rt>morote uchi-ude-uke</rt></ruby><span class="en">reinforced inside block</span></span></mark> with <b>left</b> arm.</span>
             <div class="var foot">
               <b>Footwork:</b> Keep the rear knee soft; elbows “stacked” to avoid over-rotation.
             </div>
@@ -317,48 +333,48 @@
       <div class="step">
         <div class="n">3</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>sukui-uke</mark> (scooping block) with <b>left</b> arm.</span>
-            <span class="side-L">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>sukui-uke</mark> with <b>right</b> arm.</span>
+            <span class="side-R">Step <b>Right</b> back to <b>left</b> <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span>; <mark><span class="jp-term"><ruby>掬い受け<rt>sukui-uke</rt></ruby><span class="en">scooping block</span></span></mark> with <b>left</b> arm.</span>
+            <span class="side-L">Step <b>Left</b> back to <b>right</b> <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span>; <mark><span class="jp-term"><ruby>掬い受け<rt>sukui-uke</rt></ruby><span class="en">scooping block</span></span></mark> with <b>right</b> arm.</span>
             <div class="var foot">
-              <b>Footwork:</b> Slight outside line (∼<span class="angle">10–15°</span>) to meet the kick; keep torso upright.
+              <b>Footwork:</b> Slight outside line (~<span class="angle">10–15°</span>) to meet the kick; keep torso upright.
             </div>
           </div>
           <div class="counter">
             <b>Counter:</b>
-            <span class="side-R">Glide forward to <b>right</b> zenkutsu and punch <strong>left</strong> gyaku-tsuki <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Glide forward to <b>left</b> zenkutsu and punch <strong>right</strong> gyaku-tsuki <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Glide forward to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> and punch <strong>left</strong> <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Glide forward to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> and punch <strong>right</strong> <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
         </div>
       </div>
 
       <div class="cols key">
-        <div><b>Structure cue:</b> Rear hip loaded; front hip free—quick shift into zenkutsu for the punch.</div>
+        <div><b>Structure cue:</b> Rear hip loaded; front hip free—quick shift into <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span> for the punch.</div>
         <div><b>Breath cue:</b> Gentle inhale on retreat; short, sharp exhale on counter.</div>
       </div>
     </section>
 
     <!-- === #4 === -->
     <section class="card acc4" id="sanbon-4">
-      <h2>#4 — Kiba Focus: Yama → Teishō → Gedan ⇒ <strong>Empi-uchi</strong></h2>
+      <h2>#4 — <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance focus</span></span>: <span class="jp-term"><ruby>山受け<rt>yama-uke</rt></ruby><span class="en">mountain block</span></span> → <span class="jp-term"><ruby>掌底受け<rt>teishō-uke</rt></ruby><span class="en">palm-heel block</span></span> → <span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">low sweep</span></span> ⇒ <strong><span class="jp-term"><ruby>猿臂打ち<rt>empi-uchi</rt></ruby><span class="en">elbow strike</span></span></strong></h2>
       <div class="mnemonic">
         <div>🧠</div>
-        <div><strong>Hook:</strong> <mark>Mountain–Palm–Sweep</mark> from <b>kiba-dachi</b> (horse stance). Slide in with a sharp <b>elbow</b>.</div>
+        <div><strong>Hook:</strong> <mark>Mountain–Palm–Sweep</mark> from <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>. Slide in with a sharp <span class="jp-term"><ruby>猿臂打ち<rt>empi-uchi</rt></ruby><span class="en">elbow strike</span></span>.</div>
       </div>
 
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Drop into <b>kiba-dachi</b>; <mark>yama-uke</mark> with <b>left</b> lead (double forearm).</span>
-            <span class="side-L">Drop into <b>kiba-dachi</b>; <mark>yama-uke</mark> with <b>right</b> lead.</span>
+            <span class="side-R">Drop into <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>; <mark><span class="jp-term"><ruby>山受け<rt>yama-uke</rt></ruby><span class="en">mountain block</span></span></mark> with <b>left</b> lead (double forearm).</span>
+            <span class="side-L">Drop into <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>; <mark><span class="jp-term"><ruby>山受け<rt>yama-uke</rt></ruby><span class="en">mountain block</span></span></mark> with <b>right</b> lead.</span>
             <div class="var foot">
               <b>Footwork:</b> Step slightly <i>sideways</i> toward the blocking side; feet parallel (or toes slightly in), knees pushed out; weight centered.
             </div>
@@ -370,12 +386,12 @@
       <div class="step">
         <div class="n">2</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Stay in <b>kiba</b>; <mark>teishō-uke</mark> (palm-heel) with <b>right</b> hand forward.</span>
-            <span class="side-L">Stay in <b>kiba</b>; <mark>teishō-uke</mark> with <b>left</b> hand forward.</span>
+            <span class="side-R">Stay in <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>; <mark><span class="jp-term"><ruby>掌底受け<rt>teishō-uke</rt></ruby><span class="en">palm-heel block</span></span></mark> with <b>right</b> hand forward.</span>
+            <span class="side-L">Stay in <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>; <mark><span class="jp-term"><ruby>掌底受け<rt>teishō-uke</rt></ruby><span class="en">palm-heel block</span></span></mark> with <b>left</b> hand forward.</span>
             <div class="var foot">
               <b>Footwork:</b> Tiny heel-toe adjustment only; keep hips level—avoid bobbing.
             </div>
@@ -387,48 +403,48 @@
       <div class="step">
         <div class="n">3</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R">Remain in <b>kiba</b>; <mark>gedan-barai</mark> with <b>right</b> arm.</span>
-            <span class="side-L">Remain in <b>kiba</b>; <mark>gedan-barai</mark> with <b>left</b> arm.</span>
+            <span class="side-R">Remain in <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> with <b>right</b> arm.</span>
+            <span class="side-L">Remain in <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> with <b>left</b> arm.</span>
             <div class="var foot">
               <b>Footwork:</b> Micro-shift toward the <i>outside</i> of the kick; sit deeper to absorb power.
             </div>
           </div>
           <div class="counter">
             <b>Counter:</b>
-            <span class="side-R">Slide in (same line) and strike <strong>right</strong> <b>empi-uchi</b> <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Slide in and strike <strong>left</strong> <b>empi-uchi</b> <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Slide in (same line) and strike <strong>right</strong> <span class="jp-term"><ruby>猿臂打ち<rt>empi-uchi</rt></ruby><span class="en">elbow strike</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Slide in and strike <strong>left</strong> <span class="jp-term"><ruby>猿臂打ち<rt>empi-uchi</rt></ruby><span class="en">elbow strike</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
         </div>
       </div>
 
       <div class="cols key">
         <div><b>Structure cue:</b> Knees out, tailbone heavy; spine tall; elbows tight on the blocks.</div>
-        <div><b>Entry cue:</b> Empi travels along the shortest path—no wind-up.</div>
+        <div><b>Entry cue:</b> <span class="jp-term"><ruby>猿臂打ち<rt>empi-uchi</rt></ruby><span class="en">elbow strike</span></span> travels along the shortest path—no wind-up.</div>
       </div>
     </section>
 
     <!-- === #5 === -->
     <section class="card acc5" id="sanbon-5">
-      <h2>#5 — Turning Set: Turn+Age → Turn+Uchi-uke → Turn+Gedan ⇒ <strong>Gyaku-tsuki</strong></h2>
+      <h2>#5 — Turning Set: Turn+<span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span> → Turn+<span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside block</span></span> → Turn+<span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">low sweep</span></span> ⇒ <strong><span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span></strong></h2>
       <div class="mnemonic">
         <div>🧭</div>
-        <div><strong>Hook:</strong> <mark>Turn High → Turn Mid → Turn Low</mark>. Keep your center level; finish with a decisive reverse punch.</div>
+        <div><strong>Hook:</strong> <mark>Turn High → Turn Mid → Turn Low</mark>. Keep your center level; finish with a decisive <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span>.</div>
       </div>
 
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>上段追い突き<rt>jōdan oi-tsuki</rt></ruby><span class="en">upper lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R"><mark>Turn</mark> <b>clockwise</b> ~<span class="angle">90°</span> on the <b>left</b> ball of foot, then step the <b>right</b> foot back to <b>left</b> zenkutsu; block <mark>age-uke</mark> (left).</span>
-            <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> ~<span class="angle">90°</span> on the <b>right</b> ball, then step the <b>left</b> foot back to <b>right</b> zenkutsu; block <mark>age-uke</mark> (right).</span>
+            <span class="side-R"><mark>Turn</mark> <b>clockwise</b> ~<span class="angle">90°</span> on the <b>left</b> ball of foot, then step the <b>right</b> foot back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; block <mark><span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span></mark> (left).</span>
+            <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> ~<span class="angle">90°</span> on the <b>right</b> ball, then step the <b>left</b> foot back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; block <mark><span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span></mark> (right).</span>
             <div class="var foot">
               <b>Footwork:</b> Pivot first (keep head level), then place the retreating foot on the new line; rear foot ~<span class="angle">30°</span> out.
             </div>
@@ -440,12 +456,12 @@
       <div class="step">
         <div class="n">2</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
+            <span class="side-R">Step <b>Left</b>; punch <b>left</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
+            <span class="side-L">Step <b>Right</b>; punch <b>right</b> <span class="jp-term"><ruby>中段追い突き<rt>chūdan oi-tsuki</rt></ruby><span class="en">middle lunge punch</span></span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> zenkutsu; <mark>uchi-ude-uke</mark> (right).</span>
-            <span class="side-L"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> zenkutsu; <mark>uchi-ude-uke</mark> (left).</span>
+            <span class="side-R"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside forearm block</span></span></mark> (right).</span>
+            <span class="side-L"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside forearm block</span></span></mark> (left).</span>
             <div class="var foot">
               <b>Footwork:</b> Turn first, then place; keep hip height constant—no bounce.
             </div>
@@ -457,20 +473,20 @@
       <div class="step">
         <div class="n">3</div><div>
           <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Step <b>Right</b>; kick <b>right</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Step <b>Left</b>; kick <b>left</b> <span class="jp-term"><ruby>中段前蹴り<rt>chūdan mae-geri</rt></ruby><span class="en">middle front kick</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
           <div class="def"><b>Defend:</b>
-            <span class="side-R"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> (left).</span>
-            <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> (right).</span>
+            <span class="side-R"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> (left).</span>
+            <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>; <mark><span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span></mark> (right).</span>
             <div class="var foot">
               <b>Footwork:</b> After the turn, place the retreating foot slightly <i>outside</i> the kick’s line; settle weight, then block.
             </div>
           </div>
           <div class="counter">
             <b>Counter:</b>
-            <span class="side-R">Drive in and punch <strong>left</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Drive in and punch <strong>right</strong> <b>gyaku-tsuki</b> <span class="kiai">KIAI</span>.</span>
+            <span class="side-R">Drive in and punch <strong>left</strong> <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
+            <span class="side-L">Drive in and punch <strong>right</strong> <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span> <span class="kiai">KIAI</span>.</span>
           </div>
         </div>
       </div>
@@ -484,11 +500,47 @@
 
   <details>
     <summary><strong>Glossary (JP → EN)</strong></summary>
-    <div class="key" style="margin-top:8px">
-      <b>Stances:</b> Zenkutsu-dachi = front stance; Kokutsu-dachi = back stance; Kiba-dachi = horse stance.<br/>
-      <b>Attacks:</b> Jōdan/Chūdan = upper/middle level; Oi-tsuki = lunge (stepping) punch; Mae-geri = front kick; Kizami-tsuki = jab (lead hand); Gyaku-tsuki = reverse punch (rear hand).<br/>
-      <b>Blocks:</b> Age-uke = rising; Soto-ude-uke = outside forearm; Uchi-ude-uke = inside forearm; Gedan-barai = downward sweep; Yama-uke = “mountain” double-forearm; Teishō-uke = palm-heel; Haiwan-uke = back-forearm shield (high); Morote uchi-uke = reinforced inside forearm; Sukui-uke = scooping block.<br/>
-      <b>Cues:</b> Ma-ai = distance; Kiai = spirited shout.
+    <div class="glossary">
+      <div>
+        <h3>Stances</h3>
+        <div class="glossary-items">
+          <span class="jp-term"><ruby>前屈立ち<rt>zenkutsu-dachi</rt></ruby><span class="en">front stance</span></span>
+          <span class="jp-term"><ruby>後屈立ち<rt>kokutsu-dachi</rt></ruby><span class="en">back stance</span></span>
+          <span class="jp-term"><ruby>騎馬立ち<rt>kiba-dachi</rt></ruby><span class="en">horse stance</span></span>
+        </div>
+      </div>
+      <div>
+        <h3>Attacks</h3>
+        <div class="glossary-items">
+          <span class="jp-term"><ruby>上段<rt>jōdan</rt></ruby><span class="en">upper level</span></span>
+          <span class="jp-term"><ruby>中段<rt>chūdan</rt></ruby><span class="en">middle level</span></span>
+          <span class="jp-term"><ruby>追い突き<rt>oi-tsuki</rt></ruby><span class="en">lunge punch</span></span>
+          <span class="jp-term"><ruby>前蹴り<rt>mae-geri</rt></ruby><span class="en">front kick</span></span>
+          <span class="jp-term"><ruby>刻み突き<rt>kizami-tsuki</rt></ruby><span class="en">lead-hand jab</span></span>
+          <span class="jp-term"><ruby>逆突き<rt>gyaku-tsuki</rt></ruby><span class="en">reverse punch</span></span>
+        </div>
+      </div>
+      <div>
+        <h3>Blocks</h3>
+        <div class="glossary-items">
+          <span class="jp-term"><ruby>上げ受け<rt>age-uke</rt></ruby><span class="en">rising block</span></span>
+          <span class="jp-term"><ruby>外腕受け<rt>soto-ude-uke</rt></ruby><span class="en">outside forearm block</span></span>
+          <span class="jp-term"><ruby>内腕受け<rt>uchi-ude-uke</rt></ruby><span class="en">inside forearm block</span></span>
+          <span class="jp-term"><ruby>下段払い<rt>gedan-barai</rt></ruby><span class="en">downward sweep</span></span>
+          <span class="jp-term"><ruby>山受け<rt>yama-uke</rt></ruby><span class="en">mountain block</span></span>
+          <span class="jp-term"><ruby>掌底受け<rt>teishō-uke</rt></ruby><span class="en">palm-heel block</span></span>
+          <span class="jp-term"><ruby>背腕受け<rt>haiwan-uke</rt></ruby><span class="en">back-forearm shield</span></span>
+          <span class="jp-term"><ruby>諸手内受け<rt>morote uchi-ude-uke</rt></ruby><span class="en">reinforced inside block</span></span>
+          <span class="jp-term"><ruby>掬い受け<rt>sukui-uke</rt></ruby><span class="en">scooping block</span></span>
+        </div>
+      </div>
+      <div>
+        <h3>Cues</h3>
+        <div class="glossary-items">
+          <span class="jp-term"><ruby>間合い<rt>ma-ai</rt></ruby><span class="en">combative distance</span></span>
+          <span class="jp-term"><ruby>気合<rt>kiai</rt></ruby><span class="en">spirit shout</span></span>
+        </div>
+      </div>
     </div>
   </details>
 
@@ -503,7 +555,7 @@
   </details>
 
   <footer>
-    <div>Practice notes: Keep head level, breathe naturally, maintain <em>ma-ai</em>, and give a crisp kiai on the third attack and the finish.</div>
+    <div>Practice notes: Keep head level, breathe naturally, maintain <span class="jp-term"><ruby>間合い<rt>ma-ai</rt></ruby><span class="en">combative distance</span></span>, and give a crisp <span class="jp-term"><ruby>気合<rt>kiai</rt></ruby><span class="en">spirit shout</span></span> on the third attack and the finish.</div>
   </footer>
 </div>
 
