@@ -6,83 +6,83 @@
 <title>Shotokan — Sanbon Kumite #1–#5 (Sidedness + Footwork Aide-Mémoire)</title>
 <style>
   :root{
-    --bg:#0b0f14; --panel:#121821; --ink:#ecf2ff; --muted:#a7b1c2;
-    --edge:#223040; --glow:rgba(255,255,255,.03);
-    --a1:#9bb7ff; --a2:#ffd37a; --a3:#8df0a9; --a4:#f6b84c; --a5:#5bd3c7;
-    --ok:#7ee081; --warn:#ffcc66; --cue:#8fb3ff;
+    --bg:#f4f6f9; --panel:#ffffff; --ink:#1b2838; --muted:#4f5b6b;
+    --edge:#c7d3e2; --glow:rgba(22,43,67,.08);
+    --a1:#2d5fdf; --a2:#d97706; --a3:#15803d; --a4:#b45309; --a5:#0f766e;
+    --ok:#0b6a3c; --warn:#a15c1f; --cue:#1747a7;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif;
-    color:var(--ink); background:linear-gradient(180deg,#0a0e13,#0b1119 30%, #0e1520);
-    padding:22px;
+    margin:0; font:18px/1.65 system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif;
+    color:var(--ink); background:linear-gradient(180deg,rgba(244,246,249,0.9),rgba(231,236,244,0.9) 45%,rgba(214,222,235,0.9));
+    padding:26px;
   }
   .wrap{max-width:1120px;margin:0 auto}
   header{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:12px}
   header h1{font-size:clamp(22px,3.2vw,34px);margin:0}
-  header .tag{font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid #243040;border-radius:999px}
+  header .tag{font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid var(--edge);border-radius:999px;background:rgba(255,255,255,.6)}
   .controls{
     display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 18px;
-    padding:10px 12px;border:1px solid #243040;border-radius:12px;background:#0f1622;
+    padding:12px 14px;border:1px solid var(--edge);border-radius:14px;background:rgba(255,255,255,.7);box-shadow:0 6px 20px rgba(17,35,57,.08);
   }
-  .controls label{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#dfe7ff}
+  .controls label{display:inline-flex;align-items:center;gap:8px;font-size:15px;color:var(--ink)}
   .legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
-  .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:12px;border:1px solid #2a3b55;background:#101621;color:#a7b1c2}
-  .pill.a1{border-color:color-mix(in oklab,var(--a1) 65%,#000);color:#dfe9ff}
-  .pill.a2{border-color:color-mix(in oklab,var(--a2) 65%,#000);color:#fff4dc}
-  .pill.a3{border-color:color-mix(in oklab,var(--a3) 65%,#000);color:#eafff0}
-  .pill.a4{border-color:color-mix(in oklab,var(--a4) 65%,#000);color:#fff6e4}
-  .pill.a5{border-color:color-mix(in oklab,var(--a5) 65%,#000);color:#eafffb}
-  .grid{display:grid;gap:18px}
+  .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:12px;border:1px solid var(--edge);background:rgba(255,255,255,.7);color:var(--muted)}
+  .pill.a1{border-color:var(--a1);color:#142c6b;background:color-mix(in srgb,var(--a1) 16%,#fff)}
+  .pill.a2{border-color:var(--a2);color:#6a3a02;background:color-mix(in srgb,var(--a2) 16%,#fff)}
+  .pill.a3{border-color:var(--a3);color:#0f4f29;background:color-mix(in srgb,var(--a3) 16%,#fff)}
+  .pill.a4{border-color:var(--a4);color:#6a3706;background:color-mix(in srgb,var(--a4) 16%,#fff)}
+  .pill.a5{border-color:var(--a5);color:#064c44;background:color-mix(in srgb,var(--a5) 16%,#fff)}
+  .grid{display:grid;gap:22px}
   @media (min-width:940px){ .grid{grid-template-columns:1fr 1fr} }
   .card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
-    border:1px solid var(--edge); border-radius:18px; padding:18px 16px 14px;
-    box-shadow:0 12px 30px rgba(0,0,0,.25), inset 0 1px 0 var(--glow);
+    background:var(--panel);
+    border:1px solid var(--edge); border-radius:18px; padding:20px 20px 18px;
+    box-shadow:0 18px 36px rgba(17,35,57,.12), inset 0 1px 0 var(--glow);
   }
   h2{margin:0 0 8px 0; font-size:clamp(18px,2.4vw,24px)}
   .mnemonic{
-    display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:12px;
-    background:#0e1622; border:1px dashed #2a3b55; color:var(--muted); margin:8px 0 12px;
+    display:flex; align-items:flex-start; gap:12px; padding:12px 14px; border-radius:14px;
+    background:color-mix(in srgb,var(--a1) 6%,#fff); border:1px dashed color-mix(in srgb,var(--a1) 45%,#536580); color:var(--muted); margin:8px 0 16px;
   }
-  .mnemonic strong{color:#fff}
+  .mnemonic strong{color:var(--ink)}
   .step{
-    display:grid; gap:10px; grid-template-columns: 38px 1fr; align-items:start;
-    padding:10px 12px; border:1px solid #27364a; border-radius:12px; margin:10px 0; background:rgba(255,255,255,0.02)
+    display:grid; gap:12px; grid-template-columns: 42px 1fr; align-items:start;
+    padding:16px 18px; border:1px solid color-mix(in srgb,var(--edge) 80%,#7e8ea3); border-radius:14px; margin:14px 0; background:color-mix(in srgb,var(--bg) 65%,#fff);
   }
   .n{
-    width:28px;height:28px; border-radius:8px; display:grid; place-items:center; font-weight:700;
-    background:#1a2433; color:var(--cue); border:1px solid #2d3e57;
+    width:34px;height:34px; border-radius:10px; display:grid; place-items:center; font-weight:700;
+    background:color-mix(in srgb,var(--cue) 15%,#fff); color:var(--cue); border:1px solid color-mix(in srgb,var(--cue) 55%,#1b2a3f);
   }
-  .attack b,.def b{color:#fff}
+  .attack b,.def b{color:var(--ink)}
   .attack .tr{color:var(--muted)}
   .def{color:var(--muted)}
-  .def mark{background:transparent; color:#fff; padding:0 .1rem; font-weight:700}
+  .def mark{background:transparent; color:var(--ink); padding:0 .1rem; font-weight:700}
   .stance{opacity:.9}
   .counter{
-    margin-top:10px; padding:10px 12px; border:1px solid #2c3c50; border-radius:10px;
-    background:linear-gradient(180deg,#0f1825,#0d1420);
+    margin-top:12px; padding:12px 14px; border:1px solid color-mix(in srgb,var(--edge) 80%,#5a6c85); border-radius:12px;
+    background:color-mix(in srgb,var(--a3) 8%,#fff);
   }
   .counter strong{color:var(--ok)}
   .kiai{color:var(--warn); font-weight:700}
   .cols{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   @media (max-width:640px){ .cols{grid-template-columns:1fr} }
   .key{font-size:13px;color:var(--muted)}
-  .key b{color:#fff}
-  .acc1{border-color:color-mix(in oklab,var(--a1) 65%,#000)}
-  .acc2{border-color:color-mix(in oklab,var(--a2) 65%,#000)}
-  .acc3{border-color:color-mix(in oklab,var(--a3) 65%,#000)}
-  .acc4{border-color:color-mix(in oklab,var(--a4) 65%,#000)}
-  .acc5{border-color:color-mix(in oklab,var(--a5) 65%,#000)}
+  .key b{color:var(--ink)}
+  .acc1{border-color:color-mix(in srgb,var(--a1) 45%,var(--edge))}
+  .acc2{border-color:color-mix(in srgb,var(--a2) 45%,var(--edge))}
+  .acc3{border-color:color-mix(in srgb,var(--a3) 45%,var(--edge))}
+  .acc4{border-color:color-mix(in srgb,var(--a4) 45%,var(--edge))}
+  .acc5{border-color:color-mix(in srgb,var(--a5) 45%,var(--edge))}
   .cue{font-size:13px;opacity:.95}
-  .var{margin-top:6px;padding:8px 10px;border:1px dashed #3a4a66;border-radius:10px;background:#0b1320}
+  .var{margin-top:6px;padding:9px 12px;border:1px dashed color-mix(in srgb,var(--edge) 65%,#63738a);border-radius:12px;background:color-mix(in srgb,var(--bg) 55%,#fff)}
   .foot{font-size:13px}
-  .foot b{color:#dfe7ff}
+  .foot b{color:var(--ink)}
   .angle{font-variant-numeric:tabular-nums}
   details{margin-top:12px}
-  summary{cursor:pointer;color:#dfe7ff}
-  footer{margin-top:20px;color:#8ba1bb;font-size:13px}
+  summary{cursor:pointer;color:var(--cue)}
+  footer{margin-top:20px;color:var(--muted);font-size:13px}
 
   /* Sidedness visibility */
   .side-R,.side-L{display:none}
