@@ -35,7 +35,6 @@
   .pill.a4{border-color:var(--a4);color:#6a3706;background:color-mix(in srgb,var(--a4) 16%,#fff)}
   .pill.a5{border-color:var(--a5);color:#064c44;background:color-mix(in srgb,var(--a5) 16%,#fff)}
   .grid{display:grid;gap:22px}
-  @media (min-width:940px){ .grid{grid-template-columns:1fr 1fr} }
   .card{
     background:var(--panel);
     border:1px solid var(--edge); border-radius:18px; padding:20px 20px 18px;
@@ -55,8 +54,20 @@
     width:34px;height:34px; border-radius:10px; display:grid; place-items:center; font-weight:700;
     background:color-mix(in srgb,var(--cue) 15%,#fff); color:var(--cue); border:1px solid color-mix(in srgb,var(--cue) 55%,#1b2a3f);
   }
-  .attack b,.def b{color:var(--ink)}
-  .attack .tr{color:var(--muted)}
+  .attack-sequence{
+    margin:12px 0 24px;
+    padding:16px 18px;
+    border:1px solid color-mix(in srgb,var(--edge) 85%,#51617a);
+    border-radius:16px;
+    background:color-mix(in srgb,var(--a2) 6%,#fff);
+    box-shadow:0 8px 24px rgba(17,35,57,.08);
+  }
+  .attack-sequence strong{color:var(--ink)}
+  .attack-sequence ol{margin:12px 0 0 1.2rem;padding:0;color:var(--muted)}
+  .attack-sequence li{margin:0 0 8px 0}
+  .attack-sequence li:last-child{margin-bottom:0}
+  .attack-sequence b{color:var(--ink)}
+  .def b{color:var(--ink)}
   .def{color:var(--muted)}
   .def mark{background:transparent; color:var(--ink); padding:0 .1rem; font-weight:700}
   .stance{opacity:.9}
@@ -128,6 +139,24 @@
     <span class="pill">Kiai on 3rd attack & on finish</span>
   </div>
 
+  <section class="attack-sequence" aria-label="Attacker sequence overview">
+    <strong>Attacker sequence — applies to all drills:</strong>
+    <ol>
+      <li>
+        <span class="side-R">Step <b>Right</b> to right zenkutsu; punch <b>right</b> <i>jōdan oi-tsuki</i>.</span>
+        <span class="side-L">Step <b>Left</b> to left zenkutsu; punch <b>left</b> <i>jōdan oi-tsuki</i>.</span>
+      </li>
+      <li>
+        <span class="side-R">Step <b>Left</b> to left zenkutsu; punch <b>left</b> <i>chūdan oi-tsuki</i>.</span>
+        <span class="side-L">Step <b>Right</b> to right zenkutsu; punch <b>right</b> <i>chūdan oi-tsuki</i>.</span>
+      </li>
+      <li>
+        <span class="side-R">Step <b>Right</b>; kick <b>right</b> <i>chūdan mae-geri</i> <span class="kiai">KIAI</span>.</span>
+        <span class="side-L">Step <b>Left</b>; kick <b>left</b> <i>chūdan mae-geri</i> <span class="kiai">KIAI</span>.</span>
+      </li>
+    </ol>
+  </section>
+
   <div class="grid">
     <!-- === #1 === -->
     <section class="card acc1" id="sanbon-1">
@@ -142,10 +171,6 @@
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b> to right zenkutsu; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b> to left zenkutsu; punch <b>left</b> jōdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; block <mark>age-uke</mark> with <b>left</b> forearm (front arm).</span>
             <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; block <mark>age-uke</mark> with <b>right</b> forearm (front arm).</span>
@@ -159,10 +184,6 @@
       <!-- Step 2 -->
       <div class="step">
         <div class="n">2</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>soto-ude-uke</mark> (outside block) with <b>right</b> arm.</span>
             <span class="side-L">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>soto-ude-uke</mark> with <b>left</b> arm.</span>
@@ -176,10 +197,6 @@
       <!-- Step 3 -->
       <div class="step">
         <div class="n">3</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> with <b>left</b> arm (sweep down the kicking line).</span>
             <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> with <b>right</b> arm.</span>
@@ -212,10 +229,6 @@
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>age-uke</mark> with <b>left</b> arm.</span>
             <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>age-uke</mark> with <b>right</b> arm.</span>
@@ -229,10 +242,6 @@
       <!-- Step 2 -->
       <div class="step">
         <div class="n">2</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>uchi-ude-uke</mark> with <b>right</b> arm.</span>
             <span class="side-L">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>uchi-ude-uke</mark> with <b>left</b> arm.</span>
@@ -246,10 +255,6 @@
       <!-- Step 3 -->
       <div class="step">
         <div class="n">3</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> with <b>left</b> arm to the <b>outside</b> of the kicking leg.</span>
             <span class="side-L">Step <b>Left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> with <b>right</b> arm to the <b>outside</b> of the kicking leg.</span>
@@ -282,10 +287,6 @@
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>jōdan haiwan-uke</mark> (high back-forearm shield) with <b>left</b> forearm.</span>
             <span class="side-L">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>jōdan haiwan-uke</mark> with <b>right</b> forearm.</span>
@@ -299,10 +300,6 @@
       <!-- Step 2 -->
       <div class="step">
         <div class="n">2</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>morote uchi-ude-uke</mark> (reinforced inside block) with <b>right</b> arm.</span>
             <span class="side-L">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>morote uchi-ude-uke</mark> with <b>left</b> arm.</span>
@@ -316,10 +313,6 @@
       <!-- Step 3 -->
       <div class="step">
         <div class="n">3</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Step <b>Right</b> back to <b>left</b> kokutsu; <mark>sukui-uke</mark> (scooping block) with <b>left</b> arm.</span>
             <span class="side-L">Step <b>Left</b> back to <b>right</b> kokutsu; <mark>sukui-uke</mark> with <b>right</b> arm.</span>
@@ -352,10 +345,6 @@
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Drop into <b>kiba-dachi</b>; <mark>yama-uke</mark> with <b>left</b> lead (double forearm).</span>
             <span class="side-L">Drop into <b>kiba-dachi</b>; <mark>yama-uke</mark> with <b>right</b> lead.</span>
@@ -369,10 +358,6 @@
       <!-- Step 2 -->
       <div class="step">
         <div class="n">2</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Stay in <b>kiba</b>; <mark>teishō-uke</mark> (palm-heel) with <b>right</b> hand forward.</span>
             <span class="side-L">Stay in <b>kiba</b>; <mark>teishō-uke</mark> with <b>left</b> hand forward.</span>
@@ -386,10 +371,6 @@
       <!-- Step 3 -->
       <div class="step">
         <div class="n">3</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R">Remain in <b>kiba</b>; <mark>gedan-barai</mark> with <b>right</b> arm.</span>
             <span class="side-L">Remain in <b>kiba</b>; <mark>gedan-barai</mark> with <b>left</b> arm.</span>
@@ -422,10 +403,6 @@
       <!-- Step 1 -->
       <div class="step">
         <div class="n">1</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; punch <b>right</b> jōdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Left</b>; punch <b>left</b> jōdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R"><mark>Turn</mark> <b>clockwise</b> ~<span class="angle">90°</span> on the <b>left</b> ball of foot, then step the <b>right</b> foot back to <b>left</b> zenkutsu; block <mark>age-uke</mark> (left).</span>
             <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> ~<span class="angle">90°</span> on the <b>right</b> ball, then step the <b>left</b> foot back to <b>right</b> zenkutsu; block <mark>age-uke</mark> (right).</span>
@@ -439,10 +416,6 @@
       <!-- Step 2 -->
       <div class="step">
         <div class="n">2</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Left</b>; punch <b>left</b> chūdan oi-tsuki.</span>
-            <span class="side-L">Step <b>Right</b>; punch <b>right</b> chūdan oi-tsuki.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> zenkutsu; <mark>uchi-ude-uke</mark> (right).</span>
             <span class="side-L"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> zenkutsu; <mark>uchi-ude-uke</mark> (left).</span>
@@ -456,10 +429,6 @@
       <!-- Step 3 -->
       <div class="step">
         <div class="n">3</div><div>
-          <div class="attack"><b>Attack:</b>
-            <span class="side-R">Step <b>Right</b>; kick <b>right</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-            <span class="side-L">Step <b>Left</b>; kick <b>left</b> chūdan mae-geri <span class="kiai">KIAI</span>.</span>
-          </div>
           <div class="def"><b>Defend:</b>
             <span class="side-R"><mark>Turn</mark> <b>clockwise</b> on the <b>left</b> ball, then step <b>right</b> back to <b>left</b> zenkutsu; <mark>gedan-barai</mark> (left).</span>
             <span class="side-L"><mark>Turn</mark> <b>counter-clockwise</b> on the <b>right</b> ball, then step <b>left</b> back to <b>right</b> zenkutsu; <mark>gedan-barai</mark> (right).</span>
