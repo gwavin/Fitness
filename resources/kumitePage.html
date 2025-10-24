@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karate Warm-Up Flow</title>
+  <link rel="stylesheet" href="../css/style/style.css">
+  <style>
+    .warmup-grid {
+      display: grid;
+      gap: 1.25rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    @media (min-width: 720px) {
+      .warmup-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .warmup-card {
+      border: 1px solid #e4e4e4;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      background: #fff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+    }
+
+    .warmup-card h2 {
+      margin-top: 0;
+      font-size: 1.35rem;
+    }
+
+    .warmup-card ul {
+      padding-left: 1.25rem;
+    }
+
+    .tip {
+      background: #f7f9ff;
+      border-left: 4px solid #4460F1;
+      padding: 1rem 1.35rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+
+    .tip strong {
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Karate Warm-Up Flow</h1>
+    <p>This dynamic-to-static warm-up primes major joints, engages posture muscles and sets a calm breathing cadence before kumite or kata work. Run through the two phases back-to-back, adjusting the timing to suit your training partners.</p>
+
+    <div class="warmup-grid">
+      <section class="warmup-card">
+        <h2>Dynamic Activation (5–7 minutes)</h2>
+        <ul>
+          <li><strong>Neck Rotations:</strong> Gentle circles both directions, synchronise with breathing.</li>
+          <li><strong>Shoulder Rotations:</strong> Forward and backward rolls to free the scapula.</li>
+          <li><strong>Arm Swings:</strong> Large circles and cross-body swings, gradually increasing range.</li>
+          <li><strong>Torso Twists:</strong> Feet shoulder-width, rotate hips and shoulders together.</li>
+          <li><strong>Hip Rotations:</strong> Slow figure-eight patterns to unlock the pelvis.</li>
+          <li><strong>Leg Swings:</strong> Forward/back and lateral swings, light guard up for balance.</li>
+          <li><strong>High Knees:</strong> Tall posture, land softly to wake up footwork rhythm.</li>
+          <li><strong>Butt Kicks:</strong> Maintain cadence, think fast recovery between strikes.</li>
+        </ul>
+      </section>
+
+      <section class="warmup-card">
+        <h2>Targeted Mobility (3–5 minutes)</h2>
+        <ul>
+          <li><strong>Hamstring Fold:</strong> Seat tall, hinge forward, hold 20–30 seconds each side.</li>
+          <li><strong>Quad Stretch:</strong> Stand tall, grab ankle, keep knees together for 20–30 seconds.</li>
+          <li><strong>Groin Opener:</strong> Butterfly position, gentle press of knees toward floor.</li>
+          <li><strong>Calf Lean:</strong> Staggered stance into wall, back heel grounded, swap sides.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="tip">
+      <strong>Layer it with kumite practice.</strong>
+      After mobility work, flow straight into <a href="kumite_techniques_full.html">kumite technique rounds</a> or kata basics while your nervous system is primed. Finish with relaxed shadowboxing to consolidate the movement pattern.</div>
+
+    <p class="nav-links"><a href="fitness.html">⬅ Back to Fitness Resources</a><a href="../index.html">Home</a></p>
+  </div>
+</body>
+</html>
+resources/kumite_techniques_full.html
+New
++245
+-0
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kumite Techniques &amp; Session Builder</title>
+  <link rel="stylesheet" href="../css/style/style.css">
+  <style>
+    .lead {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 720px;
+    }
+
+    .toc {
+      margin: 2rem 0;
+      padding: 1.2rem 1.5rem;
+      border-radius: 12px;
+      background: #f6f9ff;
+      border: 1px solid #d9e3ff;
+    }
+
+    .toc h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+
+    .toc ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      columns: 2;
+      column-gap: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .toc ul {
+        columns: 1;
+      }
+    }
+
+    .module-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin: 2rem 0 2.5rem;
+    }
+
+    @media (min-width: 880px) {
+      .module-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .module {
+      border: 1px solid #e2e2e2;
+      border-radius: 14px;
+      padding: 1.35rem 1.5rem;
+      background: #ffffff;
+      box-shadow: 0 12px 28px rgba(15, 25, 45, 0.06);
+    }
+
+    .module h2 {
+      margin-top: 0;
+      font-size: 1.35rem;
+    }
+
+    .module ul {
+      padding-left: 1.25rem;
+      margin-bottom: 0;
+    }
+
+    .module li + li {
+      margin-top: 0.6rem;
+    }
+
+    .callout {
+      background: #e9f7ef;
+      border-left: 4px solid #1b9c6f;
+      padding: 1.2rem 1.45rem;
+      border-radius: 12px;
+      margin: 2.5rem 0;
+    }
+
+    .practice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0 2.5rem;
+    }
+
+    .practice-table th,
+    .practice-table td {
+      border: 1px solid #e2e2e2;
+      padding: 0.9rem 1rem;
+      vertical-align: top;
+    }
+
+    .practice-table thead th {
+      background: #f5fdf8;
+      font-weight: 600;
+      color: #1b9c6f;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+    }
+
+    .micro-list {
+      margin: 0.6rem 0 0;
+      padding-left: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kumite Techniques &amp; Session Builder</h1>
+    <p class="lead">Use this guide to move from warm-up to live kumite with intention. Each block highlights the technical focus, key cues, and simple volume targets so you can scale intensity for solo, pad or partner practice. Pair it with the <a href="karate-warmup.html">Karate Warm-Up Flow</a> to keep sessions joint-friendly.</p>
+
+    <nav class="toc" aria-label="Kumite session sections">
+      <h2>Session structure</h2>
+      <ul>
+        <li><a href="#warmup">Prime &amp; breathe</a></li>
+        <li><a href="#footwork">Footwork foundations</a></li>
+        <li><a href="#entries">Angles &amp; entries</a></li>
+        <li><a href="#striking">Core striking combinations</a></li>
+        <li><a href="#defence">Defence &amp; counters</a></li>
+        <li><a href="#partner">Partner reaction drills</a></li>
+        <li><a href="#conditioning">Conditioning finisher</a></li>
+        <li><a href="#weekly">Weekly emphasis planner</a></li>
+        <li><a href="#reflection">Cool-down &amp; reflection</a></li>
+      </ul>
+    </nav>
+
+    <section id="warmup" class="callout">
+      <h2>Prime &amp; breathe (10 minutes)</h2>
+      <p>Flow directly from the <a href="karate-warmup.html">warm-up sequence</a> into light shadowboxing. Focus on nasal breathing, loose shoulders and clean hip rotation. Finish with 2 × 60 seconds of easy jab–reverse punch shadow rounds to set rhythm.</p>
+    </section>
+
+    <div class="module-grid">
+      <section id="footwork" class="module">
+        <h2>Footwork foundations</h2>
+        <ul>
+          <li><strong>Guard settling:</strong> 3 × 30 seconds stance holds, check even pressure through the feet.</li>
+          <li><strong>Forward/back slides:</strong> 3 × 20 steps keeping head level, snap back to guard.</li>
+          <li><strong>Lateral shuffles:</strong> 4 × 15 seconds per side, finish with a sharp half-step.</li>
+          <li><strong>Triangle steps:</strong> 3 × 40 seconds, emphasise leading with the hips not the shoulders.</li>
+        </ul>
+      </section>
+
+      <section id="entries" class="module">
+        <h2>Angles &amp; entries</h2>
+        <ul>
+          <li><strong>V-step with jab:</strong> 3 × 10 reps, push off rear leg and recover with small shuffle.</li>
+          <li><strong>Switch-step burst:</strong> 3 × 6 reps, add gyaku-zuki as you land in orthodox.</li>
+          <li><strong>Pivot exit drill:</strong> 3 × 8 reps, rotate on lead foot after combination, eyes up.</li>
+          <li><strong>Feint &amp; draw:</strong> 2 × 1 minute, light feints to bait a response before entering.</li>
+        </ul>
+      </section>
+
+      <section id="striking" class="module">
+        <h2>Core striking combinations</h2>
+        <ul>
+          <li><strong>Oi-zuki repetition:</strong> 4 × 6 reps each side, drive from hips, exhale on impact.</li>
+          <li><strong>Gyaku-zuki focus:</strong> 4 × 8 reps, retract quickly, check guard every time.</li>
+          <li><strong>Mae-geri mechanics:</strong> 3 × 6 per leg, snap the kick then control the chamber.</li>
+          <li><strong>Jab → gyaku-zuki → mawashi-geri:</strong> 3 × 8 sequences, land balanced.</li>
+          <li><strong>Lead hook kick setups:</strong> 3 × 6 sequences using feint jab to create space.</li>
+        </ul>
+      </section>
+
+      <section id="defence" class="module">
+        <h2>Defence &amp; counters</h2>
+        <ul>
+          <li><strong>High guard parry:</strong> 3 × 10 reps, redirect straight punch with minimal movement.</li>
+          <li><strong>Slip outside reverse punch:</strong> 3 × 8 reps each side, counter with gyaku-zuki.</li>
+          <li><strong>Mae-geri check:</strong> 3 × 6 per leg, catch with rear hand and step offline.</li>
+          <li><strong>Cover &amp; angle out:</strong> 3 × 5 sequences, shield then pivot to open counter line.</li>
+        </ul>
+      </section>
+
+      <section id="partner" class="module">
+        <h2>Partner reaction drills</h2>
+        <ul>
+          <li><strong>Call &amp; respond:</strong> 3 × 90 seconds, partner calls technique and you execute instantly.</li>
+          <li><strong>Tag sparring:</strong> 3 × 2 minutes at 40% intensity, focus on clean touches not power.</li>
+          <li><strong>Counter for counter:</strong> 4 × 45 seconds, trade controlled counters with preset pattern.</li>
+          <li><strong>Scenario start:</strong> 3 × 1 minute from clinch or corner positions to practice resets.</li>
+        </ul>
+      </section>
+
+      <section id="conditioning" class="module">
+        <h2>Conditioning finisher</h2>
+        <ul>
+          <li><strong>30 seconds:</strong> Fast jab–cross shadowboxing.</li>
+          <li><strong>30 seconds:</strong> Alternating mae-geri with guard recovery.</li>
+          <li><strong>30 seconds:</strong> Sprawl to fighting stance.</li>
+          <li><strong>Rest 30 seconds</strong> and repeat the circuit 3–4 times based on energy.</li>
+        </ul>
+      </section>
+    </div>
+
+    <section id="weekly">
+      <h2>Weekly emphasis planner</h2>
+      <table class="practice-table">
+        <thead>
+          <tr>
+            <th scope="col">Session</th>
+            <th scope="col">Primary focus</th>
+            <th scope="col">Key cues</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Day 1</td>
+            <td>Footwork mechanics</td>
+            <td>Stay relaxed, rehearse entries at 70% speed before adding strikes.</td>
+          </tr>
+          <tr>
+            <td>Day 2</td>
+            <td>Combination polish</td>
+            <td>Record 2 rounds of pad work, review hip rotation and guard recovery.</td>
+          </tr>
+          <tr>
+            <td>Day 3</td>
+            <td>Defence &amp; reaction</td>
+            <td>Alternate rounds of tag sparring and counter-for-counter work.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="reflection" class="callout">
+      <h2>Cool-down &amp; reflection</h2>
+      <p>Close the session with 3 minutes of slow shadowboxing, then revisit two static stretches from the warm-up to reset posture. Capture quick notes:</p>
+      <ul class="micro-list">
+        <li>What felt sharp or sluggish today?</li>
+        <li>Which entries landed cleanly?</li>
+        <li>One adjustment for your next session.</li>
+      </ul>
+    </section>
+
+    <p class="nav-links"><a href="fitness.html">⬅ Back to Fitness Resources</a><a href="../index.html">Home</a></p>
+  </div>
+</body>
+</html>

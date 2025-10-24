@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sanbon Kumite No.1 — Quick Mnemonic</title>
+<style>
+  :root{
+    --attack:#b71c1c;     /* deep red */
+    --block:#1565c0;      /* blue */
+    --counter:#2e7d32;    /* green */
+    --note:#6a1b9a;       /* purple */
+    --soft:#f6f8fa;
+  }
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; line-height:1.4; margin:18px; background:#fff; color:#111;}
+  .card{max-width:880px; margin:auto; border:1px solid #e5e7eb; border-radius:14px; background:var(--soft); padding:18px 20px;}
+  h1{margin:.2rem 0 .6rem; font-size:1.4rem}
+  h2{margin:1.2rem 0 .4rem; font-size:1.1rem}
+  .mnemonic{font-size:1.25rem; font-weight:700; padding:.6rem .8rem; background:#fff; border:1px dashed #d0d7de; border-radius:12px}
+  mark{padding:0 .2em; border-radius:.25em}
+  .attack mark{background: #ffe5e5; color:#000; border:1px solid #ffc2c2}
+  .block  mark{background: #e6f0ff; color:#000; border:1px solid #cfe0ff}
+  .counter mark{background:#e8ffe6; color:#000; border:1px solid #c9f0c6}
+  .note mark{background:#f3e8ff; color:#000; border:1px solid #e0ccff}
+  .grid{display:grid; gap:.6rem}
+  .row{display:grid; grid-template-columns:140px 1fr; gap:.6rem; background:#fff; border-radius:12px; padding:.6rem .7rem; border:1px solid #e5e7eb}
+  .tag{font-weight:700; text-transform:uppercase; letter-spacing:.03em}
+  .attack .tag{color:var(--attack)}
+  .block  .tag{color:var(--block)}
+  .counter .tag{color:var(--counter)}
+  .tiny{font-size:.9rem; opacity:.8}
+  .kbd{display:inline-block; padding:.1rem .35rem; border:1px solid #d0d7de; border-bottom-width:2px; border-radius:6px; background:#fff; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:.95rem}
+  .call{margin:.5rem 0; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:.5rem .7rem}
+  .sequence{display:flex; flex-wrap:wrap; gap:.4rem; margin:.4rem 0}
+  .chip{border:1px solid #d0d7de; background:#fff; border-radius:999px; padding:.15rem .6rem; font-weight:600}
+  .attack .chip{border-color:#ffc2c2}
+  .block .chip{border-color:#cfe0ff}
+  .counter .chip{border-color:#c9f0c6}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Sanbon Kumite No. 1 — <span class="tiny">Jōdan, Chūdan, Mae Geri</span></h1>
+
+    <!-- ONE-LINE MNEMONIC -->
+    <div class="mnemonic">
+      <mark>HEAD–UP</mark> → <mark>BODY–OUT</mark> → <mark>KICK–DOWN</mark> → <mark>FINISH MIDDLE</mark>
+    </div>
+    <p class="tiny note"><mark>Say it as you move:</mark> “<strong>Head-Up, Body-Out, Kick-Down — Finish Middle.</strong>”</p>
+
+    <!-- CALL & RESPONSE -->
+    <div class="call"><span class="kbd">Attacker calls</span>:
+      <strong>“Jōdan, Chūdan, Mae Geri!”</strong>
+    </div>
+
+    <!-- STEP GRID -->
+    <div class="grid">
+
+      <div class="row attack">
+        <div class="tag">Attack 1</div>
+        <div>
+          <div class="sequence">
+            <span class="chip">Jōdan punch (oi-zuki)</span>
+          </div>
+          Cue: aim to the <mark>head</mark>.
+        </div>
+      </div>
+
+      <div class="row block">
+        <div class="tag">Defence 1</div>
+        <div>
+          <mark>Age-uke</mark> (rising block). Think: <mark>UP</mark> to cover the head.
+        </div>
+      </div>
+
+      <div class="row attack">
+        <div class="tag">Attack 2</div>
+        <div>
+          <div class="sequence">
+            <span class="chip">Chūdan punch (oi-zuki)</span>
+          </div>
+          Cue: aim to the <mark>body</mark>.
+        </div>
+      </div>
+
+      <div class="row block">
+        <div class="tag">Defence 2</div>
+        <div>
+          <mark>Soto-ude-uke</mark> (outside middle block). Think: push <mark>OUT</mark> from centre.
+        </div>
+      </div>
+
+      <div class="row attack">
+        <div class="tag">Attack 3</div>
+        <div>
+          <div class="sequence">
+            <span class="chip">Mae-geri (front kick)</span>
+          </div>
+          Cue: incoming <mark>kick</mark>.
+        </div>
+      </div>
+
+      <div class="row block">
+        <div class="tag">Defence 3</div>
+        <div>
+          <mark>Gedan-barai</mark> (downward sweep). Think: knock it <mark>DOWN</mark>.
+        </div>
+      </div>
+
+      <div class="row counter">
+        <div class="tag">Finish</div>
+        <div>
+          Immediate counter: <mark>Gyaku-zuki (chūdan)</mark>. Think: <mark>FINISH MIDDLE</mark>.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RHYTHM / FORM NOTES -->
+    <h2>Rhythm & Form (keep it simple)</h2>
+    <ul>
+      <li><mark>Same hip height</mark> throughout; step cleanly, no bobbing.</li>
+      <li>Time breath with each move: <mark>inhale on prep</mark>, <mark>exhale on block/counter</mark>.</li>
+      <li>On blocks, rotate <mark>wrist + hips together</mark> at impact.</li>
+      <li>After counter, reset to kamae with awareness.</li>
+    </ul>
+  </div>
+</body>
+</html>
