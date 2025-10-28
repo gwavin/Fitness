@@ -408,6 +408,7 @@
                 </ul>
             </li>
         </ul>
+        
         <div class="video-embed">
             <div id="player13" class="player-container"></div>
         </div>
@@ -424,6 +425,7 @@
                 </ul>
             </li>
         </ul>
+        
         <div class="video-embed">
             <div id="player14" class="player-container"></div>
         </div>
@@ -447,7 +449,6 @@
 
     <script>
         // Video configurations: [playerId, videoId, startTime, endTime]
-        // UPDATED with new players 13 and 14
         const videoConfigs = [
             { id: 'player1', videoId: 'kHnW1Oi8B1E', start: 15, end: 18 },
             { id: 'player2', videoId: 'kHnW1Oi8B1E', start: 64, end: 68 },
@@ -519,7 +520,9 @@
         });
 
         
+        // --- MODIFIED: onPlayerReady (Auto-mutes) ---
         function onPlayerReady(event, config) {
+            event.target.mute(); // <-- THIS IS THE NEW LINE
             event.target.seekTo(config.start);
             
             // Tell the playbackObserver to watch this player
@@ -529,11 +532,9 @@
             }
         }
 
-        // --- MODIFIED: onPlayerStateChange (Looping) ---
+        // --- onPlayerStateChange (Looping) ---
         function onPlayerStateChange(event, config) {
             // When the clip ends, seek back to the start and PLAY.
-            // This creates the loop. The observer above will pause it
-            // if the user scrolls away.
             if (event.data === YT.PlayerState.ENDED) {
                 const player = players[config.id];
                 player.seekTo(config.start);
