@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>MaeDraw — Simple Drawing App</title>
+  <style>
+    :root{
+      --bg:#0b0c10;          /* page background */
+      --ui:#111216;          /* panels */
+      --ink:#f5f7fb;         /* text/icons */
+      --accent:#36c88a;      /* highlights */
+      --muted:#6c768a;
+      --danger:#e25555;
+    }
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";}
+
+    /* Layout */
+    .app{position:fixed; inset:0; display:grid; grid-template-rows: 1fr auto;}
+    #stage{position:relative; background:#1a1c24;}
+    canvas{position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor: crosshair;}
+
+    /* Top-right save button (always available) */
+    .save-btn{position:absolute; top:12px; right:12px; z-index:5; background:var(--ui); color:var(--ink); border:1px solid #2a2d36; border-radius:12px; padding:10px 14px; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.3);}
+    .save-btn:hover{outline:2px solid var(--accent);}
+
+    /* Bottom swatch bank — the only UI shown in full-screen draw mode */
+    .swatch-bar{display:flex; gap:10px; padding:10px; background:linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.25)); align-items:center; justify-content:center; border-top:1px solid #252835;}
+    .swatch{width:36px; height:36px; border-radius:8px; border:2px solid rgba(255,255,255,.35); box-shadow: inset 0 0 0 2px rgba(0,0,0,.25); position:relative;}
+    .swatch.active{outline:3px solid var(--accent);}
+    .swatch.empty{border-style:dashed; border-color: rgba(255,255,255,.25); background:#0d0f14;}
+    .swatch .slot-index{position:absolute; bottom:-18px; left:0; right:0; text-align:center; font-size:10px; color:var(--muted);}
+
+    /* The last cell opens the palette modal */
+    .swatch.palette{display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; border-color:#3b3e4d;}
+    .swatch.palette::after{content:"🎨";}
+
+    /* Center Palette Modal */
+    .modal{position:absolute; inset:0; display:none; align-items:center; justify-content:center; backdrop-filter: blur(2px);}
+    .modal.open{display:flex;}
+    .sheet{width:min(720px, 92vw); background:var(--ui); border:1px solid #2a2d36; border-radius:18px; box-shadow:0 30px 60px rgba(0,0,0,.45); overflow:hidden;}
+    .sheet header{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#0f1015; border-bottom:1px solid #2a2d36;}
+    .sheet h2{margin:0; font-size:18px;}
+    .sheet .close{background:#191b22; border:1px solid #2a2d36; color:var(--ink); padding:8px 10px; border-radius:10px;}
+    .sheet .content{display:grid; gap:16px; padding:16px; grid-template-columns: 1fr;}
+    @media(min-width:720px){ .sheet .content{grid-template-columns: 1fr 1fr;} }
+
+    fieldset{border:1px solid #2a2d36; border-radius:14px; padding:12px;}
+    legend{padding:0 6px; color:var(--muted);}
+    label{display:block; margin:8px 0 6px; font-size:14px; color:#d1d6e2}
+    input[type="range"]{width:100%;}
+
+    .brushes{display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px;}
+    .brushes button{padding:10px 8px; border-radius:12px; background:#191b22; border:1px solid #2a2d36; color:#d7dbea; font-weight:600;}
+    .brushes button.active{outline:3px solid var(--accent);}
+
+    .swatch-grid{display:grid; grid-template-columns: repeat(8, 1fr); gap:8px;}
+    .swatch-grid .cell{aspect-ratio:1/1; border-radius:8px; border:2px solid rgba(255,255,255,.35);}
+    .swatch-grid .cell.empty{border-style:dashed; background:#10121a;}
+    .grid-actions{display:flex; gap:8px; margin-top:10px;}
+
+    .hint{font-size:12px; color:var(--muted);}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div id="stage">
+      <canvas id="canvas"></canvas>
+      <button class="save-btn" id="saveBtn" title="Save drawing as PNG">Save</button>
+      
+      <!-- Center modal for colour & tool selection -->
+      <div class="modal" id="paletteModal" aria-hidden="true">
+        <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="paletteTitle">
+          <header>
+            <h2 id="paletteTitle">Colours & Brushes</h2>
+            <button class="close" id="closePalette">Close</button>
+          </header>
+
+          <div class="content">
+            <fieldset>
+              <legend>Colour</legend>
+              <label for="colorPicker">Pick colour</label>
+              <input id="colorPicker" type="color" value="#3a86ff" />
+              <p class="hint">Tip: Tap any saved square below to set current colour. Long‑press a square to overwrite it.</p>
+              <div class="swatch-grid" id="swatchGrid"></div>
+              <div class="grid-actions">
+                <button id="addSwatch">Add current colour</button>
+                <button id="clearSwatches" title="Remove all saved colours" style="color:#fff;background:#2a2d36;border:1px solid #3b3e4d">Clear</button>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Brush</legend>
+              <div class="brushes" id="brushes">
+                <button data-brush="pencil">✏️ Pencil</button>
+                <button data-brush="fine">🖊️ Fine pen</button>
+                <button data-brush="marker">🖍️ Marker</button>
+                <button data-brush="highlighter">🖌️ Highlighter</button>
+                <button data-brush="eraser" style="grid-column: span 2; background:#221b1b; border-color:#3b2a2a">🧼 Eraser</button>
+              </div>
+              <label for="size">Thickness</label>
+              <input id="size" type="range" min="1" max="80" value="8" />
+              <p class="hint">Brush sizes are scaled to your screen’s pixel density so strokes look crisp.</p>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom swatch bank (only visible UI while drawing) -->
+    <div class="swatch-bar" id="swatchBar" aria-label="Saved colours">
+      <!-- Slots are created by JS. The last slot opens the palette. -->
+    </div>
+  </div>
+
+<script>
+(function(){
+  // ==== Canvas setup with HiDPI scaling
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: false });
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
+
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    ctx.scale(dpr, dpr);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    redrawBackgroundIfEmpty();
+  }
+
+  function redrawBackgroundIfEmpty(){
+    // Draw a gentle texture when blank for visual comfort
+    ctx.save();
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.restore();
+  }
+
+  // Resize on load & when window size changes
+  const ro = new ResizeObserver(resize); ro.observe(canvas);
+
+  // ==== State
+  let currentColor = window.localStorage.getItem('maedraw.currentColor') || '#3a86ff';
+  let brush = window.localStorage.getItem('maedraw.brush') || 'pencil';
+  let size = parseInt(window.localStorage.getItem('maedraw.size') || '8', 10);
+
+  // Swatches (persisted)
+  const SWATCH_KEY = 'maedraw.swatches.v1';
+  let swatches = [];
+  try { swatches = JSON.parse(localStorage.getItem(SWATCH_KEY) || '[]'); } catch(e){ swatches = []; }
+
+  // ==== Drawing engine
+  let drawing = false, last = null;
+
+  function setBrushStyle(){
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = currentColor;
+
+    switch(brush){
+      case 'pencil':
+        ctx.lineWidth = size * 0.9;
+        ctx.globalAlpha = 0.95;
+        break;
+      case 'fine':
+        ctx.lineWidth = Math.max(1, size * 0.5);
+        ctx.globalAlpha = 0.98;
+        break;
+      case 'marker':
+        ctx.lineWidth = size * 1.6;
+        ctx.globalAlpha = 0.92;
+        break;
+      case 'highlighter':
+        ctx.lineWidth = size * 2.2;
+        ctx.globalAlpha = 0.35; // translucent overlay
+        break;
+      case 'eraser':
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = size * 2;
+        break;
+    }
+  }
+
+  function pt(e){
+    if(e.touches && e.touches[0]){
+      const r = canvas.getBoundingClientRect();
+      return { x: (e.touches[0].clientX - r.left), y: (e.touches[0].clientY - r.top) };
+    } else {
+      const r = canvas.getBoundingClientRect();
+      return { x: (e.clientX - r.left), y: (e.clientY - r.top) };
+    }
+  }
+
+  function start(e){
+    e.preventDefault();
+    drawing = true;
+    last = pt(e);
+    setBrushStyle();
+  }
+  function move(e){
+    if(!drawing) return;
+    const p = pt(e);
+    ctx.beginPath();
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    last = p;
+  }
+  function end(){ drawing = false; last = null; }
+
+  canvas.addEventListener('pointerdown', start, {passive:false});
+  canvas.addEventListener('pointermove', move, {passive:false});
+  window.addEventListener('pointerup', end, {passive:true});
+  window.addEventListener('pointercancel', end, {passive:true});
+
+  // Prevent page scrolling when drawing on mobile
+  canvas.addEventListener('touchmove', e => e.preventDefault(), {passive:false});
+
+  // ==== Save as PNG
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.download = `MaeDraw-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+
+  // ==== Palette Modal
+  const modal = document.getElementById('paletteModal');
+  const openPalette = () => { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); };
+  const closePalette = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); };
+  document.getElementById('closePalette').addEventListener('click', closePalette);
+  modal.addEventListener('click', (e)=>{ if(e.target === modal) closePalette(); });
+
+  // Swatch Bar (bottom) — create 12 slots + 1 palette opener at end
+  const swatchBar = document.getElementById('swatchBar');
+  const SWATCH_SLOTS = 12;
+  function renderSwatchBar(){
+    swatchBar.innerHTML = '';
+    for(let i=0; i<SWATCH_SLOTS; i++){
+      const d = document.createElement('button');
+      d.className = 'swatch' + (swatches[i] ? '' : ' empty');
+      d.style.background = swatches[i] || 'transparent';
+      d.title = swatches[i] ? swatches[i] : 'Empty slot';
+      if(swatches[i] === currentColor) d.classList.add('active');
+      d.addEventListener('click', () => { if(swatches[i]) setColor(swatches[i]); });
+      // Long-press to overwrite
+      let pressTimer;
+      d.addEventListener('pointerdown', () => { pressTimer = setTimeout(()=>{ swatches[i] = currentColor; persistSwatches(); refreshAll(); }, 550); });
+      ['pointerup','pointerleave','pointercancel'].forEach(ev=> d.addEventListener(ev, () => clearTimeout(pressTimer)));
+      swatchBar.appendChild(d);
+    }
+    // Palette opener
+    const open = document.createElement('button');
+    open.className = 'swatch palette';
+    open.title = 'Open colours & brushes';
+    open.addEventListener('click', openPalette);
+    swatchBar.appendChild(open);
+  }
+
+  function setColor(hex){
+    currentColor = hex; 
+    localStorage.setItem('maedraw.currentColor', currentColor);
+    document.getElementById('colorPicker').value = hexToInputColor(hex);
+    refreshAll();
+  }
+
+  function hexToInputColor(hex){
+    // Ensure full 6-digit hex for input[type=color]
+    const c = document.createElement('canvas');
+    const x = c.getContext('2d');
+    x.fillStyle = hex; return x.fillStyle; // normalizes named/short hex
+  }
+
+  // Palette Sheet internals
+  const colorPicker = document.getElementById('colorPicker');
+  colorPicker.addEventListener('input', e => { setColor(e.target.value); });
+
+  const sizeRange = document.getElementById('size');
+  sizeRange.value = String(size);
+  sizeRange.addEventListener('input', e => {
+    size = parseInt(e.target.value, 10);
+    localStorage.setItem('maedraw.size', String(size));
+  });
+
+  const brushes = document.getElementById('brushes');
+  function renderBrushButtons(){
+    [...brushes.querySelectorAll('button')].forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.brush === brush);
+    });
+  }
+  brushes.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-brush]');
+    if(!btn) return;
+    brush = btn.dataset.brush;
+    localStorage.setItem('maedraw.brush', brush);
+    renderBrushButtons();
+  });
+
+  // Swatch grid inside modal — 32 cells
+  const swatchGridEl = document.getElementById('swatchGrid');
+  const GRID_SLOTS = 32;
+  function persistSwatches(){ localStorage.setItem(SWATCH_KEY, JSON.stringify(swatches)); }
+
+  function renderSwatchGrid(){
+    swatchGridEl.innerHTML = '';
+    for(let i=0; i<GRID_SLOTS; i++){
+      const cell = document.createElement('button');
+      const color = swatches[i];
+      cell.className = 'cell' + (color ? '' : ' empty');
+      if(color) cell.style.background = color;
+      cell.title = color || 'Empty';
+      cell.addEventListener('click', () => { if(color) setColor(color); else { swatches[i] = currentColor; persistSwatches(); refreshAll(); } });
+      // Long press to overwrite
+      let t; cell.addEventListener('pointerdown', () => { t = setTimeout(()=>{ swatches[i] = currentColor; persistSwatches(); refreshAll(); }, 550); });
+      ['pointerup','pointerleave','pointercancel'].forEach(ev=> cell.addEventListener(ev, () => clearTimeout(t)));
+      swatchGridEl.appendChild(cell);
+    }
+  }
+
+  document.getElementById('addSwatch').addEventListener('click', () => {
+    const idx = swatches.findIndex(c => !c);
+    if(idx === -1) swatches.push(currentColor); else swatches[idx] = currentColor;
+    persistSwatches(); refreshAll();
+  });
+  document.getElementById('clearSwatches').addEventListener('click', () => {
+    if(confirm('Clear all saved colours?')){ swatches = []; persistSwatches(); refreshAll(); }
+  });
+
+  function refreshAll(){
+    renderSwatchBar();
+    renderSwatchGrid();
+    renderBrushButtons();
+  }
+
+  // Initial boot
+  resize();
+  // If there are no swatches yet, pre-seed with a friendly palette
+  if(swatches.length === 0){
+    swatches = ['#000000','#ffffff','#ff595e','#ffca3a','#8ac926','#1982c4','#6a4c93','#f15bb5','#06d6a0','#ffd166','#8338ec','#3a86ff'];
+    persistSwatches();
+  }
+  document.addEventListener('keydown', (e)=>{
+    // Quick open with "P" for palette
+    if(e.key.toLowerCase()==='p') openPalette();
+    // E for eraser shortcut
+    if(e.key.toLowerCase()==='e'){ brush='eraser'; localStorage.setItem('maedraw.brush', brush); renderBrushButtons(); }
+  });
+
+  refreshAll();
+})();
+</script>
+</body>
+</html>
