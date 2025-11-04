@@ -6,65 +6,49 @@
   <title>Mae&#39;s Sketchpad — Simple Drawing App</title>
   <style>
     :root{
-      --bg:#0b0c10;          /* page background */
-      --ui:#111216;          /* panels */
-      --ink:#f5f7fb;         /* text/icons */
-      --accent:#36c88a;      /* highlights */
-      --muted:#6c768a;
-      --danger:#e25555;
+      --bg:#0b0c10; --ui:#111216; --ink:#f5f7fb; --dark:#1a1c24;
+      --accent:#36c88a; --muted:#6c768a; --danger:#e25555;
     }
     html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";}
-
-    /* Layout */
     .app{position:fixed; inset:0; display:grid; grid-template-rows: 1fr auto;}
     #stage{position:relative; background:white;}
     canvas{position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor: crosshair;}
 
-    /* Title */
-    .title{position:absolute; top:12px; left:12px; z-index:5; margin:0; font-size:18px; font-weight:600; color:var(--ink); letter-spacing:-0.02em;}
+    .title{position:absolute; top:12px; left:12px; z-index:5; margin:0; font-size:18px; font-weight:600; color:var(--dark); letter-spacing:-0.02em;}
 
-    /* Top-right save button (always available) */
-    .save-btn{position:absolute; top:12px; right:12px; z-index:5; background:var(--ui); color:var(--ink); border:1px solid #2a2d36; border-radius:12px; padding:10px 14px; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.3);}
+    .zoom-controls{position:absolute; top:50px; left:12px; z-index:6; display:flex; gap:6px; align-items:center; background:var(--ui); padding:8px; border-radius:12px; border:1px solid #2a2d36; box-shadow:0 2px 10px rgba(0,0,0,0.2);}
+    .zoom-controls button{background:none; border:1px solid #2a2d36; padding:6px 8px; font-size:13px; font-weight:600; color:var(--ink); border-radius:8px; cursor:pointer;}
+    .zoom-controls button:hover{background:var(--accent); color:white; border-color:transparent;}
+    #zoomLevel{font-size:14px; color:var(--ink); min-width:46px; text-align:center;}
+
+    .save-btn{position:absolute; top:12px; right:12px; z-index:6; background:var(--ui); color:var(--ink); border:1px solid #2a2d36; border-radius:12px; padding:10px 14px; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.3);}
     .save-btn:hover{outline:2px solid var(--accent);}
 
-    /* Transitions for pzazz */
-    .save-btn, .swatch, button, .brushes button, .quick-cell { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .save-btn, .swatch, button, .brushes button, .quick-cell, .zoom-controls button { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
     .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(54, 200, 138, 0.3); }
     .swatch:hover:not(.palette) { transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .brushes button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .sheet .close:hover { background: #221b1b; transform: translateY(-1px); }
     .quick-cell:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .zoom-controls button:hover { transform: scale(1.02); }
 
-    /* Bottom swatch bank — the only UI shown in full-screen draw mode */
     .swatch-bar{display:flex; gap:10px; padding:10px; background:linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.25)); align-items:center; justify-content:center; border-top:1px solid #252835;}
     .swatch{width:36px; height:36px; border-radius:8px; border:2px solid rgba(255,255,255,.35); box-shadow: inset 0 0 0 2px rgba(0,0,0,.25); position:relative;}
     .swatch.active{outline:3px solid var(--accent);}
     .swatch.empty{border-style:dashed; border-color: rgba(255,255,255,.25); background:#f8f9fa;}
     .swatch .slot-index{position:absolute; bottom:-18px; left:0; right:0; text-align:center; font-size:10px; color:var(--muted);}
-
-    /* The last cell opens the palette modal */
     .swatch.palette{display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; border-color:#3b3e4d;}
     .swatch.palette::after{content:"🎨";}
 
-    /* Center Palette Modal */
     .modal{position:absolute; inset:0; display:none; align-items:center; justify-content:center; backdrop-filter: blur(8px); background: rgba(0,0,0,0.4);}
     .modal.open{display:flex;}
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95) translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
+    @keyframes modalIn { from { opacity:0; transform: scale(0.95) translateY(10px);} to{opacity:1; transform: scale(1) translateY(0);} }
     .modal.open .sheet { animation: modalIn 0.3s ease-out forwards; }
     .sheet{width:min(720px, 92vw); background:var(--ui); border:1px solid #2a2d36; border-radius:18px; box-shadow:0 30px 60px rgba(0,0,0,.45); overflow:hidden;}
     .sheet header{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#0f1015; border-bottom:1px solid #2a2d36;}
     .sheet h2{margin:0; font-size:18px;}
     .sheet .close{background:#191b22; border:1px solid #2a2d36; color:var(--ink); padding:8px 10px; border-radius:10px;}
-    .sheet .content{display:grid; gap:16px; padding:16px; grid-template-columns: 1fr;}
+    .sheet .content{display:grid; gap:16px; grid-template-columns: 1fr; padding:16px;}
     @media(min-width:720px){ .sheet .content{grid-template-columns: 1fr 1fr;} }
 
     fieldset{border:1px solid #2a2d36; border-radius:14px; padding:12px;}
@@ -96,10 +80,19 @@
 <body>
   <div class="app">
     <div id="stage">
-      <h1 class="title">Mae's Sketchpad</h1>
+      <h1 class="title">M&M's Sketchpad</h1>
+
+      <div class="zoom-controls">
+        <button id="zoomOut" title="Zoom out (Ctrl/⌘ -)">−</button>
+        <span id="zoomLevel">1.0x</span>
+        <button id="zoomIn" title="Zoom in (Ctrl/⌘ +)">+</button>
+        <button id="resetView" title="Reset (Ctrl/⌘ 0)">Reset</button>
+        <button id="fitView" title="Fit to strokes">Fit</button>
+      </div>
+
       <canvas id="canvas"></canvas>
       <button class="save-btn" id="saveBtn" title="Save drawing as PNG">Save</button>
-      
+
       <!-- Center modal for colour & tool selection -->
       <div class="modal" id="paletteModal" aria-hidden="true">
         <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="paletteTitle">
@@ -119,7 +112,7 @@
                 <h3>Quick picks</h3>
                 <div class="quick-grid" id="quickGrid"></div>
               </div>
-              <p class="hint">Tip: Tap any saved square below to set current colour. Long‑press a square to overwrite it.</p>
+              <p class="hint">Tip: Tap any saved square below to set current colour. Long-press a square to overwrite it.</p>
               <div class="swatch-grid" id="swatchGrid"></div>
               <div class="grid-actions">
                 <button id="addSwatch">Add current colour</button>
@@ -145,52 +138,54 @@
       </div>
     </div>
 
-    <!-- Bottom swatch bank (only visible UI while drawing) -->
-    <div class="swatch-bar" id="swatchBar" aria-label="Saved colours">
-      <!-- Slots are created by JS. The last slot opens the palette. -->
-    </div>
+    <div class="swatch-bar" id="swatchBar" aria-label="Saved colours"></div>
   </div>
 
 <script>
 (function(){
-  // ==== Canvas setup with HiDPI scaling
+  // ==== Canvas + transforms (HiDPI)
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d', { willReadFrequently: false });
   let dpr = Math.max(1, window.devicePixelRatio || 1);
+
+  // ==== View state (persisted)
+  const Z_KEY = 'maesSketchpad.zoom.v2';
+  const P_KEY = 'maesSketchpad.pan.v2';
+  let zoom = clamp(parseFloat(localStorage.getItem(Z_KEY) || '1'), 0.1, 8);
+  let pan = loadPan();
+
+  function loadPan(){
+    try { return JSON.parse(localStorage.getItem(P_KEY) || '{"x":0,"y":0}'); }
+    catch(e){ return {x:0,y:0}; }
+  }
+  function saveView(){
+    localStorage.setItem(Z_KEY, String(zoom.toFixed(3)));
+    localStorage.setItem(P_KEY, JSON.stringify({x:pan.x, y:pan.y}));
+  }
 
   function resize(){
     const rect = canvas.getBoundingClientRect();
     canvas.width = Math.round(rect.width * dpr);
     canvas.height = Math.round(rect.height * dpr);
-    ctx.scale(dpr, dpr);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    redrawBackgroundIfEmpty();
+    redraw();
   }
 
-  function redrawBackgroundIfEmpty(){
-    // Draw a white background for drawing
-    ctx.save();
-    ctx.setTransform(1,0,0,1,0,0);
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.restore();
-  }
-
-  // Resize on load & when window size changes
-  const ro = new ResizeObserver(resize); ro.observe(canvas);
-
-  // ==== State
+  // ==== Drawing state
   let currentColor = window.localStorage.getItem('maesketchpad.currentColor') || '#3a86ff';
   let brush = window.localStorage.getItem('maesketchpad.brush') || 'pencil';
   let size = parseInt(window.localStorage.getItem('maesketchpad.size') || '8', 10);
 
-  // Swatches (persisted)
   const SWATCH_KEY = 'maesketchpad.swatches.v1';
   let swatches = [];
   try { swatches = JSON.parse(localStorage.getItem(SWATCH_KEY) || '[]'); } catch(e){ swatches = []; }
 
-  // Predefined quick colors for kids - bright and fun palette
+  const STROKE_KEY = 'maesketchpad.strokes.v1';
+  let strokes = [];
+  try { strokes = JSON.parse(localStorage.getItem(STROKE_KEY) || '[]'); } catch(e){ strokes = []; }
+
+  let currentStroke = null;
+  let drawing = false;
+
   const QUICK_COLORS = [
     '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
     '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
@@ -199,75 +194,292 @@
     '#E8F5E8', '#FFF5EE', '#F0F8FF', '#FFE4E1', '#F5FFFA'
   ];
 
-  // ==== Drawing engine
-  let drawing = false, last = null;
+  // ==== Redraw
+  function redraw() {
+    const rect = canvas.getBoundingClientRect();
+    const vw = rect.width;
+    const vh = rect.height;
 
-  function setBrushStyle(){
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.globalAlpha = 1;
-    ctx.strokeStyle = currentColor;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    switch(brush){
-      case 'pencil':
-        ctx.lineWidth = size * 0.9;
-        ctx.globalAlpha = 0.95;
-        break;
-      case 'fine':
-        ctx.lineWidth = Math.max(1, size * 0.5);
-        ctx.globalAlpha = 0.98;
-        break;
-      case 'marker':
-        ctx.lineWidth = size * 1.6;
-        ctx.globalAlpha = 0.92;
-        break;
-      case 'highlighter':
-        ctx.lineWidth = size * 2.2;
-        ctx.globalAlpha = 0.35; // translucent overlay
-        break;
-      case 'eraser':
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.lineWidth = size * 2;
-        break;
-    }
+    // Paper
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, vw, vh);
+
+    // Apply pan/zoom (CSS pixel space)
+    ctx.translate(pan.x, pan.y);
+    ctx.scale(zoom, zoom);
+
+    // Draw strokes
+    strokes.forEach(drawStroke);
+    if (currentStroke) drawStroke(currentStroke);
+
+    // reset alpha/composite for UI (not strictly required)
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  function pt(e){
-    if(e.touches && e.touches[0]){
-      const r = canvas.getBoundingClientRect();
-      return { x: (e.touches[0].clientX - r.left), y: (e.touches[0].clientY - r.top) };
+  function drawStroke(stroke) {
+    applyStrokeStyle(ctx, stroke);
+    if (!stroke.points || stroke.points.length < 1) return;
+    ctx.beginPath();
+    ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+    for (let i = 1; i < stroke.points.length; i++) {
+      ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+    }
+    ctx.stroke();
+  }
+
+  function applyStrokeStyle(ctx, stroke) {
+    const brushType = stroke.brush;
+    const isEraser = brushType === 'eraser';
+    ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
+    if (!isEraser) ctx.strokeStyle = stroke.color;
+
+    let alpha = 1;
+    switch (brushType) {
+      case 'pencil': alpha = 0.95; break;
+      case 'fine': alpha = 0.98; break;
+      case 'marker': alpha = 0.92; break;
+      case 'highlighter': alpha = 0.35; break;
+    }
+    ctx.globalAlpha = alpha;
+
+    let factor = { pencil: 0.9, fine: 0.5, marker: 1.6, highlighter: 2.2, eraser: 2 }[brushType];
+    let baseLw = stroke.size * factor;
+    if (brushType === 'fine') baseLw = Math.max(1, baseLw);
+    ctx.lineWidth = baseLw;           // world units
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+  }
+
+  // ==== Coordinate helpers (CSS pixel inputs)
+  function screenToWorld(vx, vy){
+    // vx, vy are in CSS pixels relative to canvas top-left (not device pixels)
+    return { x: (vx - pan.x) / zoom, y: (vy - pan.y) / zoom };
+  }
+  function eventToCanvasClient(e){
+    const r = canvas.getBoundingClientRect();
+    let clientX, clientY;
+    if (e.touches && e.touches[0]) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
     } else {
-      const r = canvas.getBoundingClientRect();
-      return { x: (e.clientX - r.left), y: (e.clientY - r.top) };
+      clientX = e.clientX;
+      clientY = e.clientY;
     }
+    return { vx: clientX - r.left, vy: clientY - r.top };
   }
 
-  function start(e){
+  // ==== Draw engine
+  function start(e) {
+    if (isPanning) return; // don't draw while panning
+    if (e.touches && e.touches.length > 1) return;
     e.preventDefault();
     drawing = true;
-    last = pt(e);
-    setBrushStyle();
+    const {vx, vy} = eventToCanvasClient(e);
+    const p = screenToWorld(vx, vy);
+    currentStroke = { brush, color: currentColor, size, points: [p] };
+    redraw();
   }
-  function move(e){
-    if(!drawing) return;
-    const p = pt(e);
-    ctx.beginPath();
-    ctx.moveTo(last.x, last.y);
-    ctx.lineTo(p.x, p.y);
-    ctx.stroke();
-    last = p;
-  }
-  function end(){ drawing = false; last = null; }
 
-  canvas.addEventListener('pointerdown', start, {passive:false});
-  canvas.addEventListener('pointermove', move, {passive:false});
-  window.addEventListener('pointerup', end, {passive:true});
-  window.addEventListener('pointercancel', end, {passive:true});
+  function move(e) {
+    if (isPanning) return;
+    if (!drawing || (e.touches && e.touches.length > 1)) return;
+    e.preventDefault();
+    const {vx, vy} = eventToCanvasClient(e);
+    const p = screenToWorld(vx, vy);
+    currentStroke.points.push(p);
+    redraw();
+  }
+
+  function end() {
+    if (drawing && currentStroke && currentStroke.points.length > 1) {
+      strokes.push(currentStroke);
+      localStorage.setItem(STROKE_KEY, JSON.stringify(strokes));
+    }
+    drawing = false;
+    currentStroke = null;
+    redraw();
+  }
+
+  canvas.addEventListener('pointerdown', start, {passive: false});
+  canvas.addEventListener('pointermove', move, {passive: false});
+  window.addEventListener('pointerup', end, {passive: true});
+  window.addEventListener('pointercancel', end, {passive: true});
 
   // Prevent page scrolling when drawing on mobile
-  canvas.addEventListener('touchmove', e => e.preventDefault(), {passive:false});
+  canvas.addEventListener('touchmove', e => e.preventDefault(), {passive: false});
 
-  // ==== Save as PNG
+  // ==== Pan (Space-drag, middle-mouse drag)
+  let isPanning = false;
+  let spaceDown = false;
+  let lastPan = {x:0, y:0};
+
+  window.addEventListener('keydown', (e)=>{
+    if (e.code === 'Space') { spaceDown = true; canvas.style.cursor = 'grab'; }
+    if ((e.ctrlKey||e.metaKey) && (e.key === '+' || e.key === '=')) { e.preventDefault(); zoomBy(1.2); }
+    if ((e.ctrlKey||e.metaKey) && (e.key === '-' )) { e.preventDefault(); zoomBy(1/1.2); }
+    if ((e.ctrlKey||e.metaKey) && (e.key === '0' )) { e.preventDefault(); resetView(); }
+    if (e.key.toLowerCase()==='p') openPalette();
+    if (e.key.toLowerCase()==='e'){ brush='eraser'; localStorage.setItem('maesketchpad.brush', brush); renderBrushButtons(); }
+  });
+  window.addEventListener('keyup', (e)=>{
+    if (e.code === 'Space') { spaceDown = false; if(!isPanning) canvas.style.cursor = 'crosshair'; }
+  });
+
+  canvas.addEventListener('pointerdown', (e)=>{
+    if (spaceDown || e.button === 1) {
+      isPanning = true;
+      canvas.setPointerCapture(e.pointerId);
+      lastPan = { x: e.clientX, y: e.clientY };
+      canvas.style.cursor = 'grabbing';
+      e.preventDefault();
+    }
+  }, {passive:false});
+
+  canvas.addEventListener('pointermove', (e)=>{
+    if (!isPanning) return;
+    const dx = e.clientX - lastPan.x;
+    const dy = e.clientY - lastPan.y;
+    pan.x += dx;
+    pan.y += dy;
+    lastPan = { x: e.clientX, y: e.clientY };
+    saveView();
+    redraw();
+  }, {passive:false});
+
+  canvas.addEventListener('pointerup', (e)=>{
+    if (isPanning) {
+      isPanning = false;
+      canvas.releasePointerCapture?.(e.pointerId);
+      canvas.style.cursor = spaceDown ? 'grab' : 'crosshair';
+    }
+  });
+
+  // ==== Wheel zoom (cursor-centric)
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const factor = Math.pow(1.2, -e.deltaY / 100); // smooth
+    const rect = canvas.getBoundingClientRect();
+    const vx = e.clientX - rect.left;
+    const vy = e.clientY - rect.top;
+    setZoomAt(vx, vy, clamp(zoom * factor, 0.1, 8));
+  }, {passive: false});
+
+  // ==== Double-click zoom
+  canvas.addEventListener('dblclick', (e)=>{
+    const rect = canvas.getBoundingClientRect();
+    const vx = e.clientX - rect.left;
+    const vy = e.clientY - rect.top;
+    const factor = e.shiftKey ? 1/1.4 : 1.4;
+    setZoomAt(vx, vy, clamp(zoom * factor, 0.1, 8));
+  });
+
+  // ==== Pinch zoom (touch)
+  let pinch = null; // {startDist, startZoom, center}
+  canvas.addEventListener('touchstart', (e)=>{
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const [a,b] = e.touches;
+      pinch = {
+        startDist: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY),
+        startZoom: zoom,
+        center: touchCenter(e.touches)
+      };
+    }
+  }, {passive:false});
+
+  canvas.addEventListener('touchmove', (e)=>{
+    if (pinch && e.touches.length === 2) {
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const rect = canvas.getBoundingClientRect();
+      const c = pinch.center;
+      const vx = c.x - rect.left, vy = c.y - rect.top;
+      const newZoom = clamp(pinch.startZoom * (dist / pinch.startDist), 0.1, 8);
+      setZoomAt(vx, vy, newZoom);
+    }
+  }, {passive:false});
+
+  canvas.addEventListener('touchend', ()=>{ pinch = null; }, {passive:true});
+  function touchCenter(touches){
+    const x = (touches[0].clientX + touches[1].clientX)/2;
+    const y = (touches[0].clientY + touches[1].clientY)/2;
+    return {x,y};
+  }
+
+  // ==== View helpers
+  const zoomLevelEl = document.getElementById('zoomLevel');
+  function setZoomAt(vx, vy, newZoom){
+    newZoom = clamp(newZoom, 0.1, 8);
+    // Keep the world point under (vx,vy) stationary: pan' = V - W * Z'
+    const world = screenToWorld(vx, vy);
+    zoom = newZoom;
+    pan.x = vx - world.x * zoom;
+    pan.y = vy - world.y * zoom;
+    zoomLevelEl.textContent = zoom.toFixed(1) + 'x';
+    saveView();
+    redraw();
+  }
+  function zoomBy(factor){
+    const rect = canvas.getBoundingClientRect();
+    setZoomAt(rect.width/2, rect.height/2, clamp(zoom * factor, 0.1, 8));
+  }
+  function resetView(){
+    zoom = 1; pan = {x:0,y:0};
+    zoomLevelEl.textContent = '1.0x';
+    saveView(); redraw();
+  }
+  function fitView(){
+    // Compute tight bounds of strokes; center and scale to fit with padding.
+    const box = strokesBounds(strokes);
+    if (!box) { resetView(); return; }
+    const rect = canvas.getBoundingClientRect();
+    const pad = 40; // CSS px padding
+    const w = Math.max(1, box.maxX - box.minX);
+    const h = Math.max(1, box.maxY - box.minY);
+    const zx = (rect.width - pad*2) / w;
+    const zy = (rect.height - pad*2) / h;
+    const target = clamp(Math.min(zx, zy), 0.1, 8);
+    zoom = target;
+    // center box
+    const cx = (box.minX + box.maxX) / 2;
+    const cy = (box.minY + box.maxY) / 2;
+    pan.x = rect.width/2 - cx * zoom;
+    pan.y = rect.height/2 - cy * zoom;
+    zoomLevelEl.textContent = zoom.toFixed(1) + 'x';
+    saveView(); redraw();
+  }
+  function strokesBounds(arr){
+    if (!arr || !arr.length) return null;
+    let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+    for (const s of arr){
+      if (!s.points || !s.points.length) continue;
+      for (const p of s.points){
+        if (p.x < minX) minX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y > maxY) maxY = p.y;
+      }
+    }
+    if (!isFinite(minX)) return null;
+    return {minX, minY, maxX, maxY};
+  }
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+  // Buttons
+  document.getElementById('zoomIn').addEventListener('click', ()=> zoomBy(1.2));
+  document.getElementById('zoomOut').addEventListener('click', ()=> zoomBy(1/1.2));
+  document.getElementById('resetView').addEventListener('click', resetView);
+  document.getElementById('fitView').addEventListener('click', fitView);
+
+  // ==== Save as PNG (current view)
   document.getElementById('saveBtn').addEventListener('click', () => {
+    // Render exactly what you see (pan+zoom included) to image
     const a = document.createElement('a');
     a.download = `MaesSketchpad-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.png`;
     a.href = canvas.toDataURL('image/png');
@@ -281,7 +493,7 @@
   document.getElementById('closePalette').addEventListener('click', closePalette);
   modal.addEventListener('click', (e)=>{ if(e.target === modal) closePalette(); });
 
-  // Swatch Bar (bottom) — create 12 slots + 1 palette opener at end
+  // Swatch Bar (bottom)
   const swatchBar = document.getElementById('swatchBar');
   const SWATCH_SLOTS = 12;
   function renderSwatchBar(){
@@ -299,7 +511,6 @@
       ['pointerup','pointerleave','pointercancel'].forEach(ev=> d.addEventListener(ev, () => clearTimeout(pressTimer)));
       swatchBar.appendChild(d);
     }
-    // Palette opener
     const open = document.createElement('button');
     open.className = 'swatch palette';
     open.title = 'Open colours & brushes';
@@ -308,10 +519,9 @@
   }
 
   function setColor(hex){
-    currentColor = hex; 
+    currentColor = hex;
     localStorage.setItem('maesketchpad.currentColor', currentColor);
     document.getElementById('colorPicker').value = hexToInputColor(hex);
-    // Update active state on quick cells
     document.querySelectorAll('.quick-cell').forEach(cell => {
       cell.classList.toggle('active', cell.style.background === hex);
     });
@@ -319,13 +529,11 @@
   }
 
   function hexToInputColor(hex){
-    // Ensure full 6-digit hex for input[type=color]
     const c = document.createElement('canvas');
     const x = c.getContext('2d');
-    x.fillStyle = hex; return x.fillStyle; // normalizes named/short hex
+    x.fillStyle = hex; return x.fillStyle;
   }
 
-  // Render quick colors palette
   function renderQuickColors() {
     const quickEl = document.getElementById('quickGrid');
     quickEl.innerHTML = '';
@@ -339,7 +547,6 @@
     });
   }
 
-  // Palette Sheet internals
   const colorPicker = document.getElementById('colorPicker');
   colorPicker.addEventListener('input', e => { setColor(e.target.value); });
 
@@ -364,7 +571,6 @@
     renderBrushButtons();
   });
 
-  // Swatch grid inside modal — 32 cells
   const swatchGridEl = document.getElementById('swatchGrid');
   const GRID_SLOTS = 32;
   function persistSwatches(){ localStorage.setItem(SWATCH_KEY, JSON.stringify(swatches)); }
@@ -378,43 +584,30 @@
       if(color) cell.style.background = color;
       cell.title = color || 'Empty';
       cell.addEventListener('click', () => { if(color) setColor(color); else { swatches[i] = currentColor; persistSwatches(); refreshAll(); } });
-      // Long press to overwrite
       let t; cell.addEventListener('pointerdown', () => { t = setTimeout(()=>{ swatches[i] = currentColor; persistSwatches(); refreshAll(); }, 550); });
       ['pointerup','pointerleave','pointercancel'].forEach(ev=> cell.addEventListener(ev, () => clearTimeout(t)));
       swatchGridEl.appendChild(cell);
     }
   }
 
-  document.getElementById('addSwatch').addEventListener('click', () => {
-    const idx = swatches.findIndex(c => !c);
-    if(idx === -1) swatches.push(currentColor); else swatches[idx] = currentColor;
-    persistSwatches(); refreshAll();
-  });
-  document.getElementById('clearSwatches').addEventListener('click', () => {
-    if(confirm('Clear all saved colours?')){ swatches = []; persistSwatches(); refreshAll(); }
-  });
-
   function refreshAll(){
     renderSwatchBar();
     renderSwatchGrid();
     renderBrushButtons();
-    renderQuickColors(); // Re-render to update active state
+    renderQuickColors();
   }
 
-  // Initial boot
+  // ==== Boot
   resize();
-  // If there are no swatches yet, pre-seed with a friendly palette
+  window.addEventListener('resize', resize);
+  // Seed palette if empty
   if(swatches.length === 0){
     swatches = ['#000000','#ffffff','#ff595e','#ffca3a','#8ac926','#1982c4','#6a4c93','#f15bb5','#06d6a0','#ffd166','#8338ec','#3a86ff'];
     persistSwatches();
   }
   document.addEventListener('keydown', (e)=>{
-    // Quick open with "P" for palette
     if(e.key.toLowerCase()==='p') openPalette();
-    // E for eraser shortcut
-    if(e.key.toLowerCase()==='e'){ brush='eraser'; localStorage.setItem('maesketchpad.brush', brush); renderBrushButtons(); }
   });
-
   renderQuickColors();
   refreshAll();
 })();
