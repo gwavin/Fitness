@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>M&M's Sketchpad — Simple Drawing App</title>
   <link rel="stylesheet" href="apps/sketchpad/style.css" />
 </head>
@@ -21,7 +21,7 @@
         <button id="redoBtn" title="Redo (Ctrl/⌘+Y or Shift+Ctrl/⌘+Z)">Redo</button>
       </div>
 
-      <canvas id="canvas"></canvas>
+      <canvas id="canvas" style="touch-action: none;"></canvas>
 
       <div class="primary-actions">
         <button class="save-btn" id="paletteBtn" title="Open colours (P or C)">🎨 Colours</button>
