@@ -334,8 +334,12 @@ function redraw() {
   drawNavigator();
 }
 
+function hasPoints(stroke) {
+  return Boolean(stroke?.points && stroke.points.length > 0);
+}
+
 function commitCurrentStroke() {
-  if (currentStroke && currentStroke.points && currentStroke.points.length > 1) {
+  if (hasPoints(currentStroke)) {
     addStroke(cloneStroke(currentStroke));
   }
   currentStroke = null;
@@ -444,11 +448,8 @@ function endDrawing(e) {
   } catch (err) {
     // ignore
   }
-  if (drawing && currentStroke && currentStroke.points.length > 1) {
-    addStroke(cloneStroke(currentStroke));
-  }
-  drawing = false;
-  currentStroke = null;
+  if (!drawing) return;
+  commitCurrentStroke();
   redraw();
 }
 
@@ -540,8 +541,20 @@ function handleTouchMove(e) {
   }
 }
 
-function handleTouchEnd() {
-  pinch = null;
+function handleTouchEnd(e) {
+  const remainingTouches = e.touches?.length ?? 0;
+  if (remainingTouches === 0) {
+    if (drawing) {
+      commitCurrentStroke();
+      redraw();
+    }
+    pinch = null;
+    return;
+  }
+
+  if (pinch && remainingTouches < 2) {
+    pinch = null;
+  }
 }
 
 function navToWorld(nx, ny) {
