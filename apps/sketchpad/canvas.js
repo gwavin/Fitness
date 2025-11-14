@@ -518,8 +518,10 @@ function handleTouchStart(e) {
     e.preventDefault();
     // A second finger means a pinch gesture, so we should stop drawing.
     if (drawing) {
+      if (currentStroke) {
+        currentStroke.points = [];
+      }
       drawing = false;
-      currentStroke = null;
       redraw(); // Clear any partial stroke that was being drawn.
     }
 
@@ -740,7 +742,7 @@ export function initCanvas({ canvas: canvasEl, navCanvas: navEl }) {
   canvas.addEventListener('dblclick', handleDoubleClick);
   canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
   canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-  canvas.addEventListener('touchend', handleTouchEnd, { passive: true });
+  window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
   window.addEventListener('keydown', handleKeyDown, { passive: false });
   window.addEventListener('keyup', handleKeyUp, { passive: true });
