@@ -448,11 +448,14 @@ function endDrawing(e) {
   } catch (err) {
     // ignore
   }
+
+=======
   if (drawing && hasPoints(currentStroke)) {
     addStroke(cloneStroke(currentStroke));
   }
   drawing = false;
   currentStroke = null;
+
   redraw();
 }
 
@@ -544,8 +547,20 @@ function handleTouchMove(e) {
   }
 }
 
-function handleTouchEnd() {
-  pinch = null;
+function handleTouchEnd(e) {
+  const remainingTouches = e.touches?.length ?? 0;
+  if (remainingTouches === 0) {
+    if (drawing) {
+      commitCurrentStroke();
+      redraw();
+    }
+    pinch = null;
+    return;
+  }
+
+  if (pinch && remainingTouches < 2) {
+    pinch = null;
+  }
 }
 
 function navToWorld(nx, ny) {
