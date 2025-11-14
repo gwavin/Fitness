@@ -449,13 +449,11 @@ function endDrawing(e) {
     // ignore
   }
 
-=======
-  if (drawing && hasPoints(currentStroke)) {
-    addStroke(cloneStroke(currentStroke));
+  if (!drawing) {
+    return;
   }
-  drawing = false;
-  currentStroke = null;
 
+  commitCurrentStroke();
   redraw();
 }
 
