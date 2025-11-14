@@ -516,6 +516,13 @@ function handleDoubleClick(e) {
 function handleTouchStart(e) {
   if (e.touches.length === 2) {
     e.preventDefault();
+    // A second finger means a pinch gesture, so we should stop drawing.
+    if (drawing) {
+      drawing = false;
+      currentStroke = null;
+      redraw(); // Clear any partial stroke that was being drawn.
+    }
+
     const [a, b] = e.touches;
     pinch = {
       startDist: distance(a.clientX, a.clientY, b.clientX, b.clientY),
