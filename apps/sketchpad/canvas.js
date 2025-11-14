@@ -334,8 +334,12 @@ function redraw() {
   drawNavigator();
 }
 
+function hasPoints(stroke) {
+  return Boolean(stroke?.points && stroke.points.length > 0);
+}
+
 function commitCurrentStroke() {
-  if (currentStroke && currentStroke.points && currentStroke.points.length > 1) {
+  if (hasPoints(currentStroke)) {
     addStroke(cloneStroke(currentStroke));
   }
   currentStroke = null;
@@ -444,7 +448,7 @@ function endDrawing(e) {
   } catch (err) {
     // ignore
   }
-  if (drawing && currentStroke && currentStroke.points.length > 1) {
+  if (drawing && hasPoints(currentStroke)) {
     addStroke(cloneStroke(currentStroke));
   }
   drawing = false;
