@@ -448,8 +448,14 @@ function endDrawing(e) {
   } catch (err) {
     // ignore
   }
-  if (!drawing) return;
-  commitCurrentStroke();
+
+=======
+  if (drawing && hasPoints(currentStroke)) {
+    addStroke(cloneStroke(currentStroke));
+  }
+  drawing = false;
+  currentStroke = null;
+
   redraw();
 }
 
