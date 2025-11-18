@@ -21,6 +21,7 @@ const SWATCH_GRID_SLOTS = 32;
 
 function hexToInputColor(col) {
   try {
+    // ... (same as before)
     const cvs = document.createElement('canvas');
     cvs.width = cvs.height = 1;
     const ctx = cvs.getContext('2d');
@@ -36,6 +37,7 @@ function hexToInputColor(col) {
 }
 
 function normaliseImportedStrokes(data) {
+  // ... (same as before)
   if (!data) return [];
   const payload = Array.isArray(data) ? { strokes: data } : data;
   if (!Array.isArray(payload.strokes)) return [];
@@ -71,6 +73,7 @@ function buildExportPayload() {
 }
 
 async function downloadCanvasPNG(canvas, filename) {
+   // ... (same as before)
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
@@ -84,14 +87,28 @@ async function downloadCanvasPNG(canvas, filename) {
 }
 
 function ensureDefaultSwatches() {
+  // UPDATED: Fun "Marker Pack" colors for Mae
   if (state.swatches.length > 0) return;
   overwriteSwatches([
-    '#000000', '#ffffff', '#ff595e', '#ffca3a', '#8ac926', '#1982c4',
-    '#6a4c93', '#f15bb5', '#06d6a0', '#ffd166', '#8338ec', '#3a86ff'
+    '#2d3436', // Charcoal (Draw)
+    '#ffffff', // White (Eraser alt)
+    '#ff7675', // Coral Red
+    '#fd79a8', // Bubblegum Pink
+    '#e056fd', // Bright Violet
+    '#6c5ce7', // Royal Purple
+    '#74b9ff', // Sky Blue
+    '#0984e3', // Electron Blue
+    '#00cec9', // Robin's Egg
+    '#55efc4', // Mint Leaf
+    '#ffeaa7', // Cream/Yellow
+    '#fab1a0'  // Peach
   ]);
 }
 
 export function initUI({ canvasApi }) {
+  // ... (The rest of the file logic remains mostly the same, 
+  // just ensure the initUI calls ensureDefaultSwatches() which is already there)
+  
   const paletteModal = document.getElementById('paletteModal');
   const paletteBtn = document.getElementById('paletteBtn');
   const closePaletteBtn = document.getElementById('closePalette');
@@ -158,7 +175,7 @@ export function initUI({ canvasApi }) {
       const swatch = state.swatches[i];
       const btn = document.createElement('button');
       btn.className = `swatch${swatch ? '' : ' empty'}${swatch === state.currentColor ? ' active' : ''}`;
-      btn.style.background = swatch || 'transparent';
+      if (swatch) btn.style.background = swatch; // Only set if swatch exists
       btn.title = swatch || 'Empty slot';
       btn.addEventListener('click', () => {
         if (swatch) {
@@ -186,6 +203,7 @@ export function initUI({ canvasApi }) {
   }
 
   function renderSwatchGrid() {
+    // ... (same as before)
     if (!swatchGrid) return;
     swatchGrid.innerHTML = '';
     for (let i = 0; i < SWATCH_GRID_SLOTS; i += 1) {
@@ -213,7 +231,8 @@ export function initUI({ canvasApi }) {
       swatchGrid.appendChild(cell);
     }
   }
-
+  
+  // ... (rest of listeners same as before)
   addSwatchBtn?.addEventListener('click', () => {
     const next = [...state.swatches];
     if (next.length >= SWATCH_GRID_SLOTS) {
