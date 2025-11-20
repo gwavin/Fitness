@@ -1,99 +1,95 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>M&M's Sketchpad — Simple Drawing App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Mae's Sketchpad</title>
   <link rel="stylesheet" href="apps/sketchpad/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
   <div class="app">
-    <div id="stage">
-      <h1 class="title">M&M's Sketchpad</h1>
+    <!-- Canvas Layer -->
+    <canvas id="canvas"></canvas>
 
-      <div class="zoom-controls">
-        <button id="zoomOut" title="Zoom out (Ctrl/⌘ -)">−</button>
-        <span id="zoomLevel">1.0x</span>
-        <button id="zoomIn" title="Zoom in (Ctrl/⌘ +)">+</button>
-        <button id="resetView" title="Reset (Ctrl/⌘ 0)">Reset</button>
-        <button id="fitView" title="Fit to strokes">Fit</button>
-        <button id="undoBtn" title="Undo last (Ctrl/⌘+Z)">Undo</button>
-        <button id="redoBtn" title="Redo (Ctrl/⌘+Y or Shift+Ctrl/⌘+Z)">Redo</button>
+    <!-- UI Layer -->
+    <header class="top-bar">
+      <div class="logo">
+        <span class="icon">🎨</span>
+        <h1>Mae's Sketchpad</h1>
       </div>
-
-      <canvas id="canvas" style="touch-action: none;"></canvas>
-
-      <div class="primary-actions">
-        <button class="save-btn" id="paletteBtn" title="Open colours (P or C)">🎨 Colours</button>
-        <button class="save-btn" id="saveBtn" title="Save visible area as PNG">Save View</button>
-        <button class="save-btn" id="saveFullBtn" title="Save entire drawing as PNG">Save Full</button>
-        <button class="save-btn" id="exportBtn" title="Download strokes as JSON">Export</button>
-        <button class="save-btn" id="importBtn" title="Import strokes from JSON">Import</button>
-        <input type="file" id="importFile" accept="application/json" hidden />
+      <div class="actions">
+        <button id="undoBtn" title="Undo" disabled>
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor"
+              d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+          </svg>
+        </button>
+        <button id="redoBtn" title="Redo" disabled>
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor"
+              d="M18.4 10.6C16.55 9 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z" />
+          </svg>
+        </button>
+        <div class="divider"></div>
+        <button id="saveBtn" title="Save Image">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor"
+              d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z" />
+          </svg>
+        </button>
+        <button id="clearBtn" title="Clear All" class="danger">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor"
+              d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+          </svg>
+        </button>
       </div>
+    </header>
 
-      <div class="navigator" id="navigator">
-        <canvas id="navCanvas" width="360" height="240" aria-label="Navigator mini-map"></canvas>
-        <div class="nav-controls">
-          <button id="navToggle" title="Show/Hide (N)">👁 Hide</button>
-          <button id="navFit" title="Fit view">Fit</button>
+    <div class="dock-container">
+      <div class="dock">
+        <!-- Tools -->
+        <div class="tool-group">
+          <button class="tool-btn active" data-tool="brush" data-brush="pencil" title="Pencil">
+            <span class="emoji">✏️</span>
+          </button>
+          <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
+            <span class="emoji">🖍️</span>
+          </button>
+          <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
+            <span class="emoji">🖊️</span>
+          </button>
+          <button class="tool-btn" data-tool="eraser" title="Eraser">
+            <span class="emoji">🧼</span>
+          </button>
         </div>
-      </div>
 
-      <div class="modal" id="paletteModal" aria-hidden="true">
-        <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="paletteTitle">
-          <header>
-            <h2 id="paletteTitle">Colours & Brushes</h2>
-            <button class="close" id="closePalette">Close</button>
-          </header>
+        <div class="divider-v"></div>
 
-          <div class="content">
-            <fieldset>
-              <legend>Colour</legend>
-              <div class="picker-section">
-                <label for="colorPicker">Pick colour</label>
-                <input id="colorPicker" type="color" value="#3a86ff" />
-              </div>
-              <div class="quick-colors">
-                <h3>Quick picks</h3>
-                <div class="quick-grid" id="quickGrid"></div>
-              </div>
-              <p class="hint">Tip: Tap any saved square below to set current colour. Long-press a square to overwrite it.</p>
-              <div class="swatch-grid" id="swatchGrid"></div>
-              <div class="grid-actions">
-                <button id="addSwatch">Add current colour</button>
-                <button id="clearSwatches" title="Remove all saved colours" style="color:#fff;background:#2a2d36;border:1px solid #3b3e4d">Clear colours</button>
-                <button id="clearCanvasBtn" style="margin-left:auto;color:#fff;background:#8c2f2f;border:1px solid #a44747">🧹 Clear drawing</button>
-              </div>
-            </fieldset>
+        <!-- Colors -->
+        <div class="color-group" id="colorPalette">
+          <!-- Injected by JS -->
+        </div>
 
-            <fieldset>
-              <legend>Brush</legend>
-              <div class="brushes" id="brushes">
-                <button data-brush="pencil">✏️ Pencil</button>
-                <button data-brush="fine">🖊️ Fine pen</button>
-                <button data-brush="marker">🖍️ Marker</button>
-                <button data-brush="highlighter">🖌️ Highlighter</button>
-                <button data-brush="eraser" style="grid-column: span 2; background:#221b1b; border-color:#3b2a2a">🧼 Eraser</button>
-              </div>
-              <label for="size">Thickness</label>
-              <input id="size" type="range" min="1" max="80" value="8" />
-              <p class="hint">Brush sizes are scaled to your screen’s pixel density so strokes look crisp.</p>
-              <div class="import-export">
-                <button id="exportFromModal">Export drawing (JSON)</button>
-                <button id="importFromModal">Import drawing (JSON)</button>
-              </div>
-            </fieldset>
-          </div>
+        <div class="divider-v"></div>
+
+        <!-- Size -->
+        <div class="size-group">
+          <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush Size">
         </div>
       </div>
     </div>
 
-    <div class="swatch-bar" id="swatchBar" aria-label="Saved colours"></div>
+    <div class="zoom-indicator" id="zoomIndicator">100%</div>
   </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="apps/sketchpad/main.js"></script>
 </body>
+
 </html>
