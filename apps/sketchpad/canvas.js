@@ -143,7 +143,11 @@ function startDrawing(e) {
   if (spaceDown || e.button === 1 || e.button === 2) return;
   drawing = true;
   drawingPointerId = e.pointerId;
-  canvas.setPointerCapture?.(e.pointerId);
+  try {
+    canvas.setPointerCapture?.(e.pointerId);
+  } catch (err) {
+    // Ignore capture errors
+  }
 
   const { vx, vy } = eventToCanvasClient(e);
   const world = screenToWorld(vx, vy);
@@ -177,7 +181,11 @@ function startPan(e) {
   isPanning = true;
   lastPan = { x: e.clientX, y: e.clientY };
   canvas.style.cursor = 'grabbing';
-  canvas.setPointerCapture?.(e.pointerId);
+  try {
+    canvas.setPointerCapture?.(e.pointerId);
+  } catch (err) {
+    // Ignore
+  }
 }
 
 function updatePan(e) {
@@ -362,6 +370,7 @@ function fitView() {
     (canvas.height - padding * 2) / h
   );
   const newZoom = clamp(scale, 0.1, 5);
+
   const midX = (minX + maxX) / 2;
   const midY = (minY + maxY) / 2;
 
