@@ -4,7 +4,7 @@ import { getPointerPos, distance, midpoint, clamp } from './utils.js';
 export class CanvasEngine {
   constructor(canvas) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d', { alpha: false });
+    this.ctx = canvas.getContext('2d', { alpha: true });
     this.dpr = window.devicePixelRatio || 1;
 
     this.resize();
