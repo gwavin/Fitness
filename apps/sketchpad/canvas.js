@@ -20,7 +20,7 @@ export class CanvasEngine {
     this.pinchStart = null; // { dist, zoom, center, pan }
 
     this.setupEvents();
-    this.render();
+    this.requestRender();
   }
 
   resize() {
@@ -51,6 +51,182 @@ export class CanvasEngine {
     c.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
   }
 
+  handlePointerDown(e) {
+    e.preventDefault();
+    this.canvas.setPointerCapture(e.pointerId);
+    this.activePointers.set(e.pointerId, e);
+
+    if (this.activePointers.size === 2) {
+      // Start Pinch/Pan
+      this.isDrawing = false;
+      this.currentStroke = null;
+
+      const points = Array.from(this.activePointers.values()).map(p => getPointerPos(p, this.canvas));
+      this.pinchStart = {
+        dist: distance(points[0], points[1]),
+        mid: midpoint(points[0], points[1]),
+        zoom: state.camera.zoom,
+        cam: { ...state.camera }
+      };
+      return;
+    }
+
+    if (this.activePointers.size === 1) {
+      const pos = getPointerPos(e, this.canvas);
+
+      // Spacebar or Middle Mouse for Panning
+      if (e.button === 1 || (e.button === 0 && e.getModifierState && e.getModifierState('Space'))) {
+         this.isPanning = true;
+         this.lastPanPos = pos;
+         return;
+      }
+
+      // Start Drawing
+      this.isDrawing = true;
+      const worldPos = this.toWorld(pos.x, pos.y);
+
+      const { settings } = state;
+      this.currentStroke = {
+        points: [{ ...worldPos, pressure: pos.pressure }],
+        color: settings.color,
+        size: settings.size,
+        type: settings.brushType,
+        isEraser: settings.tool === 'eraser'
+      };
+
+      this.requestRender();
+    }
+  }
+
+  handlePointerMove(e) {
+    if (!this.activePointers.has(e.pointerId)) return;
+    this.activePointers.set(e.pointerId, e);
+
+    if (this.activePointers.size === 2 && this.pinchStart) {
+      const points = Array.from(this.activePointers.values()).map(p => getPointerPos(p, this.canvas));
+      const newDist = distance(points[0], points[1]);
+      const newMid = midpoint(points[0], points[1]);
+
+      const scale = newDist / this.pinchStart.dist;
+      const targetZoom = clamp(this.pinchStart.zoom * scale, 0.1, 5);
+
+      // Calculate Pan to keep midpoint stable
+      // World point at start
+      const wx = (this.pinchStart.mid.x - this.pinchStart.cam.x) / this.pinchStart.zoom;
+      const wy = (this.pinchStart.mid.y - this.pinchStart.cam.y) / this.pinchStart.zoom;
+
+      // New Camera pos
+      const newCamX = newMid.x - wx * targetZoom;
+      const newCamY = newMid.y - wy * targetZoom;
+
+      updateCamera(newCamX, newCamY, targetZoom);
+      this.requestRender();
+      return;
+    }
+
+    const pos = getPointerPos(e, this.canvas);
+
+    if (this.isPanning) {
+        const dx = pos.x - this.lastPanPos.x;
+        const dy = pos.y - this.lastPanPos.y;
+        updateCamera(state.camera.x + dx, state.camera.y + dy, state.camera.zoom);
+        this.lastPanPos = pos;
+        this.requestRender();
+        return;
+    }
+
+    if (this.isDrawing && this.currentStroke) {
+        // Get coalesced events if available for smoother curves
+        const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+
+        events.forEach(evt => {
+            const p = getPointerPos(evt, this.canvas);
+            const worldPos = this.toWorld(p.x, p.y);
+            this.currentStroke.points.push({ ...worldPos, pressure: p.pressure });
+        });
+
+        this.requestRender();
+    }
+  }
+
+  handlePointerUp(e) {
+    this.activePointers.delete(e.pointerId);
+    this.canvas.releasePointerCapture(e.pointerId);
+
+    if (this.activePointers.size < 2) {
+      this.pinchStart = null;
+    }
+
+    this.isPanning = false;
+
+    if (this.isDrawing) {
+      this.isDrawing = false;
+      if (this.currentStroke) {
+        addStroke(this.currentStroke);
+        this.currentStroke = null;
+      }
+    }
+    this.requestRender();
+  }
+
+  handleWheel(e) {
+    e.preventDefault();
+
+    if (e.ctrlKey) {
+      // Zoom
+      const zoomSensitivity = 0.001;
+      const delta = -e.deltaY * zoomSensitivity;
+      const zoomFactor = 1 + delta;
+
+      const currentZoom = state.camera.zoom;
+      const newZoom = clamp(currentZoom * zoomFactor, 0.1, 5);
+
+      // Zoom towards pointer
+      const rect = this.canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      const wx = (mx - state.camera.x) / currentZoom;
+      const wy = (my - state.camera.y) / currentZoom;
+
+      const newCamX = mx - wx * newZoom;
+      const newCamY = my - wy * newZoom;
+
+      updateCamera(newCamX, newCamY, newZoom);
+    } else {
+      // Pan
+      updateCamera(state.camera.x - e.deltaX, state.camera.y - e.deltaY, state.camera.zoom);
+    }
+    this.requestRender();
+  }
+
+  requestRender() {
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+    this.animationFrameId = requestAnimationFrame(() => {
+      // Clear
+      this.ctx.clearRect(0, 0, this.width, this.height);
+
+      // Grid
+      this.drawGrid(this.ctx);
+
+      // Transform
+      this.ctx.save();
+      const { x, y, zoom } = state.camera;
+      this.ctx.translate(x, y);
+      this.ctx.scale(zoom, zoom);
+
+      // Strokes
+      state.strokes.forEach(stroke => this.drawStroke(this.ctx, stroke));
+
+      // Current Stroke
+      if (this.currentStroke) {
+        this.drawStroke(this.ctx, this.currentStroke);
+      }
+
+      this.ctx.restore();
+    });
+  }
+
   // --- Coordinate Systems ---
 
   // Screen (Pixels) -> World (Infinite Canvas)
@@ -69,10 +245,6 @@ export class CanvasEngine {
       x: x * zoom + cx,
       y: y * zoom + cy
     };
-    // Draw Current Stroke
-    if (this.currentStroke) {
-      this.drawStroke(ctx, this.currentStroke);
-    }
   }
 
   drawGrid(ctx) {
@@ -110,8 +282,8 @@ export class CanvasEngine {
 
     // Brush Styles
     if (stroke.isEraser) {
-      ctx.globalCompositeOperation = 'destination-out'; // This is tricky on a layered canvas, but here we just draw background color
-      ctx.strokeStyle = '#f0f2f5'; // Hack for single layer canvas
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.strokeStyle = '#f0f2f5';
       ctx.lineWidth = stroke.size * 2;
     } else {
       ctx.globalCompositeOperation = 'source-over';
@@ -131,7 +303,6 @@ export class CanvasEngine {
     }
 
     // Draw Curve
-    // Using quadratic bezier for smoothness
     let p1 = stroke.points[0];
     let p2 = stroke.points[1];
 
