@@ -40,6 +40,7 @@ canvas {
   height: 100%;
   touch-action: none;
   cursor: crosshair;
+  background-color: white;
 }
 
 /* Top Bar */
@@ -207,6 +208,27 @@ button.danger:hover {
   transform: scale(1.25);
   box-shadow: 0 0 0 2px var(--primary-color);
   z-index: 1;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f5f6fa;
+  border: 1px solid #dfe6e9;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: white;
+  transform: scale(1.1);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Size Slider */

@@ -2,6 +2,17 @@ export const state = {
   strokes: [],
   redoStack: [],
   camera: { x: 0, y: 0, zoom: 1 },
+  palette: [
+    '#2d3436', // Black
+    '#ff7675', // Coral
+    '#fd79a8', // Pink
+    '#6c5ce7', // Purple
+    '#0984e3', // Blue
+    '#00cec9', // Teal
+    '#00b894', // Green
+    '#fdcb6e', // Yellow
+    '#e17055', // Orange
+  ],
   settings: {
     tool: 'brush', // 'brush' | 'eraser'
     brushType: 'pencil', // 'pencil' | 'marker' | 'pen'
@@ -38,6 +49,25 @@ export function setColor(color) {
   state.settings.color = color;
   state.settings.tool = 'brush'; // Auto-switch to brush
   notify('color', color);
+}
+
+export function addColor(color) {
+  if (!state.palette.includes(color)) {
+    state.palette.push(color);
+    notify('palette', state.palette);
+  }
+  setColor(color);
+}
+
+export function removeColor(color) {
+  const index = state.palette.indexOf(color);
+  if (index > -1 && state.palette.length > 1) {
+    state.palette.splice(index, 1);
+    // Select previous color or first
+    const newColor = state.palette[Math.max(0, index - 1)];
+    setColor(newColor);
+    notify('palette', state.palette);
+  }
 }
 
 export function setSize(size) {
