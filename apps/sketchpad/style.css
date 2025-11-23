@@ -21,9 +21,7 @@
 body {
   margin: 0;
   overflow: hidden;
-  background-color: var(--bg-color);
-  background-image: radial-gradient(#dfe6e9 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-color: #ffffff;
   font-family: var(--font-body);
   color: var(--text-color);
   height: 100vh;
