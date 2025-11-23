@@ -8,21 +8,10 @@ import {
   setSize,
   undo,
   redo,
-  clearCanvas
+  clearCanvas,
+  addColor,
+  removeColor
 } from './state.js';
-
-// Palette Colors
-const COLORS = [
-  '#2d3436', // Black
-  '#ff7675', // Coral
-  '#fd79a8', // Pink
-  '#6c5ce7', // Purple
-  '#0984e3', // Blue
-  '#00cec9', // Teal
-  '#00b894', // Green
-  '#fdcb6e', // Yellow
-  '#e17055', // Orange
-];
 
 function init() {
   const canvasEl = document.getElementById('canvas');
@@ -46,13 +35,21 @@ function init() {
 
   // Colors
   const paletteEl = document.getElementById('colorPalette');
-  COLORS.forEach(color => {
-    const btn = document.createElement('button');
-    btn.className = 'color-btn';
-    btn.style.backgroundColor = color;
-    btn.onclick = () => setColor(color);
-    paletteEl.appendChild(btn);
-  });
+
+  function renderPalette() {
+    paletteEl.innerHTML = '';
+    state.palette.forEach(color => {
+      const btn = document.createElement('button');
+      btn.className = 'color-btn';
+      btn.style.backgroundColor = color;
+      btn.onclick = () => setColor(color);
+      // Highlight if active
+      if (color === state.settings.color) {
+          btn.classList.add('active');
+      }
+      paletteEl.appendChild(btn);
+    });
+  }
 
   // Size
   const sizeEl = document.getElementById('brushSize');
@@ -71,6 +68,26 @@ function init() {
     link.click();
   };
 
+  // Color Picker Logic
+  const pickerInput = document.getElementById('colorPickerInput');
+  const addColorBtn = document.getElementById('addColorBtn');
+  const removeColorBtn = document.getElementById('removeColorBtn');
+
+  addColorBtn.onclick = () => {
+      pickerInput.value = state.settings.color; // Start from current color
+      pickerInput.click();
+  };
+
+  pickerInput.onchange = (e) => {
+      addColor(e.target.value);
+  };
+
+  removeColorBtn.onclick = () => {
+      if (confirm('Remove this color?')) {
+          removeColor(state.settings.color);
+      }
+  };
+
   // --- State Subscriptions ---
 
   subscribe((event, data) => {
@@ -85,18 +102,17 @@ function init() {
 
     if (event === 'color') {
       // Update active color UI
-      Array.from(paletteEl.children).forEach(btn => {
-        // Convert rgb to hex for comparison if needed, or just check style
-        // Simple check:
-        const isActive = btn.style.backgroundColor === 'rgb(45, 52, 54)' && data === '#2d3436'; // Edge case for black
-        // Better to just re-render or track index, but for now:
-        // Let's just rely on the loop
-      });
-
-      // Actually, let's just toggle class based on index or value
       Array.from(paletteEl.children).forEach((btn, i) => {
-        btn.classList.toggle('active', COLORS[i] === data);
+        // Find the button that matches the color and set active
+        // Or re-render. Since palette can change, better to check by value or re-render if palette order changed.
+        // But palette order doesn't change on select.
+        const color = state.palette[i];
+        btn.classList.toggle('active', color === data);
       });
+    }
+
+    if (event === 'palette') {
+        renderPalette();
     }
 
     if (event === 'history') {
@@ -122,7 +138,8 @@ function init() {
   });
 
   // Initial State Trigger
-  setColor(COLORS[0]);
+  renderPalette(); // Render initial palette
+  setColor(state.palette[0]);
   setBrushType('pencil');
 }
 
