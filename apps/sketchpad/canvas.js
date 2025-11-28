@@ -205,9 +205,8 @@ export class CanvasEngine {
     this.animationFrameId = requestAnimationFrame(() => {
       // Clear
       this.ctx.clearRect(0, 0, this.width, this.height);
-
-      // Grid
-      this.drawGrid(this.ctx);
+      this.ctx.fillStyle = '#ffffff';
+      this.ctx.fillRect(0, 0, this.width, this.height);
 
       // Transform
       this.ctx.save();
@@ -245,32 +244,6 @@ export class CanvasEngine {
       x: x * zoom + cx,
       y: y * zoom + cy
     };
-  }
-
-  drawGrid(ctx) {
-    const { x, y, zoom } = state.camera;
-    const gridSize = 20 * zoom;
-    const offsetX = x % gridSize;
-    const offsetY = y % gridSize;
-
-    ctx.beginPath();
-    ctx.strokeStyle = '#dfe6e9';
-    ctx.lineWidth = 1;
-
-    // Only draw if grid isn't too dense
-    if (gridSize > 10) {
-      // Vertical lines
-      for (let i = offsetX; i < this.width; i += gridSize) {
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i, this.height);
-      }
-      // Horizontal lines
-      for (let j = offsetY; j < this.height; j += gridSize) {
-        ctx.moveTo(0, j);
-        ctx.lineTo(this.width, j);
-      }
-      ctx.stroke();
-    }
   }
 
   drawStroke(ctx, stroke) {
