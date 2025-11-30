@@ -61,6 +61,19 @@ function init() {
   document.getElementById('clearBtn').onclick = () => {
     if (confirm('Clear entire drawing?')) clearCanvas();
   };
+  const importInput = document.getElementById('importImageInput');
+  document.getElementById('importBtn').onclick = () => importInput.click();
+  importInput.onchange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      engine.setBackgroundImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
   document.getElementById('saveBtn').onclick = () => {
     const link = document.createElement('a');
     link.download = `Mae-Sketch-${new Date().toISOString().slice(0, 10)}.png`;

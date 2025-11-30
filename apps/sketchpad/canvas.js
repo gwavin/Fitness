@@ -6,6 +6,7 @@ export class CanvasEngine {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d', { alpha: true });
     this.dpr = window.devicePixelRatio || 1;
+    this.backgroundImage = null;
 
     this.resize();
     window.addEventListener('resize', () => this.resize());
@@ -32,6 +33,7 @@ export class CanvasEngine {
     this.canvas.height = this.height * this.dpr;
 
     this.ctx.scale(this.dpr, this.dpr);
+    this.updateBackgroundFit();
     this.requestRender();
   }
 
@@ -215,6 +217,16 @@ export class CanvasEngine {
       this.ctx.scale(zoom, zoom);
 
       // Strokes
+      if (this.backgroundImage?.img) {
+        this.ctx.drawImage(
+          this.backgroundImage.img,
+          this.backgroundImage.offsetX,
+          this.backgroundImage.offsetY,
+          this.backgroundImage.drawWidth,
+          this.backgroundImage.drawHeight
+        );
+      }
+
       state.strokes.forEach(stroke => this.drawStroke(this.ctx, stroke));
 
       // Current Stroke
@@ -224,6 +236,39 @@ export class CanvasEngine {
 
       this.ctx.restore();
     });
+  }
+
+  setBackgroundImage(dataUrl) {
+    const img = new Image();
+    img.onload = () => {
+      this.backgroundImage = {
+        img,
+        naturalWidth: img.naturalWidth,
+        naturalHeight: img.naturalHeight,
+        drawWidth: img.naturalWidth,
+        drawHeight: img.naturalHeight,
+        offsetX: 0,
+        offsetY: 0
+      };
+      this.updateBackgroundFit();
+      this.requestRender();
+    };
+    img.src = dataUrl;
+  }
+
+  updateBackgroundFit() {
+    if (!this.backgroundImage?.img) return;
+
+    const { naturalWidth, naturalHeight } = this.backgroundImage;
+    const scale = Math.min(this.width / naturalWidth, this.height / naturalHeight, 1);
+
+    const drawWidth = naturalWidth * scale;
+    const drawHeight = naturalHeight * scale;
+
+    this.backgroundImage.drawWidth = drawWidth;
+    this.backgroundImage.drawHeight = drawHeight;
+    this.backgroundImage.offsetX = 0;
+    this.backgroundImage.offsetY = 0;
   }
 
   // --- Coordinate Systems ---
