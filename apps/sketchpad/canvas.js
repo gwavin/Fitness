@@ -91,6 +91,8 @@ export class CanvasEngine {
       this.currentStroke = {
         points: [{ ...worldPos, pressure: pos.pressure }],
         color: settings.color,
+        startColor: settings.previousColor,
+        endColor: settings.color,
         size: settings.size,
         type: settings.brushType,
         isEraser: settings.tool === 'eraser'
@@ -307,7 +309,16 @@ export class CanvasEngine {
       ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = stroke.color;
 
-      if (stroke.type === 'marker') {
+      if (stroke.type === 'fade') {
+        const firstPoint = stroke.points[0];
+        const lastPoint = stroke.points[stroke.points.length - 1] || firstPoint;
+        const gradient = ctx.createLinearGradient(firstPoint.x, firstPoint.y, lastPoint.x, lastPoint.y);
+        gradient.addColorStop(0, stroke.startColor || stroke.color);
+        gradient.addColorStop(1, stroke.endColor || stroke.color);
+        ctx.strokeStyle = gradient;
+        ctx.globalAlpha = 0.95;
+        ctx.lineWidth = stroke.size * 1.1;
+      } else if (stroke.type === 'marker') {
         ctx.globalAlpha = 0.6;
         ctx.lineWidth = stroke.size * 1.5;
       } else if (stroke.type === 'pen') {

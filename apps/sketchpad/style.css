@@ -223,6 +223,14 @@ button.danger:hover {
   gap: 8px;
 }
 
+.helper-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6c7a89;
+  line-height: 1.4;
+  max-width: 360px;
+}
+
 .tool-btn {
   width: 48px;
   height: 48px;
