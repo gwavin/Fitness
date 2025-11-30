@@ -68,10 +68,15 @@ function init() {
       const btn = document.createElement('button');
       btn.className = 'color-btn';
       btn.style.backgroundColor = color;
+      btn.setAttribute('aria-label', color);
+      btn.title = color;
       btn.onclick = () => setColor(color);
       // Highlight if active
       if (color === state.settings.color) {
-          btn.classList.add('active');
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.setAttribute('aria-pressed', 'false');
       }
       paletteEl.appendChild(btn);
     });
@@ -150,6 +155,7 @@ function init() {
         const isMatch = (btn.dataset.tool === state.settings.tool) &&
           (!btn.dataset.brush || btn.dataset.brush === state.settings.brushType);
         btn.classList.toggle('active', isMatch);
+        btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
       });
     }
 
@@ -160,12 +166,19 @@ function init() {
         // Or re-render. Since palette can change, better to check by value or re-render if palette order changed.
         // But palette order doesn't change on select.
         const color = state.palette[i];
-        btn.classList.toggle('active', color === data);
+        const isActive = color === data;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
     }
 
     if (event === 'palette') {
         renderPalette();
+    }
+
+    if (event === 'size') {
+      sizeEl.value = state.settings.size;
+      updateSizeIndicator(state.settings.size);
     }
 
     if (event === 'history') {
