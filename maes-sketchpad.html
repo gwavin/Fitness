@@ -20,7 +20,10 @@
     <!-- UI Layer -->
     <header class="top-bar">
       <div class="logo">
-        <span class="icon">🎨</span>
+        <button class="icon tool-toggle" id="toolToggle" title="Select pen or tool">
+          <span aria-hidden="true">🎨</span>
+          <span class="sr-only">Open tool selector</span>
+        </button>
         <div class="logo-text">
           <h1>Mae's Sketchpad</h1>
           <div class="color-panel">
@@ -38,6 +41,22 @@
               </button>
             </div>
             <input type="color" id="colorPickerInput" style="display:none; visibility:hidden;">
+          </div>
+          <div class="tool-menu" id="toolMenu">
+            <div class="tool-group">
+              <button class="tool-btn active" data-tool="brush" data-brush="pencil" title="Pencil">
+                <span class="emoji">✏️</span>
+              </button>
+              <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
+                <span class="emoji">🖍️</span>
+              </button>
+              <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
+                <span class="emoji">🖊️</span>
+              </button>
+              <button class="tool-btn" data-tool="eraser" title="Eraser">
+                <span class="emoji">🧼</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -79,24 +98,6 @@
 
     <div class="dock-container">
       <div class="dock">
-        <!-- Tools -->
-        <div class="tool-group">
-          <button class="tool-btn active" data-tool="brush" data-brush="pencil" title="Pencil">
-            <span class="emoji">✏️</span>
-          </button>
-          <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
-            <span class="emoji">🖍️</span>
-          </button>
-          <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
-            <span class="emoji">🖊️</span>
-          </button>
-          <button class="tool-btn" data-tool="eraser" title="Eraser">
-            <span class="emoji">🧼</span>
-          </button>
-        </div>
-
-        <div class="divider-v"></div>
-
         <!-- Size -->
         <div class="size-group">
           <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush Size">

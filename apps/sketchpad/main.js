@@ -19,6 +19,30 @@ function init() {
 
   // --- UI Binding ---
 
+  // Tool menu
+  const toolMenu = document.getElementById('toolMenu');
+  const toolToggle = document.getElementById('toolToggle');
+
+  function closeToolMenu() {
+    toolMenu.classList.remove('open');
+  }
+
+  toolToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toolMenu.classList.toggle('open');
+  });
+
+  toolMenu.addEventListener('click', (e) => {
+    // Prevent clicks on buttons from closing before handlers run
+    e.stopPropagation();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!toolMenu.contains(e.target) && !toolToggle.contains(e.target)) {
+      closeToolMenu();
+    }
+  });
+
   // Tools
   document.querySelectorAll('[data-tool]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -30,6 +54,8 @@ function init() {
       } else {
         setTool(tool);
       }
+
+      closeToolMenu();
     });
   });
 
