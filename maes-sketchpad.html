@@ -26,21 +26,49 @@
         </button>
         <div class="logo-text">
           <h1>Mae's Sketchpad</h1>
-          <div class="color-panel">
-            <div class="color-group" id="colorPalette">
-              <!-- Injected by JS -->
+          <div class="color-and-tools">
+            <div class="color-panel">
+              <div class="panel-label">Palette</div>
+              <div class="color-group" id="colorPalette">
+                <!-- Injected by JS -->
+              </div>
+              <div class="color-actions">
+                <button class="action-btn" id="addColorBtn" title="Add Color">
+                  <span>+</span>
+                </button>
+                <button class="action-btn" id="removeColorBtn" title="Remove Selected Color">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                  </svg>
+                </button>
+              </div>
+              <input type="color" id="colorPickerInput" style="display:none; visibility:hidden;">
             </div>
-            <div class="color-actions">
-              <button class="action-btn" id="addColorBtn" title="Add Color">
-                <span>+</span>
-              </button>
-              <button class="action-btn" id="removeColorBtn" title="Remove Selected Color">
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-                </svg>
-              </button>
+            <div class="tool-menu" id="toolMenu">
+              <div class="panel-label">Tools</div>
+              <div class="tool-group">
+                <button class="tool-btn active" data-tool="brush" data-brush="pencil" title="Pencil">
+                  <span class="emoji">✏️</span>
+                </button>
+                <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
+                  <span class="emoji">🖍️</span>
+                </button>
+                <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
+                  <span class="emoji">🖊️</span>
+                </button>
+                <button class="tool-btn" data-tool="eraser" title="Eraser">
+                  <span class="emoji">🧼</span>
+                </button>
+              </div>
+              <div class="menu-divider"></div>
+              <div class="size-stack">
+                <div class="panel-label">Thickness</div>
+                <div class="size-group">
+                  <span class="size-indicator" aria-hidden="true"></span>
+                  <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush Size">
+                </div>
+              </div>
             </div>
-            <input type="color" id="colorPickerInput" style="display:none; visibility:hidden;">
           </div>
           <div class="tool-menu" id="toolMenu">
             <div class="tool-group">
