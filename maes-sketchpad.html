@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Mae's Sketchpad</title>
-  <link rel="stylesheet" href="apps/sketchpad/style.css" />
+  <link rel="stylesheet" href="apps/sketchpad/style.css?v=fade-cache-bust-1" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
@@ -53,6 +53,9 @@
                 <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
                   <span class="emoji">🖍️</span>
                 </button>
+                <button class="tool-btn" data-tool="brush" data-brush="fade" title="Fade (mix colors)">
+                  <span class="emoji">🌈</span>
+                </button>
                 <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
                   <span class="emoji">🖊️</span>
                 </button>
@@ -60,6 +63,7 @@
                   <span class="emoji">🧼</span>
                 </button>
               </div>
+              <p class="helper-text">Fade blends your previous and current colors for softer transitions.</p>
               <div class="menu-divider"></div>
               <div class="size-stack">
                 <div class="panel-label">Thickness</div>
@@ -68,22 +72,6 @@
                   <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush Size">
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="tool-menu" id="toolMenu">
-            <div class="tool-group">
-              <button class="tool-btn active" data-tool="brush" data-brush="pencil" title="Pencil">
-                <span class="emoji">✏️</span>
-              </button>
-              <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
-                <span class="emoji">🖍️</span>
-              </button>
-              <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
-                <span class="emoji">🖊️</span>
-              </button>
-              <button class="tool-btn" data-tool="eraser" title="Eraser">
-                <span class="emoji">🧼</span>
-              </button>
             </div>
           </div>
         </div>
@@ -123,20 +111,10 @@
         <input type="file" id="importImageInput" accept="image/*" style="display:none; visibility:hidden;">
       </div>
     </header>
-
-    <div class="dock-container">
-      <div class="dock">
-        <!-- Size -->
-        <div class="size-group">
-          <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush Size">
-        </div>
-      </div>
-    </div>
-
     <div class="zoom-indicator" id="zoomIndicator">100%</div>
   </div>
 
-  <script type="module" src="apps/sketchpad/main.js"></script>
+  <script type="module" src="apps/sketchpad/main.js?v=fade-cache-bust-1"></script>
 </body>
 
 </html>
