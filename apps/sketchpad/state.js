@@ -15,8 +15,9 @@ export const state = {
   ],
   settings: {
     tool: 'brush', // 'brush' | 'eraser'
-    brushType: 'pencil', // 'pencil' | 'marker' | 'pen'
+    brushType: 'pencil', // 'pencil' | 'marker' | 'pen' | 'fade'
     color: '#2d3436',
+    previousColor: '#2d3436',
     size: 5,
     smoothing: 0.5
   }
@@ -46,6 +47,7 @@ export function setBrushType(type) {
 }
 
 export function setColor(color) {
+  state.settings.previousColor = state.settings.color;
   state.settings.color = color;
   state.settings.tool = 'brush'; // Auto-switch to brush
   notify('color', color);

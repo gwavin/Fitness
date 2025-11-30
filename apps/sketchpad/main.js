@@ -19,6 +19,43 @@ function init() {
 
   // --- UI Binding ---
 
+  // Tool menu
+  const toolMenu = document.getElementById('toolMenu');
+  const toolToggle = document.getElementById('toolToggle');
+
+  toolToggle.setAttribute('aria-haspopup', 'true');
+  toolToggle.setAttribute('aria-controls', 'toolMenu');
+
+  const setToolMenuOpen = (isOpen) => {
+    toolMenu.classList.toggle('open', isOpen);
+    toolToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  };
+
+  setToolMenuOpen(false);
+
+  toolToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setToolMenuOpen(!toolMenu.classList.contains('open'));
+  });
+
+  toolMenu.addEventListener('click', (e) => {
+    // Prevent clicks on buttons from closing before handlers run
+    e.stopPropagation();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!toolMenu.contains(e.target) && !toolToggle.contains(e.target)) {
+      setToolMenuOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toolMenu.classList.contains('open')) {
+      setToolMenuOpen(false);
+      toolToggle.focus();
+    }
+  });
+
   // Tools
   document.querySelectorAll('[data-tool]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -30,6 +67,8 @@ function init() {
       } else {
         setTool(tool);
       }
+
+      setToolMenuOpen(false);
     });
   });
 
@@ -42,10 +81,15 @@ function init() {
       const btn = document.createElement('button');
       btn.className = 'color-btn';
       btn.style.backgroundColor = color;
+      btn.setAttribute('aria-label', color);
+      btn.title = color;
       btn.onclick = () => setColor(color);
       // Highlight if active
       if (color === state.settings.color) {
-          btn.classList.add('active');
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.setAttribute('aria-pressed', 'false');
       }
       paletteEl.appendChild(btn);
     });
@@ -53,7 +97,21 @@ function init() {
 
   // Size
   const sizeEl = document.getElementById('brushSize');
-  sizeEl.addEventListener('input', (e) => setSize(parseInt(e.target.value)));
+  const sizeIndicator = document.querySelector('.size-indicator');
+
+  const updateSizeIndicator = (value) => {
+    if (!sizeIndicator) return;
+    const visualSize = 8 + (value / 50) * 16; // scales between 8px and 24px
+    sizeIndicator.style.width = `${visualSize}px`;
+    sizeIndicator.style.height = `${visualSize}px`;
+  };
+
+  sizeEl.addEventListener('input', (e) => {
+    const value = parseInt(e.target.value);
+    setSize(value);
+    updateSizeIndicator(value);
+  });
+  updateSizeIndicator(parseInt(sizeEl.value));
 
   // Actions
   document.getElementById('undoBtn').onclick = undo;
@@ -110,6 +168,7 @@ function init() {
         const isMatch = (btn.dataset.tool === state.settings.tool) &&
           (!btn.dataset.brush || btn.dataset.brush === state.settings.brushType);
         btn.classList.toggle('active', isMatch);
+        btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
       });
     }
 
@@ -120,12 +179,19 @@ function init() {
         // Or re-render. Since palette can change, better to check by value or re-render if palette order changed.
         // But palette order doesn't change on select.
         const color = state.palette[i];
-        btn.classList.toggle('active', color === data);
+        const isActive = color === data;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
     }
 
     if (event === 'palette') {
         renderPalette();
+    }
+
+    if (event === 'size') {
+      sizeEl.value = state.settings.size;
+      updateSizeIndicator(state.settings.size);
     }
 
     if (event === 'history') {
