@@ -19,6 +19,30 @@ function init() {
 
   // --- UI Binding ---
 
+  // Tool menu
+  const toolMenu = document.getElementById('toolMenu');
+  const toolToggle = document.getElementById('toolToggle');
+
+  function closeToolMenu() {
+    toolMenu.classList.remove('open');
+  }
+
+  toolToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toolMenu.classList.toggle('open');
+  });
+
+  toolMenu.addEventListener('click', (e) => {
+    // Prevent clicks on buttons from closing before handlers run
+    e.stopPropagation();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!toolMenu.contains(e.target) && !toolToggle.contains(e.target)) {
+      closeToolMenu();
+    }
+  });
+
   // Tools
   document.querySelectorAll('[data-tool]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -30,6 +54,8 @@ function init() {
       } else {
         setTool(tool);
       }
+
+      closeToolMenu();
     });
   });
 
@@ -53,7 +79,21 @@ function init() {
 
   // Size
   const sizeEl = document.getElementById('brushSize');
-  sizeEl.addEventListener('input', (e) => setSize(parseInt(e.target.value)));
+  const sizeIndicator = document.querySelector('.size-indicator');
+
+  const updateSizeIndicator = (value) => {
+    if (!sizeIndicator) return;
+    const visualSize = 8 + (value / 50) * 16; // scales between 8px and 24px
+    sizeIndicator.style.width = `${visualSize}px`;
+    sizeIndicator.style.height = `${visualSize}px`;
+  };
+
+  sizeEl.addEventListener('input', (e) => {
+    const value = parseInt(e.target.value);
+    setSize(value);
+    updateSizeIndicator(value);
+  });
+  updateSizeIndicator(parseInt(sizeEl.value));
 
   // Actions
   document.getElementById('undoBtn').onclick = undo;
