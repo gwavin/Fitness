@@ -23,19 +23,13 @@ function init() {
   const toolMenu = document.getElementById('toolMenu');
   const toolToggle = document.getElementById('toolToggle');
 
-  toolToggle.setAttribute('aria-haspopup', 'true');
-  toolToggle.setAttribute('aria-controls', 'toolMenu');
-
-  const setToolMenuOpen = (isOpen) => {
-    toolMenu.classList.toggle('open', isOpen);
-    toolToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  };
-
-  setToolMenuOpen(false);
+  function closeToolMenu() {
+    toolMenu.classList.remove('open');
+  }
 
   toolToggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    setToolMenuOpen(!toolMenu.classList.contains('open'));
+    toolMenu.classList.toggle('open');
   });
 
   toolMenu.addEventListener('click', (e) => {
@@ -45,14 +39,7 @@ function init() {
 
   document.addEventListener('click', (e) => {
     if (!toolMenu.contains(e.target) && !toolToggle.contains(e.target)) {
-      setToolMenuOpen(false);
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && toolMenu.classList.contains('open')) {
-      setToolMenuOpen(false);
-      toolToggle.focus();
+      closeToolMenu();
     }
   });
 
@@ -68,7 +55,7 @@ function init() {
         setTool(tool);
       }
 
-      setToolMenuOpen(false);
+      closeToolMenu();
     });
   });
 
