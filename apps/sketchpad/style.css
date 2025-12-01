@@ -72,6 +72,12 @@ canvas {
   border: 1px solid var(--surface-border);
 }
 
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .tool-toggle {
   border: none;
   background: #f5f6fa;
@@ -145,7 +151,8 @@ canvas {
 
 .color-panel {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 12px;
   flex-wrap: wrap;
   background: rgba(255, 255, 255, 0.85);
@@ -381,7 +388,12 @@ input[type=range]::-webkit-slider-thumb:hover {
     gap: 12px;
     align-items: flex-start;
   }
-  
+
+  .logo {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .actions {
     margin-left: auto;
   }
