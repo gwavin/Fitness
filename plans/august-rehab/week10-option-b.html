@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Week 10 – Home Edition (Shoulder Rehab + KB Strength)</title>
+<style>
+  :root{ --bg:#0b1320; --card:#111a2c; --ink:#e9eef8; --muted:#a9b5cf; --accent:#3ddc97; --accent2:#8ab4ff; --warn:#ffd166; }
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,Segoe UI,Roboto,Ubuntu,Helvetica,Arial,sans-serif}
+  .wrap{max-width:980px;margin:0 auto;padding:24px}
+  header{position:sticky;top:0;background:linear-gradient(180deg,#0b1320,rgba(11,19,32,.85));backdrop-filter:blur(6px);z-index:5;border-bottom:1px solid #1f2a44}
+  header .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 24px}
+  h1{font-size:1.6rem;margin:.2rem 0}
+  .tag{font-size:.8rem;color:var(--bg);background:var(--accent);border-radius:999px;padding:.15rem .6rem;font-weight:700}
+  .card{background:var(--card);border:1px solid #1f2a44;border-radius:16px;padding:16px;margin-top:12px}
+  .muted{color:var(--muted)}
+  .pill{display:inline-block;background:#17233a;padding:.15rem .5rem;border-radius:999px;margin-left:.35rem;border:1px solid #223055}
+  details{border:1px solid #233055;border-radius:12px;padding:.6rem .8rem;background:#0e1830}
+  details+details{margin-top:10px}
+  details>summary{cursor:pointer;font-weight:700}
+  .rx{display:grid;grid-template-columns: 1fr; gap:8px;margin:.4rem 0 .6rem}
+  .ok{color:var(--accent)}
+  .warn{color:var(--warn)}
+  .list{margin:.2rem 0 0 1rem}
+  .check{list-style:"✔  ";}
+  .danger{list-style:"⚠  ";}
+  .day-controls{display:flex;gap:8px;flex-wrap:wrap;margin:.25rem 0 .5rem}
+  .button{background:#17233a;color:var(--ink);border:1px solid #2a365a;padding:.35rem .6rem;border-radius:8px;cursor:pointer}
+  .button:hover{border-color:var(--accent2)}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar wrap">
+    <h1>Week 10 — Home Edition</h1>
+    <span class="tag">Kettlebell Focus + Metabolic Rehab</span>
+  </div>
+</header>
+<main class="wrap">
+
+<section class="card callout">
+  <b>Home Edition: How to use</b>
+  <ul>
+    <li><b>Equipment Profile:</b> 2×20kg KBs (Heavy), 1×12kg KB (Rehab/Skill), Barbell (≈20–30kg), Mat.</li>
+    <li><b>Modifications:</b> Runs are replaced by <b>Metabolic Conditioning</b> (Swings/Intervals) to match heart rate stimulus without impact.</li>
+    <li><b>Pain rule:</b> 0–3/10 is acceptable. Stop for sharp/catching pain.</li>
+  </ul>
+</section>
+
+<section class="card callout">
+  <b>Week 10 Defaults</b>
+  <ul>
+    <li><b>Main Lifts:</b> <b>Double Rack Squats</b> replace Back Squats (higher core demand). <b>Single-Leg/Staggered RDLs</b> replace heavy deadlifts.</li>
+    <li><b>Overhead Safety:</b> Use the <b>12kg KB</b> or <b>Light Barbell</b> for overhead pressing. Do not force the 20kg overhead if unstable.</li>
+    <li><b>Elbow Rehab:</b> Use the <b>12kg KB</b> for eccentric wrist extensions (assist up, lower slow).</li>
+    <li><b>Conditioning:</b> High-intensity intervals using KB Swings and Bodyweight to replace running volume.</li>
+  </ul>
+</section>
+
+<section id="week10" class="card">
+  <h2>Week 10 – Alternating Days (Weights ↔ MetCon)</h2>
+  <p class="muted">Modified for home equipment constraints. Focus on stability and time-under-tension.</p>
+  
+  <div class="day-controls">
+    <button type="button" class="button" onclick="toggleDetails(document.querySelector('#week10'), true)">➕ Expand all (Week 10)</button>
+    <button type="button" class="button" onclick="toggleDetails(document.querySelector('#week10'), false)">➖ Collapse all (Week 10)</button>
+  </div>
+
+  <div class="card">
+    <h3>Monday — Integrated Strength (Home Var.)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Movement Preparation</b> — 2 rounds</summary>
+        <ul class="list check">
+          <li><b>Arm Circles/Rolls:</b> Standard warm-up.</li>
+          <li><b>Cat-Cow:</b> 8 reps.</li>
+          <li><b>Thoracic Rotations:</b> 6 reps/side.</li>
+          <li><b>Wall Handstand:</b> 2 × 25s (Press floor away, ribs down).</li>
+          <li><b>Hollow Hold:</b> 2 × 20s (Lower back pinned to floor).</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Double KB Front Squat</b> — <b>3×6–8</b> @ RPE 7 <span class="pill">Main Lift</span></summary>
+        <ul class="list check">
+          <li><b>Setup:</b> Clean both 20kg KBs to "Rack" position (knuckles under chin, elbows tucked).</li>
+          <li><b>Action:</b> Squat deep. Keep chest tall to fight the weight pulling you forward.</li>
+          <li><b>Note:</b> If 2×20kg is too heavy, use 1×20kg (Goblet) or the Barbell for 12–15 reps.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Single-Leg RDL</b> — <b>3×8 each leg</b> <span class="pill">Balance Focus</span></summary>
+        <ul class="list check">
+          <li><b>Setup:</b> Hold ONE 20kg KB in the hand <i>opposite</i> the standing leg.</li>
+          <li><b>Action:</b> Hinge hips back, floating free leg behind. Keep back flat.</li>
+          <li><b>Focus:</b> Anti-rotation. Don't let the weight twist you.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Superset: Gorilla Row + Press</b> — <b>3×8–10 each</b></summary>
+        <ul class="list check">
+          <li><b>KB Gorilla Row:</b> Wide stance, KBs on floor. Row one KB while pushing the other into the floor. 8-10 reps/side.</li>
+          <li><b>Overhead Press:</b> Use <b>12kg KB</b> or <b>Barbell</b>. Strict press. 8-10 reps.</li>
+        </ul>
+        <ul class="list danger"><li>Caution: Do not use 20kg for press if shoulder feels unstable.</li></ul>
+      </details>
+
+      <details><summary><b>Push-Up Complex</b> — 3 rounds</summary>
+        <ul class="list check">
+          <li><b>8 Push-Up Plus:</b> Protract/Retract at top.</li>
+          <li><b>5 Pike Push-Ups:</b> Hips high.</li>
+          <li><b>5 Single-Arm var:</b> Wall or elevated if needed.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Forearm Rehab (12kg KB)</b> — 3×12</summary>
+        <ul class="list check">
+          <li><b>Eccentric Wrist Extension:</b> Forearm on table. Use 12kg. Lift with help, lower SLOWLY (5s).</li>
+          <li><b>KB Halo:</b> Hold 12kg by horns. Circle around head. 10 each way.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Tuesday — Metabolic Conditioning (No Run)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Foot + Ankle Complex</b> — 3 rounds <span class="pill">Critical</span></summary>
+        <ul class="list check">
+          <li><b>Short-Foot Drill:</b> 40s hold per foot.</li>
+          <li><b>Tibialis Raises:</b> Lean on wall, lift toes. 15 reps.</li>
+          <li><b>Calf Stretch:</b> 30s each.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>The "No-Run" Circuit</b> — 5 Rounds <span class="pill">Heart Rate Focus</span></summary>
+        <ul class="list check">
+          <li><b>Instructions:</b> Perform exercises back-to-back. Rest 90s between rounds.</li>
+          <li><b>1. KB Swings (20kg):</b> 20 reps. Snap hips, do not squat.</li>
+          <li><b>2. Mountain Climbers:</b> 30 seconds fast pace.</li>
+          <li><b>3. Bear Crawl:</b> 10 steps forward, 10 steps back. Keep knees hovering.</li>
+          <li><b>4. Farmer's March:</b> Hold 2×20kg. High knee march in place. 45 seconds.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Scapular & Rehab Finisher</b> — 2 sets</summary>
+        <ul class="list check">
+          <li><b>Towel/Band Pull-Aparts:</b> 15 reps.</li>
+          <li><b>Push-Up Plus:</b> 15 reps. Focus on scapular movement.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Wednesday — Offset Strength & Stability</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Movement Prep</b> — 2 rounds</summary>
+        <ul class="list check">
+          <li>Standard mobility + 1 minute Bear Crawl.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Offset Squat</b> — <b>3×6 each side</b> <span class="pill">Core Challenge</span></summary>
+        <ul class="list check">
+          <li><b>Setup:</b> Rack 20kg KB on Left side, 12kg KB on Right side.</li>
+          <li><b>Action:</b> Squat. Fight the uneven weight to stay upright.</li>
+          <li><b>Switch:</b> Perform 6 reps, switch weights, repeat.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Staggered Stance RDL</b> — <b>3×8 each side</b></summary>
+        <ul class="list check">
+          <li><b>Setup:</b> Hold 2×20kg (or 1×20kg). Place one foot 6 inches behind other (kickstand).</li>
+          <li><b>Action:</b> Hinge hips. 80% of weight on front leg. feel the hamstring.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Floor Press</b> — <b>3×10–12</b> <span class="pill">Chest/Triceps</span></summary>
+        <ul class="list check">
+          <li><b>Setup:</b> Lie on mat. Knees bent. Hold 2×20kg (or single arm if 2 is hard to position).</li>
+          <li><b>Action:</b> Press up. Lower until triceps tap floor.</li>
+          <li><b>Note:</b> Safer for shoulders than bench press as range is limited by floor.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Turkish Get-Up</b> — <b>3×2 each side</b></summary>
+        <ul class="list check">
+          <li><b>Weight:</b> Use the <b>12kg KB</b>.</li>
+          <li><b>Focus:</b> Perfect technique. Keep eyes on the weight.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Grip Crush Finisher</b> — 3 sets</summary>
+        <ul class="list check">
+          <li><b>Farmer Hold:</b> Hold 2×20kg at sides. Squeeze handles hard. Hold until failure.</li>
+          <li>Rest 60s.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Thursday — Metabolic Conditioning (EMOM)</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Foot + Ankle Complex</b> — 3 rounds</summary>
+        <ul class="list check">
+          <li>Short-Foot Drill, Ankle Circles, Tibialis Raises.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>EMOM 20</b> — 20 Minutes total <span class="pill">Conditioning</span></summary>
+        <ul class="list check">
+          <li><b>Format:</b> Start a new exercise every minute. Rest for remainder of minute.</li>
+          <li><b>Min 1:</b> 15 Goblet Squats (12kg or 20kg).</li>
+          <li><b>Min 2:</b> 10 Push-Ups + 10 Mountain Climbers.</li>
+          <li><b>Min 3:</b> 15 KB Swings (20kg).</li>
+          <li><b>Min 4:</b> 45 sec Plank Hold.</li>
+          <li><b>Repeat:</b> Cycle through this list 5 times total.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Wall Mobility</b> — 3×10</summary>
+        <ul class="list check">
+          <li><b>Wall Slides:</b> W to Y pattern. Keep lower back flat.</li>
+          <li><b>Wall Angels:</b> Snow angel motion.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Friday — Peak Integrated Strength</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Movement Prep</b> — 3 rounds</summary>
+        <ul class="list check">
+          <li>Comprehensive warm-up (Circles, Cat-Cow, Leg Swings).</li>
+        </ul>
+      </details>
+
+      <details><summary><b>The KB Complex</b> — 3×5 each side <span class="pill">Flow</span></summary>
+        <ul class="list check">
+          <li><b>Weight:</b> Single 12kg or 20kg.</li>
+          <li><b>Sequence:</b> 1 Goblet Squat → 1 Single-Arm Press → 1 Reverse Lunge → 1 Row.</li>
+          <li>Perform sequence 5 times on Left, then 5 times on Right.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Heavy KB Deadlift</b> — <b>4×10–12</b></summary>
+        <ul class="list check">
+          <li><b>Setup:</b> Both 20kg KBs between feet (Sumo) or at sides (Suitcase).</li>
+          <li><b>Action:</b> Hinge hips, keeping back flat. Squeeze glutes at top.</li>
+          <li><b>Note:</b> Higher reps because total weight (40kg) is relatively light.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Push-Pull Density Circuit</b> — 10 Minutes <span class="pill">AMRAP Quality</span></summary>
+        <ul class="list check">
+          <li><b>Timer:</b> 10 Minutes. Perform as many <i>quality</i> rounds as possible.</li>
+          <li><b>1. Overhead Press (Barbell/12kg):</b> 8 reps.</li>
+          <li><b>2. KB Rows (20kg):</b> 8 reps/side.</li>
+          <li><b>3. Push-Up Plus:</b> 10 reps.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Living Room Carry Medley</b> — 3 rounds</summary>
+        <ul class="list check">
+          <li><b>Rack Carry (2×20kg):</b> 60s march in place.</li>
+          <li><b>Overhead Carry (1×12kg):</b> 30s walk/march per side.</li>
+          <li><b>Suitcase Carry (1×20kg):</b> 30s walk/march per side.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Saturday — Endurance ("The Century")</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Foot + Ankle Complex</b> — 3 rounds</summary>
+        <ul class="list check">
+          <li>Short-Foot Drill, Ankle Circles, Tibialis Raises.</li>
+        </ul>
+      </details>
+
+      <details><summary><b>"The Century" Chipper</b> — For Time <span class="pill">Endurance</span></summary>
+        <ul class="list check">
+          <li><b>Instructions:</b> Complete all reps. Break sets as needed.</li>
+          <li><b>50 KB Swings</b> (20kg).</li>
+          <li><b>50 Push-Ups</b> (Use incline/knees if form breaks).</li>
+          <li><b>50 Lunges</b> (Bodyweight, alternating legs).</li>
+          <li><b>50 KB Rows</b> (Total reps. 25/side. Use 12kg or 20kg).</li>
+          <li><b>50 Glute Bridges</b> (Lying on floor).</li>
+        </ul>
+      </details>
+
+      <details><summary><b>Advanced Scapular Control</b> — 2×10</summary>
+        <ul class="list check">
+          <li><b>Prone T-Y-I:</b> Lie face down. Lift arms in T shape, then Y, then I.</li>
+          <li>Control the movement with shoulder blades.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Sunday — Recovery + Assessment</h3>
+    <div class="day-controls">
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), true)">➕ Expand all</button>
+      <button type="button" class="button" onclick="toggleDetails(this.closest('.card'), false)">➖ Collapse all</button>
+    </div>
+    <div class="rx">
+      <details><summary><b>Active Recovery</b> — 40 min</summary>
+        <ul class="list check">
+          <li><b>Walk:</b> 40 minute walk outdoors if possible.</li>
+          <li><b>Mobility:</b> Focus on Thoracic Spine (Cat-Cow, Open Book stretches).</li>
+        </ul>
+      </details>
+      <details><summary><b>Self-Assessment</b></summary>
+        <ul class="list check">
+          <li>Check overhead range of motion vs Week 1.</li>
+          <li>Check elbow pain levels (should be trending down).</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+</section>
+</main>
+<script>
+function toggleDetails(scope, open){
+  var root = scope || document;
+  root.querySelectorAll('details').forEach(function(d){ d.open = open; });
+}
+</script>
+</body>
+</html>
