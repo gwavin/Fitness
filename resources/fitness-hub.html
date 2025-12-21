@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      color-scheme: light;
+    }
     .pwa-card {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -51,6 +54,98 @@
       background: rgba(255,255,255,0.3);
       transform: translateY(-2px);
     }
+    .timer-section {
+      margin: 2.5rem 0 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #f8fafc;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    }
+    .timer-section h2 {
+      margin-top: 0;
+    }
+    .timer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .timer-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+    .timer-card h3 {
+      margin: 0 0 0.25rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .timer-description {
+      margin: 0 0 0.75rem 0;
+      color: #4b5563;
+      font-size: 0.95rem;
+    }
+    .timer-display {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #111827;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .timer-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin: 0.75rem 0;
+    }
+    .timer-actions button {
+      border: none;
+      padding: 0.65rem 0.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      color: #fff;
+    }
+    .timer-actions button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 14px rgba(0,0,0,0.08);
+    }
+    .timer-actions .start {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+    .timer-actions .pause {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1f2937;
+    }
+    .timer-actions .reset {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+    .timer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+    .timer-meta button {
+      background: none;
+      border: none;
+      color: #2563eb;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+    }
+    .timer-meta button:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -69,6 +164,55 @@
       <br>
       <a href="../apps/run-walk-metronome/index.html" class="install-link">Launch PWA Metronome</a>
     </div>
+
+    <section class="timer-section" aria-labelledby="quick-timers">
+      <h2 id="quick-timers">Quick timers for sessions</h2>
+      <p>Start focused blocks without opening another app. Each timer runs independently so you can stagger warm-up, work and recovery segments as needed.</p>
+      <div class="timer-grid">
+        <article class="timer-card" data-timer-id="warmup" data-default-seconds="600">
+          <h3>🌀 Dynamic Warm-up</h3>
+          <p class="timer-description">10-minute flow to prime ankles, hips and shoulders before lifts or intervals.</p>
+          <div class="timer-display" id="warmup-display" aria-live="polite">10:00</div>
+          <div class="timer-actions">
+            <button class="start" data-action="start">Start</button>
+            <button class="pause" data-action="pause">Pause</button>
+            <button class="reset" data-action="reset">Reset</button>
+          </div>
+          <div class="timer-meta">
+            <span>Default: 10:00</span>
+            <button type="button" data-action="set-default">Set default</button>
+          </div>
+        </article>
+        <article class="timer-card" data-timer-id="strength" data-default-seconds="1500">
+          <h3>💪 Strength Block</h3>
+          <p class="timer-description">25-minute working window to cover core lifts or kettlebell circuits.</p>
+          <div class="timer-display" id="strength-display" aria-live="polite">25:00</div>
+          <div class="timer-actions">
+            <button class="start" data-action="start">Start</button>
+            <button class="pause" data-action="pause">Pause</button>
+            <button class="reset" data-action="reset">Reset</button>
+          </div>
+          <div class="timer-meta">
+            <span>Default: 25:00</span>
+            <button type="button" data-action="set-default">Set default</button>
+          </div>
+        </article>
+        <article class="timer-card" data-timer-id="recovery" data-default-seconds="300">
+          <h3>🧘 Recovery Reset</h3>
+          <p class="timer-description">5-minute cooldown for breathing, mobility or soft-tissue work.</p>
+          <div class="timer-display" id="recovery-display" aria-live="polite">05:00</div>
+          <div class="timer-actions">
+            <button class="start" data-action="start">Start</button>
+            <button class="pause" data-action="pause">Pause</button>
+            <button class="reset" data-action="reset">Reset</button>
+          </div>
+          <div class="timer-meta">
+            <span>Default: 05:00</span>
+            <button type="button" data-action="set-default">Set default</button>
+          </div>
+        </article>
+      </div>
+    </section>
     
     <h2>Original Content</h2>
     <ul>
@@ -92,5 +236,98 @@
       <li><a href="../apps/health-calculators/index.html">Health Calculators</a></li>
     </ul>
   </div>
+
+  <script>
+    (function() {
+      const formatTime = (totalSeconds) => {
+        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+        const seconds = Math.max(totalSeconds % 60, 0).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+      };
+
+      const timers = new Map();
+
+      const initializeTimer = (card) => {
+        const timerId = card.dataset.timerId;
+        let defaultSeconds = parseInt(card.dataset.defaultSeconds, 10) || 0;
+        const display = card.querySelector('.timer-display');
+        const metaDefault = card.querySelector('.timer-meta span');
+        let intervalId = null;
+        let remaining = defaultSeconds;
+        let lastTick = null;
+
+        const updateDisplay = () => {
+          display.textContent = formatTime(remaining);
+        };
+
+        const startTimer = () => {
+          if (intervalId !== null) return;
+          lastTick = performance.now();
+          intervalId = requestAnimationFrame(tick);
+        };
+
+        const tick = (timestamp) => {
+          if (lastTick === null) lastTick = timestamp;
+          const delta = timestamp - lastTick;
+          if (delta >= 1000) {
+            const steps = Math.floor(delta / 1000);
+            remaining = Math.max(remaining - steps, 0);
+            lastTick = timestamp;
+            updateDisplay();
+            if (remaining === 0) {
+              stopTimer();
+              return;
+            }
+          }
+          intervalId = requestAnimationFrame(tick);
+        };
+
+        const stopTimer = () => {
+          if (intervalId !== null) {
+            cancelAnimationFrame(intervalId);
+            intervalId = null;
+          }
+        };
+
+        const resetTimer = () => {
+          stopTimer();
+          remaining = defaultSeconds;
+          updateDisplay();
+        };
+
+        const setDefault = () => {
+          const minutes = prompt('Enter default minutes for this timer:', Math.floor(defaultSeconds / 60));
+          const seconds = prompt('Enter seconds (0-59):', defaultSeconds % 60);
+          const parsedMinutes = parseInt(minutes ?? '', 10);
+          const parsedSeconds = parseInt(seconds ?? '', 10);
+          if (Number.isFinite(parsedMinutes) && Number.isFinite(parsedSeconds) && parsedMinutes >= 0 && parsedSeconds >= 0 && parsedSeconds < 60) {
+            const newTotal = (parsedMinutes * 60) + parsedSeconds;
+            defaultSeconds = newTotal;
+            card.dataset.defaultSeconds = newTotal.toString();
+            metaDefault.textContent = `Default: ${formatTime(newTotal)}`;
+            remaining = newTotal;
+            stopTimer();
+            updateDisplay();
+          } else {
+            alert('Please enter valid minutes and seconds.');
+          }
+        };
+
+        card.addEventListener('click', (event) => {
+          const action = event.target.dataset.action;
+          if (!action) return;
+          if (action === 'start') startTimer();
+          if (action === 'pause') stopTimer();
+          if (action === 'reset') resetTimer();
+          if (action === 'set-default') setDefault();
+        });
+
+        updateDisplay();
+        timers.set(timerId, { startTimer, stopTimer, resetTimer });
+      };
+
+      document.querySelectorAll('.timer-card').forEach(initializeTimer);
+    })();
+  </script>
 </body>
 </html>
