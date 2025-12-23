@@ -32,6 +32,16 @@
   .timer-display{font-weight:700;letter-spacing:.03em}
   .timer button{background:transparent;border:1px solid #2a365a;color:var(--ink);padding:2px 6px;border-radius:6px;cursor:pointer;font-size:.85rem}
   .timer button:hover{border-color:var(--accent2)}
+  .emom-tracker{margin-top:10px;padding:12px;border:1px solid #223055;border-radius:12px;background:#0e1830}
+  .emom-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .emom-clock{font-weight:700;font-size:1.1rem;font-variant-numeric:tabular-nums}
+  .emom-now{color:var(--accent2);font-weight:700}
+  .emom-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .emom-controls button{background:transparent;border:1px solid #2a365a;color:var(--ink);padding:4px 10px;border-radius:8px;cursor:pointer}
+  .emom-controls button:hover{border-color:var(--accent2)}
+  .emom-steps{margin:10px 0 0 1.2rem;padding:0}
+  .emom-steps li{padding:2px 0}
+  .emom-step-active{color:var(--accent);font-weight:700}
 </style>
 </head>
 <body>
@@ -237,6 +247,18 @@
           <li><b>Min 4:</b> 45 sec Plank Hold. <span class="timer" data-seconds="45"><span class="timer-display"></span><button type="button" class="timer-toggle">Start</button><button type="button" class="timer-reset">Reset</button></span></li>
           <li><b>Repeat:</b> Cycle through this list 5 times total.</li>
         </ul>
+        <div class="emom-tracker" data-total-minutes="20" data-steps='["Min 1: 15 Goblet Squats (12–20kg)","Min 2: 10 Push-Ups + 10 Mountain Climbers","Min 3: 15 KB Swings (20kg)","Min 4: 45s Plank Hold"]'>
+          <div class="emom-headline">
+            <div><strong>EMOM Timer with Beep</strong> <span class="emom-clock"></span></div>
+            <div class="emom-now">Ready: Min 1</div>
+          </div>
+          <div class="emom-controls">
+            <button type="button" class="emom-start">Start</button>
+            <button type="button" class="emom-reset">Reset</button>
+            <label><input type="checkbox" class="emom-sound" checked /> Beep each minute</label>
+          </div>
+          <ol class="emom-steps"></ol>
+        </div>
       </details>
 
       <details><summary><b>Wall Mobility</b> — 3×10</summary>
@@ -437,6 +459,160 @@ function initTimers(){
 }
 
 initTimers();
+
+function createBeep(){
+  var ctx = null;
+  return function(){
+    try{
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.value = 0.0001;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      var now = ctx.currentTime;
+      gain.gain.exponentialRampToValueAtTime(0.25, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+      osc.start();
+      osc.stop(now + 0.3);
+    } catch(err){
+      console && console.warn && console.warn('Audio beep unavailable', err);
+    }
+  };
+}
+
+function initEmomTrackers(){
+  var beep = createBeep();
+  var trackers = document.querySelectorAll('.emom-tracker');
+  trackers.forEach(function(box){
+    box.addEventListener('click', function(ev){ ev.stopPropagation(); });
+
+    var totalMinutes = parseInt(box.dataset.totalMinutes, 10) || 0;
+    var steps = [];
+    try { steps = JSON.parse(box.dataset.steps || '[]'); } catch(e){ steps = []; }
+
+    var clock = box.querySelector('.emom-clock');
+    var nowEl = box.querySelector('.emom-now');
+    var startBtn = box.querySelector('.emom-start');
+    var resetBtn = box.querySelector('.emom-reset');
+    var soundToggle = box.querySelector('.emom-sound');
+    var stepsList = box.querySelector('.emom-steps');
+
+    if (stepsList && steps.length){
+      stepsList.innerHTML = '';
+      for (var i = 0; i < totalMinutes; i++){
+        var label = steps[i % steps.length];
+        var li = document.createElement('li');
+        li.textContent = 'Minute ' + (i + 1) + ': ' + label;
+        li.dataset.minute = i;
+        stepsList.appendChild(li);
+      }
+    }
+
+    var state = { ticker:null, elapsedMs:0, lastMinute:-1, running:false, startedAt:0 };
+
+    function format(ms){
+      var totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+      var mins = Math.floor(totalSeconds / 60);
+      var secs = totalSeconds % 60;
+      return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+    }
+
+    function setNow(minuteIdx){
+      var label = steps.length ? steps[minuteIdx % steps.length] : ('Minute ' + (minuteIdx + 1));
+      if (nowEl){
+        nowEl.textContent = 'Now: ' + label;
+      }
+      if (stepsList){
+        stepsList.querySelectorAll('li').forEach(function(li){
+          li.classList.toggle('emom-step-active', parseInt(li.dataset.minute, 10) === minuteIdx);
+        });
+      }
+    }
+
+    function render(){
+      var remainingMs = Math.max((totalMinutes * 60000) - state.elapsedMs, 0);
+      if (clock) clock.textContent = format(remainingMs);
+    }
+
+    function stop(){
+      if (state.ticker){
+        clearInterval(state.ticker);
+        state.ticker = null;
+      }
+      state.running = false;
+      if (startBtn) startBtn.textContent = 'Start';
+    }
+
+    function tick(){
+      var now = performance.now();
+      var elapsed = state.elapsedMs + (now - state.startedAt);
+      var totalDuration = totalMinutes * 60000;
+      if (elapsed >= totalDuration){
+        state.elapsedMs = totalDuration;
+        render();
+        stop();
+        return;
+      }
+      state.elapsedMs = elapsed;
+      var minuteIdx = Math.floor(elapsed / 60000);
+      if (minuteIdx !== state.lastMinute){
+        for (var m = state.lastMinute + 1; m <= minuteIdx; m++){
+          setNow(m);
+          if (!soundToggle || soundToggle.checked) beep();
+        }
+        state.lastMinute = minuteIdx;
+      }
+      render();
+    }
+
+    function start(){
+      if (state.running) return;
+      state.startedAt = performance.now();
+      state.running = true;
+      state.ticker = setInterval(tick, 200);
+      tick();
+      if (startBtn) startBtn.textContent = 'Pause';
+    }
+
+    function pause(){
+      if (!state.running) return;
+      state.elapsedMs += performance.now() - state.startedAt;
+      stop();
+    }
+
+    function reset(){
+      stop();
+      state.elapsedMs = 0;
+      state.lastMinute = -1;
+      setNow(0);
+      render();
+    }
+
+    if (startBtn){
+      startBtn.addEventListener('click', function(){
+        if (state.running){
+          pause();
+        } else {
+          start();
+        }
+      });
+    }
+    if (resetBtn){
+      resetBtn.addEventListener('click', function(){
+        reset();
+      });
+    }
+
+    render();
+    setNow(0);
+  });
+}
+
+initEmomTrackers();
 </script>
 </body>
 </html>
