@@ -26,9 +26,11 @@
         </button>
         <div class="logo-text">
           <h1>Mae's Sketchpad</h1>
-          <div class="color-and-tools">
+        </div>
+        <div class="tool-menu" id="toolMenu">
+          <div class="panel-section">
+            <div class="panel-label">Palette</div>
             <div class="color-panel">
-              <div class="panel-label">Palette</div>
               <div class="color-group" id="colorPalette">
                 <!-- Injected by JS -->
               </div>
@@ -44,34 +46,34 @@
               </div>
               <input type="color" id="colorPickerInput" style="display:none; visibility:hidden;">
             </div>
-            <div class="tool-menu" id="toolMenu">
-              <div class="panel-label">Tools</div>
-              <div class="tool-group">
-                <button class="tool-btn active" data-tool="brush" data-brush="pencil" title="Pencil">
-                  <span class="emoji">✏️</span>
-                </button>
-                <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
-                  <span class="emoji">🖍️</span>
-                </button>
-                <button class="tool-btn" data-tool="brush" data-brush="fade" title="Fade (mix colors)">
-                  <span class="emoji">🌈</span>
-                </button>
-                <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
-                  <span class="emoji">🖊️</span>
-                </button>
-                <button class="tool-btn" data-tool="eraser" title="Eraser">
-                  <span class="emoji">🧼</span>
-                </button>
-              </div>
-              <p class="helper-text">Fade blends your previous and current colors for softer transitions.</p>
-              <div class="menu-divider"></div>
-              <div class="size-stack">
-                <div class="panel-label">Thickness</div>
-                <div class="size-group">
-                  <span class="size-indicator" aria-hidden="true"></span>
-                  <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush Size">
-                </div>
-              </div>
+          </div>
+          <div class="menu-divider"></div>
+          <div class="panel-section">
+            <div class="panel-label">Tools</div>
+            <div class="tool-group">
+              <button class="tool-btn active" data-tool="brush" data-brush="pencil" title="Pencil">
+                <span class="emoji">✏️</span>
+              </button>
+              <button class="tool-btn" data-tool="brush" data-brush="marker" title="Marker">
+                <span class="emoji">🖍️</span>
+              </button>
+              <button class="tool-btn" data-tool="brush" data-brush="pen" title="Pen">
+                <span class="emoji">🖊️</span>
+              </button>
+              <button class="tool-btn" data-tool="brush" data-brush="fade" title="Watercolour">
+                <span class="emoji">💧</span>
+              </button>
+              <button class="tool-btn" data-tool="eraser" title="Eraser">
+                <span class="emoji">🧼</span>
+              </button>
+            </div>
+          </div>
+          <div class="menu-divider"></div>
+          <div class="size-stack">
+            <div class="panel-label">Thickness</div>
+            <div class="size-group">
+              <span class="size-indicator" aria-hidden="true"></span>
+              <input type="range" id="brushSize" min="1" max="50" value="5" title="Brush Size">
             </div>
           </div>
         </div>
@@ -111,6 +113,7 @@
         <input type="file" id="importImageInput" accept="image/*" style="display:none; visibility:hidden;">
       </div>
     </header>
+
     <div class="zoom-indicator" id="zoomIndicator">100%</div>
   </div>
 

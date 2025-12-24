@@ -3,25 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fitness & Rehab Landing Hub</title>
+  <title>Fitness &amp; Rehab Launchpad</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/landing.css">
 </head>
 <body>
   <header class="hero">
     <div class="hero__inner">
-      <div class="hero__copy">
-        <p class="hero__eyebrow">Curated performance toolkit</p>
-        <h1>All fitness, rehab and reference content in one launchpad. Hi</h1>
-        <p>Jump straight into interval timers, strength programming, medical calculators, barefoot running rehab and even family recipes. Everything is grouped so you can move from planning to action without hunting for files.</p>
-        <div class="hero__actions">
-          <a class="button" href="apps/run-walk-metronome/index.html">
-            <span>▶</span>
-            Launch Run/Walk Timer
-          </a>
-          <a class="button button--ghost" href="#tools">Browse the library</a>
+      <p class="hero__eyebrow">Curated performance toolkit</p>
+      <h1>Everything for training, rehab and reference—visible, organised, ready.</h1>
+      <p>Launch PWAs, week-by-week plans, clinical calculators, karate references and family recipes from a single hub. The directory map keeps contributions tidy so the whole repo stays discoverable.</p>
+      <div class="hero__actions">
+        <a class="button" href="apps/run-walk-metronome/index.html"><span>▶</span>Open the Run/Walk Timer</a>
+        <a class="button button--ghost" href="#structure">Jump to the directory map</a>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi__label">Apps &amp; utilities</div>
+          <div class="kpi__value">Metronome PWA, calculators, demo sandbox and Cerner reference.</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi__label">Programs</div>
+          <div class="kpi__value">12-week rehab, 8-week strength block and a reusable workout library.</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi__label">Reference</div>
+          <div class="kpi__value">Karate sheets, barefoot progressions, warm-ups and a quick index.</div>
         </div>
       </div>
     </div>
@@ -41,17 +50,20 @@
   <main>
     <section id="tools" class="section">
       <h2>Tools &amp; Progressive Web Apps</h2>
-      <p class="section__lead">Quickly open the interactive utilities that support day-to-day training, coaching and clinical work. Everything loads in place—no more digging for single HTML files.</p>
+      <p class="section__lead">Launch the interactive utilities that support day-to-day training, coaching and clinical work. Each card links directly to its working entry point.</p>
       <div class="card-grid">
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="apps/run-walk-metronome/index.html">Run/Walk Cadence Timer</a>
             <span class="card__badge">PWA</span>
           </div>
           <p>Interval timer with audio cadence cues, lap tracking and offline support. Built for alternating running and walking blocks during rehab.</p>
-          <p class="card__meta"><a href="apps/run-walk-metronome/manifest.webmanifest">Install manifest</a> · <a href="apps/run-walk-metronome/legacy.html">Legacy single-file version</a></p>
+          <div class="pill-row">
+            <span class="pill"><a href="apps/run-walk-metronome/manifest.webmanifest">Install manifest</a></span>
+            <span class="pill"><a href="apps/run-walk-metronome/legacy.html">Legacy single-file</a></span>
+          </div>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="apps/exercise-calculators/index.html">Exercise Calculators</a>
             <span class="card__badge">Training</span>
@@ -59,7 +71,7 @@
           <p>Strength and conditioning tools including barbell complexes, tempo timers and rehab progressions to plan gym and home sessions.</p>
           <p class="card__meta">Directory: <code>apps/exercise-calculators/</code></p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="apps/health-calculators/index.html">Health Calculators</a>
             <span class="card__badge">Clinical</span>
@@ -67,7 +79,7 @@
           <p>Clinical decision aids such as NEWS2, CHA<sup>2</sup>DS<sup>2</sup>-VASc, EDD and neonatal calculators—ready for quick reference in clinic.</p>
           <p class="card__meta">Directory: <code>apps/health-calculators/</code></p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="apps/cerner-server-cycler.html">Cerner Server Cycler</a>
             <span class="card__badge">IT Ops</span>
@@ -75,7 +87,7 @@
           <p>Interactive cheat sheet for hospital server rotations, featuring colour-coded tiers, escalation contacts and shift checklists.</p>
           <p class="card__meta">Use this from a desktop for the full table layout.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="apps/demo/index.html">Demo Playground</a>
             <span class="card__badge">Prototype</span>
@@ -83,7 +95,7 @@
           <p>Theme-switching sandbox that demonstrates dynamic content loading from <code>sample-data.json</code>—handy for testing component ideas.</p>
           <p class="card__meta">Data source: <code>apps/demo/sample-data.json</code></p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="maes-sketchpad.html">Mae&#39;s Sketchpad</a>
             <span class="card__badge">Creative</span>
@@ -98,8 +110,8 @@
       <h2>Training Programs &amp; Weekly Plans</h2>
       <p class="section__lead">Structured programming for rehab, strength and conditioning lives under <code>plans/</code>. Start with the 12-week shoulder and barefoot running rebuild, then explore the classic 8-week strength block.</p>
 
-      <div class="card-grid" style="margin-bottom:1.8rem;">
-        <article class="card">
+      <div class="card-grid" style="margin-bottom:1.5rem;">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="plans/fitness-plan-index.html">12-Week August Rehab</a>
             <span class="card__badge">Flagship</span>
@@ -107,7 +119,7 @@
           <p>Integrated plan blending shoulder rehab, cadence work and progressive barefoot running. Each week drills into run scripts, strength priorities and recovery notes.</p>
           <p class="card__meta">See detailed week breakdown below.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="plans/fitness-index.html">8-Week Strength &amp; Conditioning</a>
             <span class="card__badge">Strength</span>
@@ -115,7 +127,7 @@
           <p>A pre-hab friendly lifting block with three weekly sessions and structured rest. Perfect when transitioning away from the rehab plan.</p>
           <p class="card__meta">Includes session-by-session links to the workout library.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="plans/workouts/integrated-rehab-and-strength-plan.html">Workout Library</a>
             <span class="card__badge">Reference</span>
@@ -145,6 +157,7 @@
             <tr><td>8</td><td>Functional strength &amp; long bouts</td><td><a href="plans/august-rehab/week08.html">Week 8 Schedule</a></td></tr>
             <tr><td>9</td><td>Advanced shoulder work</td><td><a href="plans/august-rehab/week09.html">Week 9 Schedule</a></td></tr>
             <tr><td>10</td><td>Extended intervals + integration</td><td><a href="plans/august-rehab/week10.html">Week 10 Schedule</a></td></tr>
+            <tr><td>10 (Option B)</td><td>Home edition: KB strength + no-run conditioning</td><td><a href="plans/august-rehab/week10-option-b.html">Week 10 Home Edition</a></td></tr>
             <tr><td>11</td><td>Peak volume tuning</td><td><a href="plans/august-rehab/week11.html">Week 11 Schedule</a></td></tr>
             <tr><td>12</td><td>Continuous running finish</td><td><a href="plans/august-rehab/week12.html">Week 12 Schedule</a></td></tr>
           </tbody>
@@ -167,21 +180,21 @@
       <h2>Reference Library</h2>
       <p class="section__lead">Context pieces, daily checklists and supporting documents live under <code>resources/</code>. These pages add colour to the raw programming.</p>
       <div class="card-grid">
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/fitness-hub.html">Fitness Hub Overview</a>
             <span class="card__badge">Dashboard</span>
           </div>
           <p>Central hub tying together the PWA, rehab weeks and calculators with quick calls-to-action and install instructions.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/fitness.html">Fitness Quick Index</a>
             <span class="card__badge">Index</span>
           </div>
           <p>Legacy directory of training resources, now updated to link into the reorganised structure.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/kumite_techniques_full.html">Karate Kumite Practice</a>
             <span class="card__badge">Karate</span>
@@ -189,60 +202,58 @@
           <p>Complete kumite session builder with warm-up integration, drill modules and weekly emphasis planner.</p>
           <p class="card__meta"><a href="resources/karate-warmup.html">Warm-up flow</a> · <a href="resources/kumite_techniques_full.html#weekly">Weekly plan</a> · <a href="resources/moveCoaching.html">Coaching sheet</a></p>
           <p><strong><a href="resources/kumite_techniques_full.html">Open the full Kumite Technique Library →</a></strong></p>
-
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/moveCoaching.html">Sanbon Kumite Coaching Sheet</a>
             <span class="card__badge">Karate</span>
           </div>
           <p>Bilingual step breakdowns pair Japanese calls with English cues.</p>
-          <p>A sidedness toggle keeps partner rotations even.</p>
           <p class="card__meta">Includes printable layout optimized for dojo floor reference.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/SanbonKumiteNumber1.html">Sanbon Kumite Mnemonic</a>
             <span class="card__badge">Karate</span>
           </div>
           <p>A quick mnemonic for the first Sanbon Kumite drill, breaking down the sequence into memorable phases.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/karate-kumite-guide.html">Kumite Technique Guide</a>
             <span class="card__badge">Karate</span>
           </div>
           <p>A structured guide to kumite practice, covering warm-ups, footwork, striking, and defensive drills.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/kihonIpponKumitewithloopVideo.html">Kihon Ippon Kumite Guide</a>
             <span class="card__badge">Karate</span>
           </div>
           <p>A detailed breakdown of one-step sparring techniques, complete with looping video demonstrations.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/barefoot-running-schedule.html">Barefoot Running Schedule</a>
             <span class="card__badge">Guide</span>
           </div>
           <p>Step-by-step barefoot progression with rest-day integrations and cadence cues for smooth adaptation.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/barefoot-days.html">Barefoot Rest Day Drills</a>
             <span class="card__badge">Checklist</span>
           </div>
           <p>Week-by-week add-ons for rest days, helping you maintain foot strength and cadence awareness.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/calendar.html">Training Calendar Prototype</a>
             <span class="card__badge">Planning</span>
           </div>
           <p>Experiment with scheduling views before porting events into your preferred calendar app.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="resources/my-plan.html">"Watson" Documentary Treatment</a>
             <span class="card__badge">Story</span>
@@ -256,14 +267,14 @@
       <h2>Fuel &amp; Family Recipes</h2>
       <p class="section__lead">Because the kitchen matters too. Keep the classics in easy reach.</p>
       <div class="card-grid">
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="recipes/waffles.html">Weekend Waffles</a>
             <span class="card__badge">Breakfast</span>
           </div>
           <p>Original crispy waffle formula—perfect post-long-run comfort food.</p>
         </article>
-        <article class="card">
+        <article class="card card--inline">
           <div class="card__title">
             <a href="recipes/waffles2.html">Make-Ahead Waffles</a>
             <span class="card__badge">Prep</span>
@@ -277,11 +288,11 @@
       <h2>Downloads &amp; Text References</h2>
       <p class="section__lead">Static files that support training administration live here.</p>
       <div class="detail-grid">
-        <details>
+        <details open>
           <summary>Warm-up sequence (TXT)</summary>
           <p><a href="resources/warmup.txt">Download warmup.txt</a> for the dynamic mobility circuit used before strength work.</p>
         </details>
-        <details>
+        <details open>
           <summary>Analytics export (XLSX)</summary>
           <p><a href="Train%20Domain%20Discern%20Reports%20-%20Admin%202024%20-%20Post%20Refresh%20-%20All%20PDP.xlsx">Train Domain Discern Reports spreadsheet</a> – raw data captured during platform refresh testing.</p>
         </details>
@@ -290,48 +301,59 @@
 
     <section id="structure" class="section">
       <h2>Directory Map</h2>
-      <p class="section__lead">Everything has a home. Use this tree when adding new content.</p>
-      <pre class="directory">apps/
-├── run-walk-metronome/
-│   ├── index.html
-│   ├── metronome.css
-│   ├── metronome.js
-│   ├── manifest.webmanifest
-│   ├── sw.js
-│   └── legacy.html
-├── exercise-calculators/
-├── health-calculators/
-├── cerner-server-cycler.html
-└── demo/
-    ├── index.html
-    └── sample-data.json
-
-plans/
-├── august-rehab/
-│   └── week01.html … week12.html
-├── workouts/
-├── exercise-plan.html
-├── fitness-index.html
-├── fitness-plan-index.html
-└── workout-template.html
-
-resources/
-├── barefoot-days.html
-├── barefoot-running-schedule.html
-├── calendar.html
-├── fitness-hub.html
-├── fitness.html
-├── my-plan.html
-└── warmup.txt
-
-recipes/
-├── waffles.html
-└── waffles2.html
-
-assets/
-└── css/
-    └── landing.css
-</pre>
+      <p class="section__lead">Everything has a home. Use these lists when adding new content to keep the hub tidy.</p>
+      <div class="directory-grid">
+        <div class="directory-card">
+          <h3>apps/</h3>
+          <ul>
+            <li><strong>run-walk-metronome/</strong> — index, CSS/JS, manifest, service worker, legacy.html</li>
+            <li><strong>exercise-calculators/</strong> — strength and conditioning tools</li>
+            <li><strong>health-calculators/</strong> — clinical calculators</li>
+            <li><strong>cerner-server-cycler.html</strong> — hospital server reference</li>
+            <li><strong>demo/</strong> — index.html and sample-data.json</li>
+          </ul>
+        </div>
+        <div class="directory-card">
+          <h3>plans/</h3>
+          <ul>
+            <li><strong>august-rehab/</strong> — week01.html … week12.html</li>
+            <li><strong>workouts/</strong> — integrated rehab and strength plan pages</li>
+            <li><strong>exercise-plan.html</strong> — bespoke block template</li>
+            <li><strong>fitness-index.html</strong> — 8-week strength &amp; conditioning</li>
+            <li><strong>fitness-plan-index.html</strong> — 12-week August rehab</li>
+            <li><strong>workout-template.html</strong> — quick cloning scaffold</li>
+          </ul>
+        </div>
+        <div class="directory-card">
+          <h3>resources/</h3>
+          <ul>
+            <li>barefoot-days.html</li>
+            <li>barefoot-running-schedule.html</li>
+            <li>calendar.html</li>
+            <li>fitness-hub.html</li>
+            <li>fitness.html</li>
+            <li>karate-warmup.html</li>
+            <li>kumite_techniques_full.html</li>
+            <li>karate-kumite-guide.html</li>
+            <li>kihonIpponKumitewithloopVideo.html</li>
+            <li>moveCoaching.html</li>
+            <li>my-plan.html</li>
+            <li>SanbonKumiteNumber1.html</li>
+            <li>warmup.txt</li>
+          </ul>
+        </div>
+        <div class="directory-card">
+          <h3>recipes/</h3>
+          <ul>
+            <li>waffles.html</li>
+            <li>waffles2.html</li>
+          </ul>
+          <h3 style="margin-top:0.9rem;">assets/</h3>
+          <ul>
+            <li>css/landing.css</li>
+          </ul>
+        </div>
+      </div>
     </section>
   </main>
 
