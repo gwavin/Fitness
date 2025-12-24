@@ -250,7 +250,7 @@
         <div class="emom-tracker" data-total-minutes="20" data-steps='["Min 1: 15 Goblet Squats (12–20kg)","Min 2: 10 Push-Ups + 10 Mountain Climbers","Min 3: 15 KB Swings (20kg)","Min 4: 45s Plank Hold"]'>
           <div class="emom-headline">
             <div><strong>EMOM Timer with Beep</strong> <span class="emom-clock"></span></div>
-            <div class="emom-now">Now: Min 1: 15 Goblet Squats (12–20kg)</div>
+            <div class="emom-now">Ready: Min 1</div>
           </div>
           <div class="emom-controls">
             <button type="button" class="emom-start">Start</button>
@@ -488,8 +488,6 @@ function initEmomTrackers(){
   var beep = createBeep();
   var trackers = document.querySelectorAll('.emom-tracker');
   trackers.forEach(function(box){
-    box.addEventListener('click', function(ev){ ev.stopPropagation(); });
-
     var totalMinutes = parseInt(box.dataset.totalMinutes, 10) || 0;
     var steps = [];
     try { steps = JSON.parse(box.dataset.steps || '[]'); } catch(e){ steps = []; }
@@ -560,11 +558,9 @@ function initEmomTrackers(){
       state.elapsedMs = elapsed;
       var minuteIdx = Math.floor(elapsed / 60000);
       if (minuteIdx !== state.lastMinute){
-        for (var m = state.lastMinute + 1; m <= minuteIdx; m++){
-          setNow(m);
-          if (!soundToggle || soundToggle.checked) beep();
-        }
         state.lastMinute = minuteIdx;
+        setNow(minuteIdx);
+        if (!soundToggle || soundToggle.checked) beep();
       }
       render();
     }
