@@ -1,4 +1,4 @@
-const CACHE_NAME = 'metronome-shell-v4';
+const CACHE_NAME = 'metronome-shell-v5';
 const ROOT_PATH = new URL('./', self.location).pathname;
 const INDEX_PATH = new URL('./index.html', self.location).pathname;
 const CSS_PATH = new URL('./metronome.css', self.location).pathname;
@@ -84,5 +84,18 @@ self.addEventListener('fetch', event => {
         return new Response('Resource not available offline', { status: 503 });
       })
     )
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
+      const appClient = windowClients.find(client => client.url.includes('/apps/run-walk-metronome/'));
+      if (appClient) {
+        return appClient.focus();
+      }
+      return clients.openWindow(INDEX_PATH);
+    })
   );
 });

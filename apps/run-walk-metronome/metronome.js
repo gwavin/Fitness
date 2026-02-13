@@ -24,6 +24,7 @@ let nextBeepTime = 0;
 let beatCount = 0;
 let animationFrameId = null;
 let warningBeepsPlayed = [false, false, false]; // Tracks beeps at 3, 2, 1 seconds
+let wakeLock = null;
 
 // === User Settings ===
 let settings = {
@@ -40,6 +41,69 @@ const createAudioContext = () => {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
 };
+
+// === Screen Wake Lock (prevents display sleeping during active sessions) ===
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator) || wakeLock) {
+    return;
+  }
+
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => {
+      wakeLock = null;
+    });
+  } catch (err) {
+    console.warn('Wake lock request failed', err);
+  }
+}
+
+async function releaseWakeLock() {
+  if (!wakeLock) {
+    return;
+  }
+
+  try {
+    await wakeLock.release();
+  } catch (err) {
+    console.warn('Wake lock release failed', err);
+  } finally {
+    wakeLock = null;
+  }
+}
+
+
+// === Background Notification Helpers ===
+function requestNotificationPermissionIfNeeded() {
+  if (!('Notification' in window) || Notification.permission !== 'default') {
+    return;
+  }
+
+  Notification.requestPermission().catch((err) => {
+    console.warn('Notification permission request failed', err);
+  });
+}
+
+async function notifyPhaseChange(title, body) {
+  if (!('Notification' in window) || Notification.permission !== 'granted' || document.visibilityState === 'visible') {
+    return;
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (registration) {
+      await registration.showNotification(title, {
+        body,
+        tag: 'run-walk-phase',
+        renotify: true,
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png'
+      });
+    }
+  } catch (err) {
+    console.warn('Background notification failed', err);
+  }
+}
 
 // === Audio Functions ===
 function playSound({ freq, duration, type = 'sine', pan = 0, finalGain = 0.001 }) {
@@ -197,6 +261,8 @@ function startPhase(phase, duration) {
   } else if (phase === 'walking') {
     currentPhase = 'walking';
   }
+
+  requestWakeLock();
   
   animationFrameId = requestAnimationFrame(mainLoop);
 }
@@ -205,8 +271,10 @@ function handlePhaseEnd() {
   playPhaseChangeSound();
   if (state === 'countdown') {
     startPhase('running', settings.runSec);
+    notifyPhaseChange('Run started', `Run for ${settings.runSec}s`);
   } else if (state === 'running') {
     startPhase('walking', settings.walkSec);
+    notifyPhaseChange('Walk started', `Walk for ${settings.walkSec}s`);
   } else if (state === 'walking') {
     lapCount++;
     if (lapCount >= settings.goalLaps) {
@@ -220,7 +288,9 @@ function handlePhaseEnd() {
 function completeWorkout() {
   state = 'completed';
   cancelAnimationFrame(animationFrameId);
+  releaseWakeLock();
   playCompletedSound();
+  notifyPhaseChange('Workout complete', `Finished ${settings.goalLaps} laps`);
   startPauseBtn.textContent = 'Start';
   setInputsDisabled(false);
   updateDisplay();
@@ -229,6 +299,7 @@ function completeWorkout() {
 // === Event Handlers & Control Flow ===
 function handleStartPause() {
   createAudioContext();
+  requestNotificationPermissionIfNeeded();
   
   if (state === 'idle' || state === 'completed') {
     loadSettingsFromUI();
@@ -247,11 +318,13 @@ function handleStartPause() {
     state = currentPhase;
     phaseStartTime = performance.now() - ((totalPhaseDuration - remaining) * 1000);
     animationFrameId = requestAnimationFrame(mainLoop);
+    requestWakeLock();
     startPauseBtn.textContent = 'Pause';
   } else {
     // Pausing
     state = 'paused';
     cancelAnimationFrame(animationFrameId);
+    releaseWakeLock();
     startPauseBtn.textContent = 'Resume';
     updateDisplay();
   }
@@ -259,6 +332,7 @@ function handleStartPause() {
 
 function handleReset() {
   cancelAnimationFrame(animationFrameId);
+  releaseWakeLock();
   state = 'idle';
   currentPhase = 'running';
   lapCount = 0;
@@ -269,6 +343,14 @@ function handleReset() {
   setInputsDisabled(false);
   updateDisplay();
 }
+
+// Re-acquire wake lock when returning to visible tab while timer is active
+document.addEventListener('visibilitychange', () => {
+  const sessionActive = state === 'running' || state === 'walking' || state === 'countdown';
+  if (document.visibilityState === 'visible' && sessionActive) {
+    requestWakeLock();
+  }
+});
 
 // === Settings Persistence ===
 function saveSettings() {
