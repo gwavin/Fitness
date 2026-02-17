@@ -34,13 +34,99 @@ let settings = {
   goalLaps: 3
 };
 
-// === Audio Context ===
+// === Audio Context / HTML Audio ===
 let audioCtx = null;
+let beepAudio = null;
+
 const createAudioContext = () => {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
 };
+
+
+function createBeepDataUrl() {
+  const sampleRate = 22050;
+  const durationSec = 0.12;
+  const frequency = 1700;
+  const sampleCount = Math.floor(sampleRate * durationSec);
+  const pcm = new Int16Array(sampleCount);
+
+  for (let i = 0; i < sampleCount; i++) {
+    const t = i / sampleRate;
+    let envelope = 1;
+    if (t < 0.005) {
+      envelope = t / 0.005;
+    } else if (t > durationSec - 0.02) {
+      envelope = Math.max(0, (durationSec - t) / 0.02);
+    }
+    pcm[i] = Math.floor(32767 * 0.32 * envelope * Math.sin(2 * Math.PI * frequency * t));
+  }
+
+  const buffer = new ArrayBuffer(44 + pcm.length * 2);
+  const view = new DataView(buffer);
+
+  const writeString = (offset, value) => {
+    for (let i = 0; i < value.length; i++) {
+      view.setUint8(offset + i, value.charCodeAt(i));
+    }
+  };
+
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + pcm.length * 2, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, pcm.length * 2, true);
+
+  for (let i = 0; i < pcm.length; i++) {
+    view.setInt16(44 + i * 2, pcm[i], true);
+  }
+
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return `data:audio/wav;base64,${btoa(binary)}`;
+}
+
+function initAudioEngines() {
+  if (!beepAudio) {
+    beepAudio = new Audio(createBeepDataUrl());
+    beepAudio.preload = 'auto';
+    beepAudio.volume = 1;
+    beepAudio.playsInline = true;
+  }
+  createAudioContext();
+}
+
+function playBeepAudio() {
+  if (!beepAudio) {
+    return false;
+  }
+
+  try {
+    beepAudio.currentTime = 0;
+    const playPromise = beepAudio.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
 
 // === Screen Wake Lock (prevents display sleeping during active sessions) ===
 async function requestWakeLock() {
@@ -132,15 +218,18 @@ function playSound({ freq, duration, type = 'sine', pan = 0, finalGain = 0.001 }
 
 const playCadenceBeep = () => {
   const isLeft = beatCount % 2 === 0;
-  playSound({ freq: isLeft ? 880 : 800, duration: 0.1, pan: isLeft ? -0.7 : 0.7 });
+  const usedAudio = playBeepAudio();
+  if (!usedAudio) {
+    playSound({ freq: isLeft ? 880 : 800, duration: 0.1, pan: isLeft ? -0.7 : 0.7 });
+  }
   metronomeEl.classList.add('active');
   setTimeout(() => metronomeEl.classList.remove('active'), 200);
   beatCount++;
 };
 
-const playPhaseChangeSound = () => playSound({ freq: 1200, duration: 0.2, type: 'triangle' });
-const playCountdownSound = () => playSound({ freq: 600, duration: 0.15, type: 'sine' });
-const playWarningBeep = () => playSound({ freq: 1000, duration: 0.12, type: 'square' });
+const playPhaseChangeSound = () => playBeepAudio() || playSound({ freq: 1200, duration: 0.2, type: 'triangle' });
+const playCountdownSound = () => playBeepAudio() || playSound({ freq: 600, duration: 0.15, type: 'sine' });
+const playWarningBeep = () => playBeepAudio() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
 const playCompletedSound = () => {
   const freqs = [523.25, 659.25, 783.99]; // C5, E5, G5
   freqs.forEach((freq, i) => {
@@ -349,6 +438,12 @@ document.addEventListener('visibilitychange', () => {
   const sessionActive = state === 'running' || state === 'walking' || state === 'countdown';
   if (document.visibilityState === 'visible' && sessionActive) {
     requestWakeLock();
+    if (audioCtx?.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    if (beepAudio && beepAudio.paused) {
+      beepAudio.play().then(() => beepAudio.pause()).catch(() => {});
+    }
   }
 });
 
@@ -378,7 +473,7 @@ function loadSettings() {
 
 // === PWA Install Functionality ===
 let deferredPrompt;
-const installBtn = getEl('installBtn');
+const installBtn = getEl('installButton');
 
 // iOS Detection
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -396,7 +491,11 @@ if (installBtn) {
   installBtn.addEventListener('click', async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      const outcome = await deferredPrompt.userChoice;
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('User choice:', outcome);
+      if (outcome === 'accepted') {
+        console.log('PWA installed!');
+      }
       deferredPrompt = null;
       installBtn.style.display = 'none';
     } else if (isIOS && !isStandalone) {
@@ -415,20 +514,33 @@ if (installBtn) {
 // Media Session API for better media handling
 if ('mediaSession' in navigator) {
   navigator.mediaSession.metadata = new MediaMetadata({
-    title: 'Fitness Metronome',
-    artist: 'Fitness App',
-    album: 'Training Tools',
+    title: 'Run/Walk Cadence Timer',
+    artist: 'Interval Training',
     artwork: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }
     ]
+  });
+
+  navigator.mediaSession.setActionHandler('play', () => {
+    if (state === 'paused') {
+      handleStartPause();
+    }
+  });
+
+  navigator.mediaSession.setActionHandler('pause', () => {
+    if (state === 'running' || state === 'walking' || state === 'countdown') {
+      handleStartPause();
+    }
   });
 }
 
 // === Service Worker Registration ===
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW reg failed', err));
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
   });
 }
 
