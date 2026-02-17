@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en-IE">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gavin’s Crêpes (The Golden Ticket)</title>
+
+  <style>
+    :root {
+      --bg:#0b0f14;
+      --card:#121826;
+      --text:#e8eef7;
+      --muted:#a9b6c7;
+      --accent:#ffd166;
+      --accent2:#7bdff2;
+      --ok:#8be28b;
+      --warn:#ffadad;
+      --border:rgba(255,255,255,.08);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      background:radial-gradient(1000px 600px at 15% 0%, rgba(255,209,102,.10), transparent 60%),
+                 radial-gradient(900px 600px at 90% 10%, rgba(123,223,242,.10), transparent 55%),
+                 var(--bg);
+      color:var(--text);
+      font:16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    .wrap { max-width:900px; margin:0 auto; padding:28px 16px 44px; }
+    header {
+      padding:18px 18px 10px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius:18px;
+    }
+    h1 { margin:0 0 6px; font-size:28px; letter-spacing:.2px; }
+    .sub { margin:0; color:var(--muted); }
+    .grid {
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (min-width: 860px) {
+      .grid { grid-template-columns: 1.05fr .95fr; }
+    }
+    section {
+      padding:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      border-radius:18px;
+    }
+    h2 { margin:0 0 10px; font-size:18px; }
+    ul, ol { margin:10px 0 0 22px; }
+    li { margin:6px 0; }
+    .badge {
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:12px;
+      margin-right:8px;
+    }
+    .callout {
+      border-left:4px solid var(--accent);
+      padding:10px 12px;
+      background:rgba(255,209,102,.08);
+      border-radius:12px;
+      margin-top:10px;
+    }
+    .safety {
+      border-left:4px solid var(--warn);
+      background:rgba(255,173,173,.08);
+      border-radius:12px;
+      padding:10px 12px;
+      color:var(--text);
+      margin-top:10px;
+    }
+    .tip {
+      border-left:4px solid var(--ok);
+      background:rgba(139,226,139,.08);
+      border-radius:12px;
+      padding:10px 12px;
+      margin-top:10px;
+    }
+    .muted { color:var(--muted); }
+    .small { font-size:13px; }
+    .footer {
+      margin-top:14px;
+      padding:14px 18px;
+      border:1px dashed var(--border);
+      border-radius:18px;
+      color:var(--muted);
+    }
+    code.k {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .95em;
+      color: var(--accent2);
+    }
+
+    @media print {
+      :root {
+        --text:#000;
+        --muted:#333;
+        --border:#ccc;
+      }
+
+      body {
+        background:#fff !important;
+        color:#000 !important;
+        font:12pt/1.35 Georgia, "Times New Roman", Times, serif;
+      }
+      .wrap {
+        max-width:none;
+        padding:0;
+        margin:0;
+      }
+
+      header, section, .footer {
+        background:transparent !important;
+        border:1px solid #bbb !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+      }
+      header { padding:12pt 12pt 8pt; }
+      section { padding:10pt 12pt; }
+      .footer { padding:10pt 12pt; }
+
+      .badge {
+        border:1px solid #bbb !important;
+        background:transparent !important;
+        color:#000 !important;
+      }
+      .callout, .tip, .safety {
+        background:transparent !important;
+        border-left:4px solid #666 !important;
+        color:#000 !important;
+      }
+
+      .grid { grid-template-columns:1fr !important; gap:10pt; }
+
+      h1, h2 { break-after:avoid-page; }
+      section, header, .footer { break-inside:avoid; }
+      li { break-inside:avoid; }
+
+      code.k { color:#000 !important; }
+
+      .no-print { display:none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="badge">Crêpes</div>
+      <div class="badge">“Golden Ticket” batter</div>
+      <div class="badge">Rest 20 minutes</div>
+      <h1>Gavin’s Crêpes (The Golden Ticket)</h1>
+      <p class="sub">Written after a sequence of emails — now in tidy recipe form.</p>
+    </header>
+
+    <div class="grid">
+      <section>
+        <h2>Ingredients</h2>
+        <ul>
+          <li><strong>1 cup</strong> wholemeal flour</li>
+          <li><strong>1 cup</strong> white flour</li>
+          <li><strong>2⅓ cups</strong> milk</li>
+          <li><strong>3</strong> eggs</li>
+          <li><strong>~⅓ cup</strong> butter, melted</li>
+          <li><strong>½ tsp</strong> salt</li>
+        </ul>
+
+        <div class="callout">
+          <strong>Best combo:</strong> melted cheddar + salmon.
+          <div class="muted small">(Add anything else you like after the cheese melts.)</div>
+        </div>
+
+        <div class="tip">
+          <strong>Resting matters:</strong> blend the batter and leave it to settle for <strong>20 minutes</strong>.
+        </div>
+      </section>
+
+      <section>
+        <h2>Gear &amp; setup</h2>
+        <ul>
+          <li>Flat pan</li>
+          <li>Extractor fan <strong>on</strong> + window <strong>open</strong></li>
+          <li>Biggest burner set to about <strong>“7pm”</strong> (your knob’s marking)</li>
+        </ul>
+
+        <div class="safety">
+          <strong>Ventilation note:</strong> butter + hot pan can smoke — fan on and window open is the move.
+        </div>
+
+        <div class="callout">
+          <strong>Quick test:</strong> “glob” about <strong>10 mL</strong> batter onto the hot pan.
+          <div class="muted small">When it browns, you’re flying.</div>
+        </div>
+      </section>
+    </div>
+
+    <section style="margin-top:14px;">
+      <h2>Method</h2>
+      <ol>
+        <li>
+          <strong>Blend the batter:</strong>
+          wholemeal flour + white flour + milk + eggs + melted butter + salt.
+        </li>
+        <li>
+          <strong>Rest:</strong> leave the batter to settle for <strong>20 minutes</strong>.
+        </li>
+        <li>
+          <strong>Heat the pan:</strong> flat pan on the biggest burner, set around <strong>“7pm”</strong>.
+          Fan already on, window open.
+        </li>
+        <li>
+          <strong>Test the heat:</strong> glob ~<strong>10 mL</strong> batter onto the pan.
+          If it browns nicely, you’re ready.
+        </li>
+        <li>
+          <strong>Cook first side:</strong> pour batter for a crêpe and let the first side go until
+          <strong>golden brown</strong>. (Golden brown is the ticket.)
+        </li>
+        <li>
+          <strong>Flip:</strong> flip or lift-and-turn.
+        </li>
+        <li>
+          <strong>Add cheddar immediately:</strong> pop the cheddar straight on after flipping.
+        </li>
+        <li>
+          <strong>After the cheddar has melted:</strong> add the other ingredients (e.g., salmon).
+        </li>
+        <li>
+          <strong>Finish:</strong> turn once, maybe once more, then plate up.
+        </li>
+      </ol>
+
+      <div class="tip">
+        <strong>Doneness cue:</strong> lift an edge; if it’s properly <strong>golden</strong>, it’s ready to flip.
+      </div>
+    </section>
+
+    <div class="footer">
+      <div><strong>Optional tweaks</strong> <span class="muted">(if you want to refine later)</span></div>
+      <ul>
+        <li>For thinner crêpes: splash in a bit more milk until it pours like single cream.</li>
+        <li>For crispier edges: slightly hotter pan, slightly less batter.</li>
+        <li>For sweeter crêpes: add 1–2 tsp sugar (but this recipe is savoury-leaning).</li>
+      </ul>
+      <div class="muted small no-print">
+        Tip: use your browser’s print dialog (Ctrl+P) and choose “Save as PDF” if you want a neat shareable copy.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
