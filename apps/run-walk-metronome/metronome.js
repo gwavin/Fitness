@@ -12,6 +12,7 @@ const lapsEl = getEl('laps');
 const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
 const metronomeEl = getEl('metronome');
+const beepEl = getEl('beepAudio');
 
 // === State Management ===
 let state = 'idle'; // idle, countdown, running, walking, paused, completed
@@ -20,7 +21,6 @@ let lapCount = 0;
 let remaining = 0;
 let phaseStartTime = 0;
 let totalPhaseDuration = 0;
-let nextBeepTime = 0;
 let beatCount = 0;
 let animationFrameId = null;
 let warningBeepsPlayed = [false, false, false]; // Tracks beeps at 3, 2, 1 seconds
@@ -34,118 +34,133 @@ let settings = {
   goalLaps: 3
 };
 
-// === Audio Context ===
-let audioCtx = null;
-const createAudioContext = () => {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-};
+// === Audio Playback ===
+let isMetronomeRunning = false;
 
-// === Screen Wake Lock (prevents display sleeping during active sessions) ===
-async function requestWakeLock() {
-  if (!('wakeLock' in navigator) || wakeLock) {
-    return;
-  }
+function createBeepDataUrl() {
+  const sampleRate = 22050;
+  const durationSec = 0.18;
+  const frequency = 900;
+  const sampleCount = Math.floor(sampleRate * durationSec);
+  const pcm = new Int16Array(sampleCount);
 
-  try {
-    wakeLock = await navigator.wakeLock.request('screen');
-    wakeLock.addEventListener('release', () => {
-      wakeLock = null;
-    });
-  } catch (err) {
-    console.warn('Wake lock request failed', err);
-  }
-}
-
-async function releaseWakeLock() {
-  if (!wakeLock) {
-    return;
-  }
-
-  try {
-    await wakeLock.release();
-  } catch (err) {
-    console.warn('Wake lock release failed', err);
-  } finally {
-    wakeLock = null;
-  }
-}
-
-
-// === Background Notification Helpers ===
-function requestNotificationPermissionIfNeeded() {
-  if (!('Notification' in window) || Notification.permission !== 'default') {
-    return;
-  }
-
-  Notification.requestPermission().catch((err) => {
-    console.warn('Notification permission request failed', err);
-  });
-}
-
-async function notifyPhaseChange(title, body) {
-  if (!('Notification' in window) || Notification.permission !== 'granted' || document.visibilityState === 'visible') {
-    return;
-  }
-
-  try {
-    const registration = await navigator.serviceWorker.getRegistration();
-    if (registration) {
-      await registration.showNotification(title, {
-        body,
-        tag: 'run-walk-phase',
-        renotify: true,
-        icon: '/icons/icon-192.png',
-        badge: '/icons/icon-192.png'
-      });
+  for (let i = 0; i < sampleCount; i++) {
+    const t = i / sampleRate;
+    let envelope = 1;
+    if (t < 0.008) {
+      envelope = t / 0.008;
+    } else if (t > durationSec - 0.03) {
+      envelope = Math.max(0, (durationSec - t) / 0.03);
     }
-  } catch (err) {
-    console.warn('Background notification failed', err);
+
+    pcm[i] = Math.floor(32767 * 0.45 * envelope * Math.sin(2 * Math.PI * frequency * t));
   }
+
+  const buffer = new ArrayBuffer(44 + pcm.length * 2);
+  const view = new DataView(buffer);
+
+  const writeString = (offset, value) => {
+    for (let i = 0; i < value.length; i++) {
+      view.setUint8(offset + i, value.charCodeAt(i));
+    }
+  };
+
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + pcm.length * 2, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, pcm.length * 2, true);
+
+  for (let i = 0; i < pcm.length; i++) {
+    view.setInt16(44 + i * 2, pcm[i], true);
+  }
+
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+
+  return `data:audio/wav;base64,${btoa(binary)}`;
+}
+let metronomeTimerId = null;
+let metronomeStopTimerId = null;
+
+function initializeAudioElement() {
+  if (!beepEl) {
+    return;
+  }
+
+  beepEl.src = beepEl.src || createBeepDataUrl();
+  beepEl.preload = 'auto';
+  beepEl.playsInline = true;
+  beepEl.volume = 1;
 }
 
-// === Audio Functions ===
-function playSound({ freq, duration, type = 'sine', pan = 0, finalGain = 0.001 }) {
-  if (!audioCtx) return;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
-
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(finalGain, audioCtx.currentTime + duration);
-  
-  osc.connect(gain);
-  if (panner) {
-    panner.pan.setValueAtTime(pan, audioCtx.currentTime);
-    gain.connect(panner);
-    panner.connect(audioCtx.destination);
-  } else {
-    gain.connect(audioCtx.destination);
+function playBeep() {
+  if (!beepEl) {
+    return;
   }
 
-  osc.start(audioCtx.currentTime);
-  osc.stop(audioCtx.currentTime + duration);
+  beepEl.currentTime = 0;
+  beepEl.play().catch(() => {});
+}
+
+function startMetronome(bpm, durationSeconds) {
+  stopMetronome();
+  const intervalMs = (60 / bpm) * 1000;
+  isMetronomeRunning = true;
+
+  function scheduleBeep() {
+    if (!isMetronomeRunning) {
+      return;
+    }
+
+    playBeep();
+    metronomeEl.classList.add('active');
+    setTimeout(() => metronomeEl.classList.remove('active'), 200);
+    beatCount++;
+    metronomeTimerId = setTimeout(scheduleBeep, intervalMs);
+  }
+
+  scheduleBeep();
+  metronomeStopTimerId = setTimeout(() => {
+    stopMetronome();
+  }, durationSeconds * 1000);
+}
+
+function stopMetronome() {
+  isMetronomeRunning = false;
+  if (metronomeTimerId) {
+    clearTimeout(metronomeTimerId);
+    metronomeTimerId = null;
+  }
+  if (metronomeStopTimerId) {
+    clearTimeout(metronomeStopTimerId);
+    metronomeStopTimerId = null;
+  }
 }
 
 const playCadenceBeep = () => {
-  const isLeft = beatCount % 2 === 0;
-  playSound({ freq: isLeft ? 880 : 800, duration: 0.1, pan: isLeft ? -0.7 : 0.7 });
-  metronomeEl.classList.add('active');
-  setTimeout(() => metronomeEl.classList.remove('active'), 200);
-  beatCount++;
+  playBeep();
 };
 
-const playPhaseChangeSound = () => playSound({ freq: 1200, duration: 0.2, type: 'triangle' });
-const playCountdownSound = () => playSound({ freq: 600, duration: 0.15, type: 'sine' });
-const playWarningBeep = () => playSound({ freq: 1000, duration: 0.12, type: 'square' });
+const playPhaseChangeSound = () => playBeep();
+const playCountdownSound = () => playBeep();
+const playWarningBeep = () => playBeep();
 const playCompletedSound = () => {
-  const freqs = [523.25, 659.25, 783.99]; // C5, E5, G5
-  freqs.forEach((freq, i) => {
-    setTimeout(() => playSound({ freq, duration: 0.3, type: 'triangle' }), i * 150);
-  });
+  playBeep();
+  setTimeout(playBeep, 160);
+  setTimeout(playBeep, 320);
 };
 
 // === Canvas Drawing ===
@@ -218,13 +233,7 @@ function mainLoop(timestamp) {
   const elapsed = (timestamp - phaseStartTime) / 1000;
   remaining = Math.max(0, Math.ceil(totalPhaseDuration - elapsed));
   
-  if (state === 'running') {
-    const beepInterval = 60 / settings.bpm;
-    if (elapsed >= nextBeepTime) {
-      playCadenceBeep();
-      nextBeepTime += beepInterval;
-    }
-  } else if (state === 'walking' && remaining <= 3 && remaining > 0) {
+  if (state === 'walking' && remaining <= 3 && remaining > 0) {
     const secondsLeft = Math.ceil(totalPhaseDuration - elapsed);
     if (secondsLeft === 3 && !warningBeepsPlayed[0]) {
       playWarningBeep();
@@ -257,8 +266,9 @@ function startPhase(phase, duration) {
   if (phase === 'running') {
     currentPhase = 'running';
     beatCount = 0;
-    nextBeepTime = 0;
+    startMetronome(settings.bpm, duration);
   } else if (phase === 'walking') {
+    stopMetronome();
     currentPhase = 'walking';
   }
 
@@ -288,6 +298,7 @@ function handlePhaseEnd() {
 function completeWorkout() {
   state = 'completed';
   cancelAnimationFrame(animationFrameId);
+  stopMetronome();
   releaseWakeLock();
   playCompletedSound();
   notifyPhaseChange('Workout complete', `Finished ${settings.goalLaps} laps`);
@@ -298,7 +309,7 @@ function completeWorkout() {
 
 // === Event Handlers & Control Flow ===
 function handleStartPause() {
-  createAudioContext();
+  initializeAudioElement();
   requestNotificationPermissionIfNeeded();
   
   if (state === 'idle' || state === 'completed') {
@@ -319,11 +330,15 @@ function handleStartPause() {
     phaseStartTime = performance.now() - ((totalPhaseDuration - remaining) * 1000);
     animationFrameId = requestAnimationFrame(mainLoop);
     requestWakeLock();
+    if (currentPhase === 'running') {
+      startMetronome(settings.bpm, remaining);
+    }
     startPauseBtn.textContent = 'Pause';
   } else {
     // Pausing
     state = 'paused';
     cancelAnimationFrame(animationFrameId);
+    stopMetronome();
     releaseWakeLock();
     startPauseBtn.textContent = 'Resume';
     updateDisplay();
@@ -332,6 +347,7 @@ function handleStartPause() {
 
 function handleReset() {
   cancelAnimationFrame(animationFrameId);
+  stopMetronome();
   releaseWakeLock();
   state = 'idle';
   currentPhase = 'running';
@@ -349,6 +365,9 @@ document.addEventListener('visibilitychange', () => {
   const sessionActive = state === 'running' || state === 'walking' || state === 'countdown';
   if (document.visibilityState === 'visible' && sessionActive) {
     requestWakeLock();
+    if (currentPhase === 'running' && !isMetronomeRunning) {
+      startMetronome(settings.bpm, remaining);
+    }
   }
 });
 
@@ -378,7 +397,7 @@ function loadSettings() {
 
 // === PWA Install Functionality ===
 let deferredPrompt;
-const installBtn = getEl('installBtn');
+const installBtn = getEl('installButton');
 
 // iOS Detection
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -396,7 +415,11 @@ if (installBtn) {
   installBtn.addEventListener('click', async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      const outcome = await deferredPrompt.userChoice;
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('User choice:', outcome);
+      if (outcome === 'accepted') {
+        console.log('PWA installed!');
+      }
       deferredPrompt = null;
       installBtn.style.display = 'none';
     } else if (isIOS && !isStandalone) {
@@ -415,25 +438,39 @@ if (installBtn) {
 // Media Session API for better media handling
 if ('mediaSession' in navigator) {
   navigator.mediaSession.metadata = new MediaMetadata({
-    title: 'Fitness Metronome',
-    artist: 'Fitness App',
-    album: 'Training Tools',
+    title: 'Run/Walk Cadence Timer',
+    artist: 'Gavin Horan',
     artwork: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }
     ]
+  });
+
+  navigator.mediaSession.setActionHandler('play', () => {
+    if (state === 'paused') {
+      handleStartPause();
+    }
+  });
+
+  navigator.mediaSession.setActionHandler('pause', () => {
+    if (state === 'running' || state === 'walking' || state === 'countdown') {
+      handleStartPause();
+    }
   });
 }
 
 // === Service Worker Registration ===
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW reg failed', err));
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
   });
 }
 
 // === Initial Setup ===
 function init() {
+  initializeAudioElement();
   loadSettings();
   [runSecondsEl, walkSecondsEl, bpmEl, goalLapsEl].forEach(el => {
     el.addEventListener('change', saveSettings);
