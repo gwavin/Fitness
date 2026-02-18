@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <title>Fitness Metronome</title>
+  <title>Run/Walk Cadence Timer</title>
   
   <!-- PWA Manifest -->
-  <link rel="manifest" href="./manifest.webmanifest">
-  <meta name="theme-color" content="#1a1a3d">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
   
   <!-- iOS specific -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Metronome">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="RunWalk Timer">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   
   <!-- Fonts -->
@@ -59,8 +59,10 @@
       Lap: <span id="laps">0 / 3</span>
     </div>
     
-    <button id="installBtn" style="display:none">📱 Install App</button>
+    <button id="installButton" style="display:none">📱 Install App</button>
   </div>
+
+  <audio id="beepAudio" preload="auto"></audio>
 
   <script src="./metronome.js"></script>
 </body>
