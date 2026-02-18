@@ -12,6 +12,7 @@ const lapsEl = getEl('laps');
 const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
 const metronomeEl = getEl('metronome');
+const beepEl = getEl('beepAudio');
 
 // === State Management ===
 let state = 'idle'; // idle, countdown, running, walking, paused, completed
@@ -20,7 +21,6 @@ let lapCount = 0;
 let remaining = 0;
 let phaseStartTime = 0;
 let totalPhaseDuration = 0;
-let nextBeepTime = 0;
 let beatCount = 0;
 let animationFrameId = null;
 let warningBeepsPlayed = [false, false, false]; // Tracks beeps at 3, 2, 1 seconds
@@ -34,6 +34,26 @@ let settings = {
   goalLaps: 3
 };
 
+// === Audio Playback ===
+let isMetronomeRunning = false;
+
+function createBeepDataUrl() {
+  const sampleRate = 22050;
+  const durationSec = 0.18;
+  const frequency = 900;
+  const sampleCount = Math.floor(sampleRate * durationSec);
+  const pcm = new Int16Array(sampleCount);
+
+  for (let i = 0; i < sampleCount; i++) {
+    const t = i / sampleRate;
+    let envelope = 1;
+    if (t < 0.008) {
+      envelope = t / 0.008;
+    } else if (t > durationSec - 0.03) {
+      envelope = Math.max(0, (durationSec - t) / 0.03);
+    }
+
+    pcm[i] = Math.floor(32767 * 0.45 * envelope * Math.sin(2 * Math.PI * frequency * t));
 // === Audio Context / HTML Audio ===
 let audioCtx = null;
 let beepAudio = null;
@@ -42,7 +62,6 @@ const createAudioContext = () => {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
-};
 
 
 function createBeepDataUrl() {
@@ -134,89 +153,80 @@ async function requestWakeLock() {
     return;
   }
 
-  try {
-    wakeLock = await navigator.wakeLock.request('screen');
-    wakeLock.addEventListener('release', () => {
-      wakeLock = null;
-    });
-  } catch (err) {
-    console.warn('Wake lock request failed', err);
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
   }
-}
 
-async function releaseWakeLock() {
-  if (!wakeLock) {
+  return `data:audio/wav;base64,${btoa(binary)}`;
+}
+let metronomeTimerId = null;
+let metronomeStopTimerId = null;
+
+function initializeAudioElement() {
+  if (!beepEl) {
     return;
   }
 
-  try {
-    await wakeLock.release();
-  } catch (err) {
-    console.warn('Wake lock release failed', err);
-  } finally {
-    wakeLock = null;
-  }
+  beepEl.src = beepEl.src || createBeepDataUrl();
+  beepEl.preload = 'auto';
+  beepEl.playsInline = true;
+  beepEl.volume = 1;
 }
 
-
-// === Background Notification Helpers ===
-function requestNotificationPermissionIfNeeded() {
-  if (!('Notification' in window) || Notification.permission !== 'default') {
+function playBeep() {
+  if (!beepEl) {
     return;
   }
 
-  Notification.requestPermission().catch((err) => {
-    console.warn('Notification permission request failed', err);
-  });
+  beepEl.currentTime = 0;
+  beepEl.play().catch(() => {});
 }
 
-async function notifyPhaseChange(title, body) {
-  if (!('Notification' in window) || Notification.permission !== 'granted' || document.visibilityState === 'visible') {
-    return;
-  }
+function startMetronome(bpm, durationSeconds) {
+  stopMetronome();
+  const intervalMs = (60 / bpm) * 1000;
+  isMetronomeRunning = true;
 
-  try {
-    const registration = await navigator.serviceWorker.getRegistration();
-    if (registration) {
-      await registration.showNotification(title, {
-        body,
-        tag: 'run-walk-phase',
-        renotify: true,
-        icon: '/icons/icon-192.png',
-        badge: '/icons/icon-192.png'
-      });
+  function scheduleBeep() {
+    if (!isMetronomeRunning) {
+      return;
     }
-  } catch (err) {
-    console.warn('Background notification failed', err);
+
+    playBeep();
+    metronomeEl.classList.add('active');
+    setTimeout(() => metronomeEl.classList.remove('active'), 200);
+    beatCount++;
+    metronomeTimerId = setTimeout(scheduleBeep, intervalMs);
   }
+
+  scheduleBeep();
+  metronomeStopTimerId = setTimeout(() => {
+    stopMetronome();
+  }, durationSeconds * 1000);
 }
 
-// === Audio Functions ===
-function playSound({ freq, duration, type = 'sine', pan = 0, finalGain = 0.001 }) {
-  if (!audioCtx) return;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
-
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(finalGain, audioCtx.currentTime + duration);
-  
-  osc.connect(gain);
-  if (panner) {
-    panner.pan.setValueAtTime(pan, audioCtx.currentTime);
-    gain.connect(panner);
-    panner.connect(audioCtx.destination);
-  } else {
-    gain.connect(audioCtx.destination);
+function stopMetronome() {
+  isMetronomeRunning = false;
+  if (metronomeTimerId) {
+    clearTimeout(metronomeTimerId);
+    metronomeTimerId = null;
   }
-
-  osc.start(audioCtx.currentTime);
-  osc.stop(audioCtx.currentTime + duration);
+  if (metronomeStopTimerId) {
+    clearTimeout(metronomeStopTimerId);
+    metronomeStopTimerId = null;
+  }
 }
 
 const playCadenceBeep = () => {
+  playBeep();
+};
+
+const playPhaseChangeSound = () => playBeep();
+const playCountdownSound = () => playBeep();
+const playWarningBeep = () => playBeep();
   const isLeft = beatCount % 2 === 0;
   const usedAudio = playBeepAudio();
   if (!usedAudio) {
@@ -231,10 +241,9 @@ const playPhaseChangeSound = () => playBeepAudio() || playSound({ freq: 1200, du
 const playCountdownSound = () => playBeepAudio() || playSound({ freq: 600, duration: 0.15, type: 'sine' });
 const playWarningBeep = () => playBeepAudio() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
 const playCompletedSound = () => {
-  const freqs = [523.25, 659.25, 783.99]; // C5, E5, G5
-  freqs.forEach((freq, i) => {
-    setTimeout(() => playSound({ freq, duration: 0.3, type: 'triangle' }), i * 150);
-  });
+  playBeep();
+  setTimeout(playBeep, 160);
+  setTimeout(playBeep, 320);
 };
 
 // === Canvas Drawing ===
@@ -307,13 +316,7 @@ function mainLoop(timestamp) {
   const elapsed = (timestamp - phaseStartTime) / 1000;
   remaining = Math.max(0, Math.ceil(totalPhaseDuration - elapsed));
   
-  if (state === 'running') {
-    const beepInterval = 60 / settings.bpm;
-    if (elapsed >= nextBeepTime) {
-      playCadenceBeep();
-      nextBeepTime += beepInterval;
-    }
-  } else if (state === 'walking' && remaining <= 3 && remaining > 0) {
+  if (state === 'walking' && remaining <= 3 && remaining > 0) {
     const secondsLeft = Math.ceil(totalPhaseDuration - elapsed);
     if (secondsLeft === 3 && !warningBeepsPlayed[0]) {
       playWarningBeep();
@@ -346,8 +349,9 @@ function startPhase(phase, duration) {
   if (phase === 'running') {
     currentPhase = 'running';
     beatCount = 0;
-    nextBeepTime = 0;
+    startMetronome(settings.bpm, duration);
   } else if (phase === 'walking') {
+    stopMetronome();
     currentPhase = 'walking';
   }
 
@@ -377,6 +381,7 @@ function handlePhaseEnd() {
 function completeWorkout() {
   state = 'completed';
   cancelAnimationFrame(animationFrameId);
+  stopMetronome();
   releaseWakeLock();
   playCompletedSound();
   notifyPhaseChange('Workout complete', `Finished ${settings.goalLaps} laps`);
@@ -387,7 +392,7 @@ function completeWorkout() {
 
 // === Event Handlers & Control Flow ===
 function handleStartPause() {
-  createAudioContext();
+  initializeAudioElement();
   requestNotificationPermissionIfNeeded();
   
   if (state === 'idle' || state === 'completed') {
@@ -408,11 +413,15 @@ function handleStartPause() {
     phaseStartTime = performance.now() - ((totalPhaseDuration - remaining) * 1000);
     animationFrameId = requestAnimationFrame(mainLoop);
     requestWakeLock();
+    if (currentPhase === 'running') {
+      startMetronome(settings.bpm, remaining);
+    }
     startPauseBtn.textContent = 'Pause';
   } else {
     // Pausing
     state = 'paused';
     cancelAnimationFrame(animationFrameId);
+    stopMetronome();
     releaseWakeLock();
     startPauseBtn.textContent = 'Resume';
     updateDisplay();
@@ -421,6 +430,7 @@ function handleStartPause() {
 
 function handleReset() {
   cancelAnimationFrame(animationFrameId);
+  stopMetronome();
   releaseWakeLock();
   state = 'idle';
   currentPhase = 'running';
@@ -438,6 +448,8 @@ document.addEventListener('visibilitychange', () => {
   const sessionActive = state === 'running' || state === 'walking' || state === 'countdown';
   if (document.visibilityState === 'visible' && sessionActive) {
     requestWakeLock();
+    if (currentPhase === 'running' && !isMetronomeRunning) {
+      startMetronome(settings.bpm, remaining);
     if (audioCtx?.state === 'suspended') {
       audioCtx.resume().catch(() => {});
     }
@@ -546,6 +558,7 @@ if ('serviceWorker' in navigator) {
 
 // === Initial Setup ===
 function init() {
+  initializeAudioElement();
   loadSettings();
   [runSecondsEl, walkSecondsEl, bpmEl, goalLapsEl].forEach(el => {
     el.addEventListener('change', saveSettings);
