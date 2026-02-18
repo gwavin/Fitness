@@ -25,6 +25,8 @@ let beatCount = 0;
 let animationFrameId = null;
 let warningBeepsPlayed = [false, false, false]; // Tracks beeps at 3, 2, 1 seconds
 let wakeLock = null;
+let pausedState = 'idle';
+const countdownTimers = [];
 
 // === User Settings ===
 let settings = {
@@ -119,6 +121,8 @@ function createBeepDataUrl() {
 
   return `data:audio/wav;base64,${btoa(binary)}`;
 }
+let metronomeTimerId = null;
+let metronomeStopTimerId = null;
 
 function initAudioEngines() {
   if (!beepAudio) {
@@ -400,16 +404,17 @@ function handleStartPause() {
     lapCount = 0;
     state = 'countdown';
     startPhase('countdown', 3);
+    clearCountdownTimers();
     playCountdownSound(); // Initial sound
-    setTimeout(playCountdownSound, 1000); // 2
-    setTimeout(playCountdownSound, 2000); // 1
+    countdownTimers.push(setTimeout(playCountdownSound, 1000)); // 2
+    countdownTimers.push(setTimeout(playCountdownSound, 2000)); // 1
     
     startPauseBtn.textContent = 'Pause';
     resetBtn.disabled = false;
     setInputsDisabled(true);
   } else if (state === 'paused') {
     // Resuming
-    state = currentPhase;
+    state = pausedState;
     phaseStartTime = performance.now() - ((totalPhaseDuration - remaining) * 1000);
     animationFrameId = requestAnimationFrame(mainLoop);
     requestWakeLock();
@@ -419,6 +424,7 @@ function handleStartPause() {
     startPauseBtn.textContent = 'Pause';
   } else {
     // Pausing
+    pausedState = state;
     state = 'paused';
     cancelAnimationFrame(animationFrameId);
     stopMetronome();
