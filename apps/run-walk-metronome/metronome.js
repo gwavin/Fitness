@@ -29,12 +29,14 @@ let wakeLock = null;
 const countdownTimers = [];
 
 // === User Settings ===
-let settings = {
+const defaultSettings = {
   runSec: 120,
   walkSec: 60,
   bpm: 170,
   goalLaps: 3
 };
+
+let settings = { ...defaultSettings };
 
 // === Audio ===
 let audioCtx = null;
@@ -169,14 +171,36 @@ function playCadenceBeep() {
   beatCount++;
 }
 
-const playPhaseChangeSound = () => playBeep() || playSound({ freq: 1200, duration: 0.2, type: 'triangle' });
-const playCountdownSound = () => playBeep() || playSound({ freq: 600, duration: 0.15, type: 'sine' });
+function playToneSequence(tones) {
+  createAudioContext();
+
+  if (!audioCtx) {
+    tones.forEach((_, index) => {
+      setTimeout(() => {
+        playBeep();
+      }, index * 150);
+    });
+    return;
+  }
+
+  tones.forEach(({ freq, duration = 0.12, type = 'sine', pan = 0 }, index) => {
+    setTimeout(() => {
+      playSound({ freq, duration, type, pan });
+    }, index * 150);
+  });
+}
+
+const playPhaseChangeSound = () => playToneSequence([
+  { freq: 880, duration: 0.13, type: 'triangle' },
+  { freq: 1100, duration: 0.14, type: 'triangle' }
+]);
+
+const playCountdownSound = () => playToneSequence([
+  { freq: 520, duration: 0.11, type: 'sine' },
+  { freq: 660, duration: 0.11, type: 'sine' }
+]);
+
 const playWarningBeep = () => playBeep() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
-const playCompletedSound = () => {
-  playBeep();
-  setTimeout(playBeep, 160);
-  setTimeout(playBeep, 320);
-};
 
 function startMetronome(bpm, durationSeconds) {
   stopMetronome();
@@ -413,11 +437,35 @@ function completeWorkout() {
 }
 
 // === Settings Persistence ===
+function sanitizeInt(value, fallback, min = 1) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < min) {
+    return fallback;
+  }
+  return parsed;
+}
+
+function normalizeSettings(rawSettings) {
+  return {
+    runSec: sanitizeInt(rawSettings?.runSec, defaultSettings.runSec),
+    walkSec: sanitizeInt(rawSettings?.walkSec, defaultSettings.walkSec),
+    bpm: sanitizeInt(rawSettings?.bpm, defaultSettings.bpm),
+    goalLaps: sanitizeInt(rawSettings?.goalLaps, defaultSettings.goalLaps)
+  };
+}
+
 function loadSettingsFromUI() {
-  settings.runSec = parseInt(runSecondsEl.value, 10);
-  settings.walkSec = parseInt(walkSecondsEl.value, 10);
-  settings.bpm = parseInt(bpmEl.value, 10);
-  settings.goalLaps = parseInt(goalLapsEl.value, 10);
+  settings = normalizeSettings({
+    runSec: runSecondsEl.value,
+    walkSec: walkSecondsEl.value,
+    bpm: bpmEl.value,
+    goalLaps: goalLapsEl.value
+  });
+
+  runSecondsEl.value = settings.runSec;
+  walkSecondsEl.value = settings.walkSec;
+  bpmEl.value = settings.bpm;
+  goalLapsEl.value = settings.goalLaps;
 }
 
 function saveSettings() {
@@ -427,8 +475,15 @@ function saveSettings() {
 
 function loadSettings() {
   const saved = localStorage.getItem('runWalkTimerSettings');
+
   if (saved) {
-    settings = JSON.parse(saved);
+    try {
+      settings = normalizeSettings(JSON.parse(saved));
+    } catch {
+      settings = { ...defaultSettings };
+    }
+  } else {
+    settings = { ...defaultSettings };
   }
 
   runSecondsEl.value = settings.runSec;
