@@ -202,12 +202,6 @@ const playCountdownSound = () => playToneSequence([
 
 const playWarningBeep = () => playBeep() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
 
-const playCompletedSound = () => playToneSequence([
-  { freq: 660, duration: 0.12, type: 'triangle' },
-  { freq: 880, duration: 0.12, type: 'triangle' },
-  { freq: 1100, duration: 0.14, type: 'triangle' }
-]);
-
 function startMetronome(bpm, durationSeconds) {
   stopMetronome();
   const intervalMs = (60 / bpm) * 1000;
