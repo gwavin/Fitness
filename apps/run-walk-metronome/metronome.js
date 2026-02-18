@@ -47,12 +47,76 @@ function createAudioContext() {
   }
 }
 
-function initializeAudioElement() {
-  // Intentionally no-op: we now use WebAudio-only beeps to avoid stealing
-  // media focus from podcast/music playback apps.
+function createBeepDataUrl() {
+  const sampleRate = 22050;
+  const durationSec = 0.12;
+  const frequency = 1700;
+  const sampleCount = Math.floor(sampleRate * durationSec);
+  const pcm = new Int16Array(sampleCount);
+
+  for (let i = 0; i < sampleCount; i++) {
+    const t = i / sampleRate;
+    let envelope = 1;
+    if (t < 0.005) {
+      envelope = t / 0.005;
+    } else if (t > durationSec - 0.02) {
+      envelope = Math.max(0, (durationSec - t) / 0.02);
+    }
+    pcm[i] = Math.floor(32767 * 0.32 * envelope * Math.sin(2 * Math.PI * frequency * t));
+  }
+
+  const buffer = new ArrayBuffer(44 + pcm.length * 2);
+  const view = new DataView(buffer);
+
+  const writeString = (offset, value) => {
+    for (let i = 0; i < value.length; i++) {
+      view.setUint8(offset + i, value.charCodeAt(i));
+    }
+  };
+
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + pcm.length * 2, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, pcm.length * 2, true);
+
+  for (let i = 0; i < pcm.length; i++) {
+    view.setInt16(44 + i * 2, pcm[i], true);
+  }
+
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return `data:audio/wav;base64,${btoa(binary)}`;
 }
 
-function playSound({ freq = 1000, duration = 0.11, type = 'sine', pan = 0, gainLevel = 0.12 } = {}) {
+function initializeAudioElement() {
+  if (!beepEl) {
+    return;
+  }
+
+  if (!beepEl.src) {
+    beepEl.src = createBeepDataUrl();
+  }
+  beepEl.preload = 'auto';
+  beepEl.playsInline = true;
+  beepEl.volume = 1;
+}
+
+function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0 } = {}) {
   createAudioContext();
   if (!audioCtx) {
     return false;
@@ -67,7 +131,7 @@ function playSound({ freq = 1000, duration = 0.11, type = 'sine', pan = 0, gainL
   panner.pan.setValueAtTime(pan, audioCtx.currentTime);
 
   gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(gainLevel, audioCtx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
 
   osc.connect(gain).connect(panner).connect(audioCtx.destination);
@@ -76,24 +140,42 @@ function playSound({ freq = 1000, duration = 0.11, type = 'sine', pan = 0, gainL
   return true;
 }
 
-function playBeep(options) {
-  return playSound(options);
+function playBeep() {
+  if (!beepEl) {
+    return false;
+  }
+
+  try {
+    beepEl.currentTime = 0;
+    const playPromise = beepEl.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function playCadenceBeep() {
   const isLeft = beatCount % 2 === 0;
-  // Lower-pitched two-tone cadence, alternating left/right to keep the old feel.
-  playBeep({
-    freq: isLeft ? 720 : 620,
-    duration: 0.09,
-    type: 'triangle',
-    pan: isLeft ? -0.65 : 0.65,
-    gainLevel: 0.09
-  });
+  const usedAudio = playBeep();
+  if (!usedAudio) {
+    playSound({ freq: isLeft ? 880 : 800, duration: 0.1, pan: isLeft ? -0.7 : 0.7 });
+  }
   metronomeEl.classList.add('active');
   setTimeout(() => metronomeEl.classList.remove('active'), 200);
   beatCount++;
 }
+
+const playPhaseChangeSound = () => playBeep() || playSound({ freq: 1200, duration: 0.2, type: 'triangle' });
+const playCountdownSound = () => playBeep() || playSound({ freq: 600, duration: 0.15, type: 'sine' });
+const playWarningBeep = () => playBeep() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
+const playCompletedSound = () => {
+  playBeep();
+  setTimeout(playBeep, 160);
+  setTimeout(playBeep, 320);
+};
 
 const playPhaseChangeSound = () => playBeep({ freq: 780, duration: 0.16, type: 'triangle', gainLevel: 0.1 });
 const playCountdownSound = () => playBeep({ freq: 560, duration: 0.12, type: 'sine', gainLevel: 0.1 });
@@ -475,8 +557,29 @@ if (installBtn) {
   }
 }
 
-// We intentionally avoid Media Session handlers here so this timer does not
-// compete with Spotify/podcast apps for transport control ownership.
+// === Media Session ===
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: 'Run/Walk Cadence Timer',
+    artist: 'Interval Training',
+    artwork: [
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }
+    ]
+  });
+
+  navigator.mediaSession.setActionHandler('play', () => {
+    if (state === 'paused') {
+      handleStartPause();
+    }
+  });
+
+  navigator.mediaSession.setActionHandler('pause', () => {
+    if (state === 'running' || state === 'walking' || state === 'countdown') {
+      handleStartPause();
+    }
+  });
+}
 
 // === Service Worker ===
 if ('serviceWorker' in navigator) {
