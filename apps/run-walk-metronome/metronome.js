@@ -161,11 +161,19 @@ function playBeep() {
 }
 
 function playCadenceBeep() {
-  const isLeft = beatCount % 2 === 0;
-  const usedAudio = playBeep();
-  if (!usedAudio) {
-    playSound({ freq: isLeft ? 880 : 800, duration: 0.1, pan: isLeft ? -0.7 : 0.7 });
-  }
+  const leftFirst = beatCount % 2 === 0;
+  const firstTone = leftFirst
+    ? { freq: 880, pan: -0.7 }
+    : { freq: 800, pan: 0.7 };
+  const secondTone = leftFirst
+    ? { freq: 800, pan: 0.7 }
+    : { freq: 880, pan: -0.7 };
+
+  playSound({ ...firstTone, duration: 0.08, type: 'sine' });
+  setTimeout(() => {
+    playSound({ ...secondTone, duration: 0.08, type: 'sine' });
+  }, 70);
+
   metronomeEl.classList.add('active');
   setTimeout(() => metronomeEl.classList.remove('active'), 200);
   beatCount++;
