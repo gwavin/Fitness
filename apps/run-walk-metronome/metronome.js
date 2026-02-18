@@ -12,6 +12,7 @@ const lapsEl = getEl('laps');
 const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
 const metronomeEl = getEl('metronome');
+const beepEl = getEl('beepAudio');
 
 // === State ===
 let state = 'idle'; // idle, countdown, running, walking, paused, completed
@@ -175,15 +176,6 @@ const playCompletedSound = () => {
   playBeep();
   setTimeout(playBeep, 160);
   setTimeout(playBeep, 320);
-};
-
-const playPhaseChangeSound = () => playBeep({ freq: 780, duration: 0.16, type: 'triangle', gainLevel: 0.1 });
-const playCountdownSound = () => playBeep({ freq: 560, duration: 0.12, type: 'sine', gainLevel: 0.1 });
-const playWarningBeep = () => playBeep({ freq: 700, duration: 0.11, type: 'square', gainLevel: 0.1 });
-const playCompletedSound = () => {
-  playBeep({ freq: 650, duration: 0.11, type: 'triangle', gainLevel: 0.1 });
-  setTimeout(() => playBeep({ freq: 760, duration: 0.11, type: 'triangle', gainLevel: 0.1 }), 160);
-  setTimeout(() => playBeep({ freq: 890, duration: 0.11, type: 'triangle', gainLevel: 0.1 }), 320);
 };
 
 function startMetronome(bpm, durationSeconds) {
