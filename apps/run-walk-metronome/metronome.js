@@ -54,6 +54,32 @@ function createBeepDataUrl() {
     }
 
     pcm[i] = Math.floor(32767 * 0.45 * envelope * Math.sin(2 * Math.PI * frequency * t));
+// === Audio Context / HTML Audio ===
+let audioCtx = null;
+let beepAudio = null;
+
+const createAudioContext = () => {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+
+function createBeepDataUrl() {
+  const sampleRate = 22050;
+  const durationSec = 0.12;
+  const frequency = 1700;
+  const sampleCount = Math.floor(sampleRate * durationSec);
+  const pcm = new Int16Array(sampleCount);
+
+  for (let i = 0; i < sampleCount; i++) {
+    const t = i / sampleRate;
+    let envelope = 1;
+    if (t < 0.005) {
+      envelope = t / 0.005;
+    } else if (t > durationSec - 0.02) {
+      envelope = Math.max(0, (durationSec - t) / 0.02);
+    }
+    pcm[i] = Math.floor(32767 * 0.32 * envelope * Math.sin(2 * Math.PI * frequency * t));
   }
 
   const buffer = new ArrayBuffer(44 + pcm.length * 2);
@@ -81,6 +107,50 @@ function createBeepDataUrl() {
 
   for (let i = 0; i < pcm.length; i++) {
     view.setInt16(44 + i * 2, pcm[i], true);
+  }
+
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return `data:audio/wav;base64,${btoa(binary)}`;
+}
+
+function initAudioEngines() {
+  if (!beepAudio) {
+    beepAudio = new Audio(createBeepDataUrl());
+    beepAudio.preload = 'auto';
+    beepAudio.volume = 1;
+    beepAudio.playsInline = true;
+  }
+  createAudioContext();
+}
+
+function playBeepAudio() {
+  if (!beepAudio) {
+    return false;
+  }
+
+  try {
+    beepAudio.currentTime = 0;
+    const playPromise = beepAudio.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+// === Screen Wake Lock (prevents display sleeping during active sessions) ===
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator) || wakeLock) {
+    return;
   }
 
   let binary = '';
@@ -157,6 +227,19 @@ const playCadenceBeep = () => {
 const playPhaseChangeSound = () => playBeep();
 const playCountdownSound = () => playBeep();
 const playWarningBeep = () => playBeep();
+  const isLeft = beatCount % 2 === 0;
+  const usedAudio = playBeepAudio();
+  if (!usedAudio) {
+    playSound({ freq: isLeft ? 880 : 800, duration: 0.1, pan: isLeft ? -0.7 : 0.7 });
+  }
+  metronomeEl.classList.add('active');
+  setTimeout(() => metronomeEl.classList.remove('active'), 200);
+  beatCount++;
+};
+
+const playPhaseChangeSound = () => playBeepAudio() || playSound({ freq: 1200, duration: 0.2, type: 'triangle' });
+const playCountdownSound = () => playBeepAudio() || playSound({ freq: 600, duration: 0.15, type: 'sine' });
+const playWarningBeep = () => playBeepAudio() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
 const playCompletedSound = () => {
   playBeep();
   setTimeout(playBeep, 160);
@@ -367,6 +450,11 @@ document.addEventListener('visibilitychange', () => {
     requestWakeLock();
     if (currentPhase === 'running' && !isMetronomeRunning) {
       startMetronome(settings.bpm, remaining);
+    if (audioCtx?.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    if (beepAudio && beepAudio.paused) {
+      beepAudio.play().then(() => beepAudio.pause()).catch(() => {});
     }
   }
 });
@@ -439,7 +527,7 @@ if (installBtn) {
 if ('mediaSession' in navigator) {
   navigator.mediaSession.metadata = new MediaMetadata({
     title: 'Run/Walk Cadence Timer',
-    artist: 'Gavin Horan',
+    artist: 'Interval Training',
     artwork: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }
