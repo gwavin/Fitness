@@ -4,6 +4,7 @@ const runSecondsEl = getEl('runSeconds');
 const walkSecondsEl = getEl('walkSeconds');
 const bpmEl = getEl('bpm');
 const goalLapsEl = getEl('goalLaps');
+const beepVolumeEl = getEl('beepVolume');
 const startPauseBtn = getEl('startPauseBtn');
 const resetBtn = getEl('resetBtn');
 const phaseEl = getEl('phase');
@@ -34,10 +35,12 @@ const defaultSettings = {
   runSec: 120,
   walkSec: 60,
   bpm: 170,
-  goalLaps: 3
+  goalLaps: 3,
+  beepVolume: 80
 };
 
 let settings = { ...defaultSettings };
+let outputVolume = defaultSettings.beepVolume / 100;
 
 // === Audio ===
 let audioCtx = null;
@@ -108,6 +111,10 @@ function createBeepDataUrl() {
   return `data:audio/wav;base64,${btoa(binary)}`;
 }
 
+function getVolumeFraction() {
+  return Math.min(1, Math.max(0, settings.beepVolume / 100));
+}
+
 function initializeAudioElement() {
   if (!beepEl) {
     return;
@@ -118,7 +125,7 @@ function initializeAudioElement() {
   }
   beepEl.preload = 'auto';
   beepEl.playsInline = true;
-  beepEl.volume = 1;
+  beepEl.volume = getVolumeFraction();
 }
 
 function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0, level = 0.25 } = {}) {
@@ -135,8 +142,10 @@ function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0, level
   osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
   panner.pan.setValueAtTime(pan, audioCtx.currentTime);
 
+  const scaledLevel = Math.max(0.0001, level * outputVolume);
+
   gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(Math.max(0.02, level), audioCtx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, scaledLevel), audioCtx.currentTime + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
 
   osc.connect(gain).connect(panner).connect(audioCtx.destination);
@@ -217,6 +226,12 @@ const playCountdownSound = () => playToneSequence([
 ]);
 
 const playWarningBeep = () => playBeep() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
+
+const playCompletedSound = () => playToneSequence([
+  { freq: 1100, duration: 0.14, type: 'triangle' },
+  { freq: 1320, duration: 0.16, type: 'triangle' },
+  { freq: 1560, duration: 0.2, type: 'triangle' }
+]);
 
 function startMetronome(bpm, durationSeconds) {
   stopMetronome();
@@ -487,7 +502,8 @@ function normalizeSettings(rawSettings) {
     runSec: sanitizeInt(rawSettings?.runSec, defaultSettings.runSec),
     walkSec: sanitizeInt(rawSettings?.walkSec, defaultSettings.walkSec),
     bpm: sanitizeInt(rawSettings?.bpm, defaultSettings.bpm),
-    goalLaps: sanitizeInt(rawSettings?.goalLaps, defaultSettings.goalLaps)
+    goalLaps: sanitizeInt(rawSettings?.goalLaps, defaultSettings.goalLaps),
+    beepVolume: sanitizeInt(rawSettings?.beepVolume, defaultSettings.beepVolume, 0)
   };
 }
 
@@ -496,13 +512,20 @@ function loadSettingsFromUI() {
     runSec: runSecondsEl.value,
     walkSec: walkSecondsEl.value,
     bpm: bpmEl.value,
-    goalLaps: goalLapsEl.value
+    goalLaps: goalLapsEl.value,
+    beepVolume: beepVolumeEl.value
   });
+
+  outputVolume = getVolumeFraction();
+  if (beepEl) {
+    beepEl.volume = outputVolume;
+  }
 
   runSecondsEl.value = settings.runSec;
   walkSecondsEl.value = settings.walkSec;
   bpmEl.value = settings.bpm;
   goalLapsEl.value = settings.goalLaps;
+  beepVolumeEl.value = settings.beepVolume;
 }
 
 function saveSettings() {
@@ -527,6 +550,7 @@ function loadSettings() {
   walkSecondsEl.value = settings.walkSec;
   bpmEl.value = settings.bpm;
   goalLapsEl.value = settings.goalLaps;
+  beepVolumeEl.value = settings.beepVolume;
 }
 
 // === Event Handlers ===
@@ -690,7 +714,7 @@ function init() {
   initializeAudioElement();
   loadSettings();
 
-  [runSecondsEl, walkSecondsEl, bpmEl, goalLapsEl].forEach((el) => {
+  [runSecondsEl, walkSecondsEl, bpmEl, goalLapsEl, beepVolumeEl].forEach((el) => {
     el.addEventListener('change', saveSettings);
   });
 
