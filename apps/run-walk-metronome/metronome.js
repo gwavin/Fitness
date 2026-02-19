@@ -25,6 +25,7 @@ let totalPhaseDuration = 0;
 let beatCount = 0;
 let warningBeepsPlayed = [false, false, false];
 let animationFrameId = null;
+let timerIntervalId = null;
 let wakeLock = null;
 const countdownTimers = [];
 
@@ -43,6 +44,7 @@ let audioCtx = null;
 let isMetronomeRunning = false;
 let metronomeTimerId = null;
 let metronomeStopTimerId = null;
+const WALK_BPM_RATIO = 0.55;
 
 function createAudioContext() {
   if (!audioCtx) {
@@ -119,7 +121,7 @@ function initializeAudioElement() {
   beepEl.volume = 1;
 }
 
-function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0 } = {}) {
+function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0, level = 0.25 } = {}) {
   createAudioContext();
   if (!audioCtx) {
     return false;
@@ -134,7 +136,7 @@ function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0 } = {}
   panner.pan.setValueAtTime(pan, audioCtx.currentTime);
 
   gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.01);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.02, level), audioCtx.currentTime + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
 
   osc.connect(gain).connect(panner).connect(audioCtx.destination);
@@ -161,18 +163,24 @@ function playBeep() {
 }
 
 function playCadenceBeep() {
-  const leftFirst = beatCount % 2 === 0;
-  const firstTone = leftFirst
-    ? { freq: 880, pan: -0.7 }
-    : { freq: 800, pan: 0.7 };
-  const secondTone = leftFirst
-    ? { freq: 800, pan: 0.7 }
-    : { freq: 880, pan: -0.7 };
+  const isLeftStep = beatCount % 2 === 0;
+  const tone = currentPhase === 'walking'
+    ? {
+      freq: isLeftStep ? 420 : 380,
+      pan: isLeftStep ? -0.25 : 0.25,
+      duration: 0.06,
+      type: 'triangle',
+      level: 0.08
+    }
+    : {
+      freq: isLeftStep ? 880 : 800,
+      pan: isLeftStep ? -0.6 : 0.6,
+      duration: 0.07,
+      type: 'sine',
+      level: 0.2
+    };
 
-  playSound({ ...firstTone, duration: 0.08, type: 'sine' });
-  setTimeout(() => {
-    playSound({ ...secondTone, duration: 0.08, type: 'sine' });
-  }, 70);
+  playSound(tone);
 
   metronomeEl.classList.add('active');
   setTimeout(() => metronomeEl.classList.remove('active'), 200);
@@ -239,6 +247,25 @@ function stopMetronome() {
     clearTimeout(metronomeStopTimerId);
     metronomeStopTimerId = null;
   }
+}
+
+function stopTimerLoop() {
+  if (timerIntervalId) {
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+  }
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+}
+
+function startTimerLoop() {
+  stopTimerLoop();
+  timerIntervalId = setInterval(() => {
+    mainLoop(performance.now());
+  }, 150);
+  animationFrameId = requestAnimationFrame(mainLoop);
 }
 
 // === Wake Lock ===
@@ -402,13 +429,15 @@ function startPhase(phase, duration) {
     startMetronome(settings.bpm, duration);
   } else if (phase === 'walking') {
     currentPhase = 'walking';
-    stopMetronome();
+    beatCount = 0;
+    const walkBpm = Math.max(50, Math.round(settings.bpm * WALK_BPM_RATIO));
+    startMetronome(walkBpm, duration);
   } else {
     stopMetronome();
   }
 
   requestWakeLock();
-  animationFrameId = requestAnimationFrame(mainLoop);
+  startTimerLoop();
 }
 
 function handlePhaseEnd() {
@@ -432,7 +461,7 @@ function handlePhaseEnd() {
 function completeWorkout() {
   state = 'completed';
   clearCountdownTimers();
-  cancelAnimationFrame(animationFrameId);
+  stopTimerLoop();
   stopMetronome();
   releaseWakeLock();
   playCompletedSound();
@@ -527,18 +556,21 @@ function handleStartPause() {
   } else if (state === 'paused') {
     state = pausedState;
     phaseStartTime = performance.now() - ((totalPhaseDuration - remaining) * 1000);
-    animationFrameId = requestAnimationFrame(mainLoop);
+    startTimerLoop();
     requestWakeLock();
 
     if (currentPhase === 'running') {
       startMetronome(settings.bpm, remaining);
+    } else if (currentPhase === 'walking') {
+      const walkBpm = Math.max(50, Math.round(settings.bpm * WALK_BPM_RATIO));
+      startMetronome(walkBpm, remaining);
     }
     startPauseBtn.textContent = 'Pause';
   } else {
     pausedState = state;
     state = 'paused';
     clearCountdownTimers();
-    cancelAnimationFrame(animationFrameId);
+    stopTimerLoop();
     stopMetronome();
     releaseWakeLock();
     startPauseBtn.textContent = 'Resume';
@@ -548,7 +580,7 @@ function handleStartPause() {
 
 function handleReset() {
   clearCountdownTimers();
-  cancelAnimationFrame(animationFrameId);
+  stopTimerLoop();
   stopMetronome();
   releaseWakeLock();
 
@@ -570,8 +602,16 @@ document.addEventListener('visibilitychange', () => {
   const sessionActive = state === 'running' || state === 'walking' || state === 'countdown';
   if (document.visibilityState === 'visible' && sessionActive) {
     requestWakeLock();
-    if (currentPhase === 'running' && !isMetronomeRunning) {
-      startMetronome(settings.bpm, remaining);
+    if (!timerIntervalId) {
+      startTimerLoop();
+    }
+    if (!isMetronomeRunning) {
+      if (currentPhase === 'running') {
+        startMetronome(settings.bpm, remaining);
+      } else if (currentPhase === 'walking') {
+        const walkBpm = Math.max(50, Math.round(settings.bpm * WALK_BPM_RATIO));
+        startMetronome(walkBpm, remaining);
+      }
     }
     if (audioCtx?.state === 'suspended') {
       audioCtx.resume().catch(() => {});
