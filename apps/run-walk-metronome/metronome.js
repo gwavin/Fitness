@@ -36,11 +36,12 @@ const defaultSettings = {
   walkSec: 60,
   bpm: 170,
   goalLaps: 3,
-  beepVolume: 80
+  beepVolume: 120
 };
 
 let settings = { ...defaultSettings };
 let outputVolume = defaultSettings.beepVolume / 100;
+const MAX_VOLUME_MULTIPLIER = 2;
 
 // === Audio ===
 let audioCtx = null;
@@ -112,7 +113,7 @@ function createBeepDataUrl() {
 }
 
 function getVolumeFraction() {
-  return Math.min(1, Math.max(0, settings.beepVolume / 100));
+  return Math.min(MAX_VOLUME_MULTIPLIER, Math.max(0, settings.beepVolume / 100));
 }
 
 function initializeAudioElement() {
@@ -125,7 +126,7 @@ function initializeAudioElement() {
   }
   beepEl.preload = 'auto';
   beepEl.playsInline = true;
-  beepEl.volume = getVolumeFraction();
+  beepEl.volume = Math.min(1, getVolumeFraction());
 }
 
 function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0, level = 0.25 } = {}) {
@@ -142,7 +143,7 @@ function playSound({ freq = 1000, duration = 0.12, type = 'sine', pan = 0, level
   osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
   panner.pan.setValueAtTime(pan, audioCtx.currentTime);
 
-  const scaledLevel = Math.max(0.0001, level * outputVolume);
+  const scaledLevel = Math.max(0.0001, Math.min(1.5, level * outputVolume));
 
   gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, scaledLevel), audioCtx.currentTime + 0.01);
@@ -179,14 +180,14 @@ function playCadenceBeep() {
       pan: isLeftStep ? -0.25 : 0.25,
       duration: 0.06,
       type: 'triangle',
-      level: 0.08
+      level: 0.18
     }
     : {
       freq: isLeftStep ? 880 : 800,
       pan: isLeftStep ? -0.6 : 0.6,
       duration: 0.07,
       type: 'sine',
-      level: 0.2
+      level: 0.4
     };
 
   playSound(tone);
@@ -225,7 +226,7 @@ const playCountdownSound = () => playToneSequence([
   { freq: 660, duration: 0.11, type: 'sine' }
 ]);
 
-const playWarningBeep = () => playBeep() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
+const playWarningBeep = () => playSound({ freq: 1000, duration: 0.12, type: 'square', level: 0.35 }) || playBeep();
 
 const playCompletedSound = () => playToneSequence([
   { freq: 1100, duration: 0.14, type: 'triangle' },
@@ -498,12 +499,14 @@ function sanitizeInt(value, fallback, min = 1) {
 }
 
 function normalizeSettings(rawSettings) {
+  const beepVolume = sanitizeInt(rawSettings?.beepVolume, defaultSettings.beepVolume, 0);
+
   return {
     runSec: sanitizeInt(rawSettings?.runSec, defaultSettings.runSec),
     walkSec: sanitizeInt(rawSettings?.walkSec, defaultSettings.walkSec),
     bpm: sanitizeInt(rawSettings?.bpm, defaultSettings.bpm),
     goalLaps: sanitizeInt(rawSettings?.goalLaps, defaultSettings.goalLaps),
-    beepVolume: sanitizeInt(rawSettings?.beepVolume, defaultSettings.beepVolume, 0)
+    beepVolume: Math.min(200, beepVolume)
   };
 }
 
@@ -518,7 +521,7 @@ function loadSettingsFromUI() {
 
   outputVolume = getVolumeFraction();
   if (beepEl) {
-    beepEl.volume = outputVolume;
+    beepEl.volume = Math.min(1, outputVolume);
   }
 
   runSecondsEl.value = settings.runSec;
