@@ -161,14 +161,18 @@ function playBeep() {
 }
 
 function playCadenceBeep() {
-  const isLeftStep = beatCount % 2 === 0;
-  const cadenceTone = isLeftStep
+  const leftFirst = beatCount % 2 === 0;
+  const firstTone = leftFirst
     ? { freq: 880, pan: -0.7 }
     : { freq: 800, pan: 0.7 };
+  const secondTone = leftFirst
+    ? { freq: 800, pan: 0.7 }
+    : { freq: 880, pan: -0.7 };
 
-  if (!playSound({ ...cadenceTone, duration: 0.1, type: 'sine' })) {
-    playBeep();
-  }
+  playSound({ ...firstTone, duration: 0.08, type: 'sine' });
+  setTimeout(() => {
+    playSound({ ...secondTone, duration: 0.08, type: 'sine' });
+  }, 70);
 
   metronomeEl.classList.add('active');
   setTimeout(() => metronomeEl.classList.remove('active'), 200);
@@ -205,12 +209,6 @@ const playCountdownSound = () => playToneSequence([
 ]);
 
 const playWarningBeep = () => playBeep() || playSound({ freq: 1000, duration: 0.12, type: 'square' });
-
-const playCompletedSound = () => playToneSequence([
-  { freq: 660, duration: 0.12, type: 'triangle' },
-  { freq: 880, duration: 0.12, type: 'triangle' },
-  { freq: 1100, duration: 0.14, type: 'triangle' }
-]);
 
 function startMetronome(bpm, durationSeconds) {
   stopMetronome();
