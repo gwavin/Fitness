@@ -166,7 +166,9 @@ function playCadenceBeep() {
     ? { freq: 880, pan: -0.7 }
     : { freq: 800, pan: 0.7 };
 
-  playSound({ ...cadenceTone, duration: 0.1, type: 'sine' });
+  if (!playSound({ ...cadenceTone, duration: 0.1, type: 'sine' })) {
+    playBeep();
+  }
 
   metronomeEl.classList.add('active');
   setTimeout(() => metronomeEl.classList.remove('active'), 200);
