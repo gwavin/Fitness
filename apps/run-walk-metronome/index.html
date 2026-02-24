@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <title>Run/Walk Cadence Timer</title>
+  <title>Pulseforge Run/Walk Cadence Timer</title>
   
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
   <!-- iOS specific -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="RunWalk Timer">
+  <meta name="apple-mobile-web-app-title" content="Pulseforge Timer">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   
   <!-- Fonts -->
@@ -25,7 +25,9 @@
 </head>
 <body>
   <div class="container">
+    <p class="brand-kicker">Pulseforge Training Tools</p>
     <h1>Run/Walk Cadence Timer</h1>
+    <p class="subtitle">Built for interval sessions, pacing precision, and heart-rate awareness.</p>
 
     <div class="timer-display">
       <canvas id="progressCanvas" width="220" height="220"></canvas>
@@ -50,6 +52,19 @@
       <input type="number" id="goalLaps" value="3" min="1" />
       <label for="beepVolume">Beep Volume</label>
       <input type="range" id="beepVolume" value="120" min="0" max="200" step="1" />
+    </div>
+
+    <div class="hrm-panel" aria-live="polite">
+      <div class="hrm-header">
+        <h2>Garmin HRM</h2>
+        <span id="hrmStatus" class="status-chip">Disconnected</span>
+      </div>
+      <div class="hrm-data">
+        <span class="hr-label">Live Heart Rate</span>
+        <span id="hrmValue" class="hr-value">-- bpm</span>
+      </div>
+      <button id="connectHrmBtn" class="secondary-btn" type="button">Connect Garmin HRM</button>
+      <small class="hrm-hint">Uses Bluetooth Heart Rate profile in compatible Chromium-based browsers.</small>
     </div>
 
     <div class="buttons">

@@ -14,6 +14,9 @@ const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
 const metronomeEl = getEl('metronome');
 const beepEl = getEl('beepAudio');
+const connectHrmBtn = getEl('connectHrmBtn');
+const hrmStatusEl = getEl('hrmStatus');
+const hrmValueEl = getEl('hrmValue');
 
 // === State ===
 let state = 'idle'; // idle, countdown, running, walking, paused, completed
@@ -29,6 +32,9 @@ let animationFrameId = null;
 let timerIntervalId = null;
 let wakeLock = null;
 const countdownTimers = [];
+let hrmDevice = null;
+let hrmCharacteristic = null;
+let currentHeartRate = null;
 
 // === User Settings ===
 const defaultSettings = {
@@ -339,6 +345,89 @@ function notifyPhaseChange(title, body) {
   }
 }
 
+
+
+// === Garmin HRM (Web Bluetooth) ===
+const HEART_RATE_SERVICE = 0x180D;
+const HEART_RATE_MEASUREMENT_CHAR = 0x2A37;
+
+function updateHrmStatus(text, isConnected = false) {
+  if (!hrmStatusEl) {
+    return;
+  }
+  hrmStatusEl.textContent = text;
+  hrmStatusEl.classList.toggle('connected', isConnected);
+}
+
+function setHeartRateValue(value) {
+  currentHeartRate = value;
+  if (!hrmValueEl) {
+    return;
+  }
+  hrmValueEl.textContent = Number.isFinite(value) ? `${value} bpm` : '-- bpm';
+}
+
+function parseHeartRate(dataView) {
+  const flags = dataView.getUint8(0);
+  const is16Bit = flags & 0x1;
+  return is16Bit ? dataView.getUint16(1, true) : dataView.getUint8(1);
+}
+
+function handleHrmMeasurement(event) {
+  const value = parseHeartRate(event.target.value);
+  setHeartRateValue(value);
+}
+
+function handleHrmDisconnected() {
+  hrmCharacteristic = null;
+  updateHrmStatus('Disconnected', false);
+  if (connectHrmBtn) {
+    connectHrmBtn.textContent = 'Reconnect Garmin HRM';
+    connectHrmBtn.disabled = false;
+  }
+}
+
+async function connectGarminHrm() {
+  if (!('bluetooth' in navigator)) {
+    updateHrmStatus('Bluetooth unavailable', false);
+    return;
+  }
+
+  try {
+    updateHrmStatus('Scanning...', false);
+    if (connectHrmBtn) {
+      connectHrmBtn.disabled = true;
+    }
+
+    hrmDevice = await navigator.bluetooth.requestDevice({
+      filters: [{ services: [HEART_RATE_SERVICE] }],
+      optionalServices: [HEART_RATE_SERVICE]
+    });
+
+    hrmDevice.addEventListener('gattserverdisconnected', handleHrmDisconnected);
+
+    const server = await hrmDevice.gatt.connect();
+    const service = await server.getPrimaryService(HEART_RATE_SERVICE);
+    hrmCharacteristic = await service.getCharacteristic(HEART_RATE_MEASUREMENT_CHAR);
+    await hrmCharacteristic.startNotifications();
+    hrmCharacteristic.addEventListener('characteristicvaluechanged', handleHrmMeasurement);
+
+    updateHrmStatus('Connected', true);
+    if (connectHrmBtn) {
+      connectHrmBtn.textContent = 'Connected to Garmin HRM';
+    }
+  } catch {
+    updateHrmStatus('Connection failed', false);
+    if (connectHrmBtn) {
+      connectHrmBtn.textContent = 'Connect Garmin HRM';
+    }
+  } finally {
+    if (connectHrmBtn && !hrmCharacteristic) {
+      connectHrmBtn.disabled = false;
+    }
+  }
+}
+
 // === Canvas Drawing ===
 function drawProgress(progress, color) {
   const centerX = canvas.width / 2;
@@ -364,6 +453,9 @@ function drawProgress(progress, color) {
 function updateDisplay() {
   timerEl.textContent = remaining;
   lapsEl.textContent = `${lapCount} / ${settings.goalLaps}`;
+  if (hrmValueEl && Number.isFinite(currentHeartRate)) {
+    hrmValueEl.textContent = `${currentHeartRate} bpm`;
+  }
 
   const progress = totalPhaseDuration > 0 ? (totalPhaseDuration - remaining) / totalPhaseDuration : 0;
   let phaseColor = 'gray';
@@ -723,6 +815,9 @@ function init() {
 
   startPauseBtn.addEventListener('click', handleStartPause);
   resetBtn.addEventListener('click', handleReset);
+  if (connectHrmBtn) {
+    connectHrmBtn.addEventListener('click', connectGarminHrm);
+  }
 
   updateDisplay();
 }

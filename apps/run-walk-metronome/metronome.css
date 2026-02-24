@@ -206,3 +206,94 @@ button:disabled {
   background: linear-gradient(45deg, #4CAF50, #45a049);
   display: none;
 }
+
+.brand-kicker {
+  margin: 0;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 2.2px;
+  color: #b9f7f2;
+  opacity: 0.95;
+}
+
+.subtitle {
+  margin: 0.35rem 0 1rem;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hrm-panel {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem;
+  border-radius: 12px;
+  background: rgba(9, 18, 60, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  text-align: left;
+}
+
+.hrm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.hrm-header h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.status-chip {
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(255, 107, 107, 0.22);
+  color: #ffd6d6;
+}
+
+.status-chip.connected {
+  background: rgba(78, 205, 196, 0.24);
+  color: #d8fffc;
+}
+
+.hrm-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.7rem;
+}
+
+.hr-label {
+  font-size: 0.82rem;
+  opacity: 0.9;
+}
+
+.hr-value {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.secondary-btn {
+  width: 100%;
+  margin-bottom: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hrm-hint {
+  display: block;
+  font-size: 0.72rem;
+  opacity: 0.78;
+}
