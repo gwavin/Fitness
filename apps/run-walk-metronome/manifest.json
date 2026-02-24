@@ -1,6 +1,6 @@
 {
-  "name": "Pulseforge Run/Walk Cadence Timer",
-  "short_name": "Pulseforge",
+  "name": "Run/Walk Cadence Timer",
+  "short_name": "RunWalk Timer",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
