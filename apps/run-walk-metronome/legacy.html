@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Awesome Run/Walk Cadence Timer</title>
+  <title>Pulseforge Experimental Run/Walk Cadence Timer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
@@ -211,11 +211,77 @@
       font-weight: 700;
       color: var(--accent-color);
     }
+
+    .brand-kicker {
+      margin: 0;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 2.2px;
+      color: #b9f7f2;
+      opacity: 0.95;
+    }
+    .subtitle {
+      margin: 0.35rem 0 1rem;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .hrm-panel {
+      margin: 0 0 1.25rem;
+      padding: 0.9rem;
+      border-radius: 12px;
+      background: rgba(9, 18, 60, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      text-align: left;
+    }
+    .hrm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+    .hrm-header h2 { margin: 0; font-size: 1rem; }
+    .status-chip {
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(255, 107, 107, 0.22);
+      color: #ffd6d6;
+    }
+    .status-chip.connected {
+      background: rgba(78, 205, 196, 0.24);
+      color: #d8fffc;
+    }
+    .hrm-data {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.7rem;
+    }
+    .hr-label { font-size: 0.82rem; opacity: 0.9; }
+    .hr-value { font-size: 1.45rem; font-weight: 700; color: var(--accent-color); }
+    .secondary-btn {
+      width: 100%;
+      margin-bottom: 0.4rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-color);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .secondary-btn:hover { background: rgba(255, 255, 255, 0.2); }
+    .hrm-hint { display: block; font-size: 0.72rem; opacity: 0.78; }
+
   </style>
 </head>
 <body>
   <div class="container">
+    <p class="brand-kicker">Pulseforge Experimental</p>
     <h1>Run/Walk Cadence Timer</h1>
+    <p class="subtitle">New experimental build with heart-rate pickup support.</p>
 
     <div class="timer-display">
       <canvas id="progressCanvas" width="220" height="220"></canvas>
@@ -238,6 +304,19 @@
       <input type="number" id="bpm" value="170" min="30" />
       <label for="goalLaps">Goal Laps</label>
       <input type="number" id="goalLaps" value="3" min="1" />
+    </div>
+
+    <div class="hrm-panel" aria-live="polite">
+      <div class="hrm-header">
+        <h2>Garmin HRM</h2>
+        <span id="hrmStatus" class="status-chip">Disconnected</span>
+      </div>
+      <div class="hrm-data">
+        <span class="hr-label">Live Heart Rate</span>
+        <span id="hrmValue" class="hr-value">-- bpm</span>
+      </div>
+      <button id="connectHrmBtn" class="secondary-btn" type="button">Connect Garmin HRM</button>
+      <small class="hrm-hint">Uses Web Bluetooth Heart Rate profile in Chromium-based browsers.</small>
     </div>
 
     <div class="buttons">
@@ -265,6 +344,9 @@
     const canvas = getEl('progressCanvas');
     const ctx = canvas.getContext('2d');
     const metronomeEl = getEl('metronome');
+    const connectHrmBtn = getEl('connectHrmBtn');
+    const hrmStatusEl = getEl('hrmStatus');
+    const hrmValueEl = getEl('hrmValue');
 
     // === State Management ===
     let state = 'idle'; // idle, countdown, running, walking, paused, completed
@@ -277,6 +359,7 @@
     let beatCount = 0;
     let animationFrameId = null;
     let warningBeepsPlayed = [false, false, false]; // Tracks beeps at 3, 2, 1 seconds
+    let hrmCharacteristic = null;
 
     // === User Settings ===
     let settings = {
@@ -336,6 +419,74 @@
         setTimeout(() => playSound({ freq, duration: 0.3, type: 'triangle' }), i * 150);
       });
     };
+
+
+    // === Garmin HRM (Experimental) ===
+    const HEART_RATE_SERVICE = 0x180D;
+    const HEART_RATE_MEASUREMENT_CHAR = 0x2A37;
+
+    const updateHrmStatus = (text, connected = false) => {
+      if (!hrmStatusEl) return;
+      hrmStatusEl.textContent = text;
+      hrmStatusEl.classList.toggle('connected', connected);
+    };
+
+    const setHeartRateValue = (value) => {
+      if (!hrmValueEl) return;
+      hrmValueEl.textContent = Number.isFinite(value) ? `${value} bpm` : '-- bpm';
+    };
+
+    const parseHeartRate = (dataView) => {
+      const flags = dataView.getUint8(0);
+      const is16Bit = flags & 0x1;
+      return is16Bit ? dataView.getUint16(1, true) : dataView.getUint8(1);
+    };
+
+    const handleHrmMeasurement = (event) => {
+      const value = parseHeartRate(event.target.value);
+      setHeartRateValue(value);
+    };
+
+    async function connectGarminHrm() {
+      if (!('bluetooth' in navigator)) {
+        updateHrmStatus('Bluetooth unavailable', false);
+        return;
+      }
+
+      try {
+        updateHrmStatus('Scanning...', false);
+        connectHrmBtn.disabled = true;
+
+        const device = await navigator.bluetooth.requestDevice({
+          filters: [{ services: [HEART_RATE_SERVICE] }],
+          optionalServices: [HEART_RATE_SERVICE]
+        });
+
+        device.addEventListener('gattserverdisconnected', () => {
+          hrmCharacteristic = null;
+          updateHrmStatus('Disconnected', false);
+          connectHrmBtn.textContent = 'Reconnect Garmin HRM';
+          connectHrmBtn.disabled = false;
+          setHeartRateValue(null);
+        });
+
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService(HEART_RATE_SERVICE);
+        hrmCharacteristic = await service.getCharacteristic(HEART_RATE_MEASUREMENT_CHAR);
+        await hrmCharacteristic.startNotifications();
+        hrmCharacteristic.addEventListener('characteristicvaluechanged', handleHrmMeasurement);
+
+        updateHrmStatus('Connected', true);
+        connectHrmBtn.textContent = 'Connected to Garmin HRM';
+      } catch {
+        updateHrmStatus('Connection failed', false);
+        connectHrmBtn.textContent = 'Connect Garmin HRM';
+      } finally {
+        if (!hrmCharacteristic) {
+          connectHrmBtn.disabled = false;
+        }
+      }
+    }
 
     // === Canvas Drawing ===
     function drawProgress(progress, color) {
@@ -555,6 +706,9 @@
       });
       startPauseBtn.addEventListener('click', handleStartPause);
       resetBtn.addEventListener('click', handleReset);
+      if (connectHrmBtn) {
+        connectHrmBtn.addEventListener('click', connectGarminHrm);
+      }
       updateDisplay();
     }
 
