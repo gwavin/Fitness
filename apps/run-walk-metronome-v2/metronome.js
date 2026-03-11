@@ -33,11 +33,14 @@ let remaining = 0;
 let phaseElapsed = 0;
 let totalPhaseDuration = 0;
 let phaseStartTime = 0;
-let nextBeepTime = 0;
 let beatCount = 0;
 let lastCountdownSecond = null;
 let animationFrameId = null;
+let timerIntervalId = null;
+let metronomeTimerId = null;
+let wakeLock = null;
 let deferredPrompt = null;
+let isMetronomeRunning = false;
 
 let settings = {
   runSec: 120,
@@ -46,7 +49,7 @@ let settings = {
   walkBpm: 114,
   goalLaps: 3,
   countdownSec: 5,
-  voiceCues: true,
+  voiceCues: false,
   vibrationCues: true
 };
 
@@ -67,6 +70,10 @@ function formatDuration(seconds) {
 
 function getWorkoutTotalSeconds() {
   return settings.goalLaps * (settings.runSec + settings.walkSec);
+}
+
+function getCadenceForPhase(phase) {
+  return phase === 'walking' ? settings.walkBpm : settings.runBpm;
 }
 
 function getElapsedWorkoutSeconds() {
@@ -307,6 +314,112 @@ async function createAudioContext() {
   }
 }
 
+function stopAnimationLoop() {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+}
+
+function stopTimerLoop() {
+  if (timerIntervalId) {
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+  }
+  stopAnimationLoop();
+}
+
+function startTimerLoop() {
+  stopTimerLoop();
+  timerIntervalId = window.setInterval(() => {
+    mainLoop(performance.now());
+  }, 150);
+  animationFrameId = requestAnimationFrame(mainLoop);
+}
+
+function stopMetronome() {
+  isMetronomeRunning = false;
+
+  if (metronomeTimerId) {
+    clearTimeout(metronomeTimerId);
+    metronomeTimerId = null;
+  }
+}
+
+function startMetronome(phase, startImmediately = false) {
+  stopMetronome();
+
+  if (!['running', 'walking'].includes(phase)) {
+    return;
+  }
+
+  const cadence = getCadenceForPhase(phase);
+  const intervalMs = (60 / cadence) * 1000;
+
+  isMetronomeRunning = true;
+
+  const scheduleBeat = () => {
+    if (!isMetronomeRunning) {
+      return;
+    }
+
+    playCadenceBeat(phase);
+    metronomeTimerId = window.setTimeout(scheduleBeat, intervalMs);
+  };
+
+  if (startImmediately) {
+    scheduleBeat();
+    return;
+  }
+
+  const elapsedWithinBeatMs = (phaseElapsed * 1000) % intervalMs;
+  const delayMs = elapsedWithinBeatMs === 0 ? intervalMs : intervalMs - elapsedWithinBeatMs;
+  metronomeTimerId = window.setTimeout(scheduleBeat, delayMs);
+}
+
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator) || wakeLock) {
+    return;
+  }
+
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => {
+      wakeLock = null;
+    });
+  } catch {
+    wakeLock = null;
+  }
+}
+
+async function releaseWakeLock() {
+  if (!wakeLock) {
+    return;
+  }
+
+  try {
+    await wakeLock.release();
+  } catch {
+    // Ignore release failures.
+  }
+
+  wakeLock = null;
+}
+
+function updateMediaSessionState() {
+  if (!('mediaSession' in navigator)) {
+    return;
+  }
+
+  if (['countdown', 'running', 'walking'].includes(state)) {
+    navigator.mediaSession.playbackState = 'playing';
+  } else if (state === 'paused') {
+    navigator.mediaSession.playbackState = 'paused';
+  } else {
+    navigator.mediaSession.playbackState = 'none';
+  }
+}
+
 function playSound({
   freq,
   duration,
@@ -407,7 +520,7 @@ function playCompletedSound() {
 }
 
 function speakCue(text) {
-  if (!settings.voiceCues || !('speechSynthesis' in window)) {
+  if (!settings.voiceCues || document.visibilityState !== 'visible' || !('speechSynthesis' in window)) {
     return;
   }
 
@@ -444,7 +557,9 @@ function announcePhaseStart(targetState) {
 }
 
 function completeWorkout() {
-  cancelAnimationFrame(animationFrameId);
+  stopTimerLoop();
+  stopMetronome();
+  releaseWakeLock();
   state = 'completed';
   resumeState = 'completed';
   phaseElapsed = 0;
@@ -455,6 +570,7 @@ function completeWorkout() {
   vibrateCue([180, 70, 180, 70, 180]);
   startPauseBtn.textContent = 'Start';
   setInputsDisabled(false);
+  updateMediaSessionState();
   updateDisplay();
 }
 
@@ -489,20 +605,6 @@ function mainLoop(timestamp) {
   phaseElapsed = Math.min(totalPhaseDuration, (timestamp - phaseStartTime) / 1000);
   remaining = Math.max(0, Math.ceil(totalPhaseDuration - phaseElapsed));
 
-  if (state === 'running' || state === 'walking') {
-    const cadence = state === 'running' ? settings.runBpm : settings.walkBpm;
-    const beatInterval = 60 / cadence;
-
-    if (phaseElapsed >= nextBeepTime) {
-      playCadenceBeat(state);
-      nextBeepTime += beatInterval;
-
-      if (phaseElapsed - nextBeepTime > beatInterval * 2) {
-        nextBeepTime = phaseElapsed + beatInterval;
-      }
-    }
-  }
-
   if (state === 'countdown') {
     const countdownSecond = Math.ceil(totalPhaseDuration - phaseElapsed);
     if (countdownSecond > 0 && countdownSecond !== lastCountdownSecond) {
@@ -518,30 +620,37 @@ function mainLoop(timestamp) {
     return;
   }
 
-  animationFrameId = requestAnimationFrame(mainLoop);
+  if (document.visibilityState === 'visible') {
+    animationFrameId = requestAnimationFrame(mainLoop);
+  } else {
+    animationFrameId = null;
+  }
 }
 
 function startPhase(nextState, duration) {
-  cancelAnimationFrame(animationFrameId);
+  stopTimerLoop();
+  stopMetronome();
   state = nextState;
   resumeState = nextState;
   totalPhaseDuration = duration;
   phaseElapsed = 0;
   remaining = duration;
   phaseStartTime = performance.now();
-  nextBeepTime = 0;
   beatCount = 0;
   lastCountdownSecond = null;
 
   if (nextState === 'countdown') {
     playCountdownTick();
     lastCountdownSecond = duration;
-  } else {
+  } else if (nextState === 'running' || nextState === 'walking') {
     announcePhaseStart(nextState);
+    startMetronome(nextState, true);
   }
 
+  requestWakeLock();
+  updateMediaSessionState();
   updateDisplay();
-  animationFrameId = requestAnimationFrame(mainLoop);
+  startTimerLoop();
 }
 
 function loadSettingsFromUI() {
@@ -639,16 +748,24 @@ function handleStartPause() {
       state = resumeState;
       phaseStartTime = performance.now() - (phaseElapsed * 1000);
       startPauseBtn.textContent = 'Pause';
-      animationFrameId = requestAnimationFrame(mainLoop);
+      startTimerLoop();
+      if (state === 'running' || state === 'walking') {
+        startMetronome(state, false);
+      }
+      requestWakeLock();
+      updateMediaSessionState();
       updateDisplay();
       return;
     }
 
     if (['countdown', 'running', 'walking'].includes(state)) {
-      cancelAnimationFrame(animationFrameId);
+      stopTimerLoop();
+      stopMetronome();
       resumeState = state;
       state = 'paused';
+      releaseWakeLock();
       startPauseBtn.textContent = 'Resume';
+      updateMediaSessionState();
       updateDisplay();
     }
   }).catch((error) => {
@@ -657,7 +774,9 @@ function handleStartPause() {
 }
 
 function handleReset() {
-  cancelAnimationFrame(animationFrameId);
+  stopTimerLoop();
+  stopMetronome();
+  releaseWakeLock();
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
@@ -668,13 +787,13 @@ function handleReset() {
   remaining = 0;
   phaseElapsed = 0;
   totalPhaseDuration = 0;
-  nextBeepTime = 0;
   beatCount = 0;
   lastCountdownSecond = null;
   metronomeEl.classList.remove('active', 'running', 'walking');
   startPauseBtn.textContent = 'Start';
   resetBtn.disabled = true;
   setInputsDisabled(false);
+  updateMediaSessionState();
   updateDisplay();
 }
 
@@ -711,6 +830,20 @@ if ('mediaSession' in navigator) {
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }
     ]
   });
+
+  navigator.mediaSession.setActionHandler('play', () => {
+    if (state === 'paused') {
+      handleStartPause();
+    }
+  });
+
+  navigator.mediaSession.setActionHandler('pause', () => {
+    if (['countdown', 'running', 'walking'].includes(state)) {
+      handleStartPause();
+    }
+  });
+
+  updateMediaSessionState();
 }
 
 if ('serviceWorker' in navigator) {
@@ -720,6 +853,28 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+document.addEventListener('visibilitychange', () => {
+  const sessionActive = ['countdown', 'running', 'walking'].includes(state);
+
+  if (document.visibilityState === 'visible' && sessionActive) {
+    requestWakeLock();
+
+    if (!timerIntervalId) {
+      startTimerLoop();
+    }
+
+    if ((state === 'running' || state === 'walking') && !isMetronomeRunning) {
+      startMetronome(state, false);
+    }
+
+    if (audioCtx?.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+
+    updateDisplay();
+  }
+});
 
 function init() {
   loadSettings();
