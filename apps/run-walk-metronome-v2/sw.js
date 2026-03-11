@@ -1,4 +1,4 @@
-const CACHE_NAME = 'run-walk-metronome-v2-shell-v3';
+const CACHE_NAME = 'run-walk-metronome-v2-shell-v4';
 const ROOT_PATH = new URL('./', self.location).pathname;
 const INDEX_PATH = new URL('./index.html', self.location).pathname;
 const CSS_PATH = new URL('./metronome.css', self.location).pathname;

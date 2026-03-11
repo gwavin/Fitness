@@ -21,6 +21,7 @@ const elapsedEl = getEl('elapsed');
 const lapDurationEl = getEl('lapDuration');
 const metronomeEl = getEl('metronome');
 const installBtn = getEl('installBtn');
+const beepEl = getEl('beepAudio');
 const presetButtons = Array.from(document.querySelectorAll('.preset-chip'));
 const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
@@ -41,6 +42,7 @@ let metronomeTimerId = null;
 let wakeLock = null;
 let deferredPrompt = null;
 let isMetronomeRunning = false;
+const BEEP_ELEMENT_VOLUME = 0.85;
 
 let settings = {
   runSec: 120,
@@ -74,6 +76,106 @@ function getWorkoutTotalSeconds() {
 
 function getCadenceForPhase(phase) {
   return phase === 'walking' ? settings.walkBpm : settings.runBpm;
+}
+
+function createBeepDataUrl() {
+  const sampleRate = 22050;
+  const durationSec = 0.1;
+  const frequency = 1650;
+  const sampleCount = Math.floor(sampleRate * durationSec);
+  const pcm = new Int16Array(sampleCount);
+
+  for (let index = 0; index < sampleCount; index += 1) {
+    const time = index / sampleRate;
+    let envelope = 1;
+
+    if (time < 0.005) {
+      envelope = time / 0.005;
+    } else if (time > durationSec - 0.02) {
+      envelope = Math.max(0, (durationSec - time) / 0.02);
+    }
+
+    pcm[index] = Math.floor(32767 * 0.28 * envelope * Math.sin(2 * Math.PI * frequency * time));
+  }
+
+  const buffer = new ArrayBuffer(44 + pcm.length * 2);
+  const view = new DataView(buffer);
+
+  const writeString = (offset, value) => {
+    for (let index = 0; index < value.length; index += 1) {
+      view.setUint8(offset + index, value.charCodeAt(index));
+    }
+  };
+
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + pcm.length * 2, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, pcm.length * 2, true);
+
+  for (let index = 0; index < pcm.length; index += 1) {
+    view.setInt16(44 + index * 2, pcm[index], true);
+  }
+
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+
+  for (let index = 0; index < bytes.length; index += chunkSize) {
+    const chunk = bytes.subarray(index, index + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return `data:audio/wav;base64,${btoa(binary)}`;
+}
+
+function initializeAudioElement() {
+  if (!beepEl) {
+    return;
+  }
+
+  if (!beepEl.src) {
+    beepEl.src = createBeepDataUrl();
+  }
+
+  beepEl.preload = 'auto';
+  beepEl.playsInline = true;
+  beepEl.volume = BEEP_ELEMENT_VOLUME;
+}
+
+function playBeep() {
+  if (!beepEl) {
+    return false;
+  }
+
+  try {
+    beepEl.currentTime = 0;
+    const playPromise = beepEl.play();
+
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function playHiddenSequence(stepCount, delayMs = 150) {
+  for (let index = 0; index < stepCount; index += 1) {
+    window.setTimeout(() => {
+      playBeep();
+    }, index * delayMs);
+  }
 }
 
 function getElapsedWorkoutSeconds() {
@@ -470,8 +572,11 @@ function pulseMetronome(phase) {
 
 function playCadenceBeat(phase) {
   const isLeftBeat = beatCount % 2 === 0;
+  const useHtmlAudio = document.visibilityState !== 'visible';
 
-  if (phase === 'walking') {
+  if (useHtmlAudio) {
+    playBeep();
+  } else if (phase === 'walking') {
     playSound({
       freq: isLeftBeat ? 540 : 500,
       duration: 0.12,
@@ -494,10 +599,20 @@ function playCadenceBeat(phase) {
 }
 
 function playCountdownTick() {
+  if (document.visibilityState !== 'visible') {
+    playBeep();
+    return;
+  }
+
   playSound({ freq: 620, duration: 0.08, type: 'sine', volume: 0.13 });
 }
 
 function playPhaseChangeSound(targetState) {
+  if (document.visibilityState !== 'visible') {
+    playHiddenSequence(2);
+    return;
+  }
+
   if (targetState === 'running') {
     playSound({ freq: 1040, duration: 0.12, type: 'triangle', volume: 0.16 });
     window.setTimeout(() => playSound({ freq: 1320, duration: 0.08, type: 'triangle', volume: 0.12 }), 80);
@@ -511,6 +626,11 @@ function playPhaseChangeSound(targetState) {
 }
 
 function playCompletedSound() {
+  if (document.visibilityState !== 'visible') {
+    playHiddenSequence(3, 140);
+    return;
+  }
+
   const tones = [523.25, 659.25, 783.99];
   tones.forEach((freq, index) => {
     window.setTimeout(() => {
@@ -734,6 +854,8 @@ function applyPreset(button) {
 
 function handleStartPause() {
   createAudioContext().then(() => {
+    initializeAudioElement();
+
     if (state === 'idle' || state === 'completed') {
       loadSettingsFromUI();
       lapCount = 0;
@@ -771,6 +893,15 @@ function handleStartPause() {
   }).catch((error) => {
     console.warn('Audio initialization failed', error);
   });
+}
+
+function playWarningBeep() {
+  if (document.visibilityState !== 'visible') {
+    playBeep();
+    return;
+  }
+
+  playSound({ freq: 1000, duration: 0.12, type: 'square', volume: 0.13 });
 }
 
 function handleReset() {
@@ -877,6 +1008,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 function init() {
+  initializeAudioElement();
   loadSettings();
   updateDisplay();
 
