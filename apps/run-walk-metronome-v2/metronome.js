@@ -170,14 +170,6 @@ function playBeep() {
   }
 }
 
-function playHiddenSequence(stepCount, delayMs = 150) {
-  for (let index = 0; index < stepCount; index += 1) {
-    window.setTimeout(() => {
-      playBeep();
-    }, index * delayMs);
-  }
-}
-
 function getElapsedWorkoutSeconds() {
   const activeState = state === 'paused' ? resumeState : state;
 
@@ -530,33 +522,55 @@ function playSound({
   volume = 0.16,
   finalGain = 0.001
 }) {
-  if (!audioCtx) {
+  if (!audioCtx || audioCtx.state === 'closed') {
+    return false;
+  }
+
+  try {
+    const oscillator = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+    const now = audioCtx.currentTime;
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(freq, now);
+
+    gain.gain.setValueAtTime(volume, now);
+    gain.gain.exponentialRampToValueAtTime(finalGain, now + duration);
+
+    oscillator.connect(gain);
+
+    if (panner) {
+      panner.pan.setValueAtTime(pan, now);
+      gain.connect(panner);
+      panner.connect(audioCtx.destination);
+    } else {
+      gain.connect(audioCtx.destination);
+    }
+
+    oscillator.start(now);
+    oscillator.stop(now + duration);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function playToneSequence(tones, delayMs = 150) {
+  if (!audioCtx || audioCtx.state === 'closed') {
+    tones.forEach((_, index) => {
+      window.setTimeout(() => {
+        playBeep();
+      }, index * delayMs);
+    });
     return;
   }
 
-  const oscillator = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
-  const now = audioCtx.currentTime;
-
-  oscillator.type = type;
-  oscillator.frequency.setValueAtTime(freq, now);
-
-  gain.gain.setValueAtTime(volume, now);
-  gain.gain.exponentialRampToValueAtTime(finalGain, now + duration);
-
-  oscillator.connect(gain);
-
-  if (panner) {
-    panner.pan.setValueAtTime(pan, now);
-    gain.connect(panner);
-    panner.connect(audioCtx.destination);
-  } else {
-    gain.connect(audioCtx.destination);
-  }
-
-  oscillator.start(now);
-  oscillator.stop(now + duration);
+  tones.forEach(({ freq, duration = 0.12, type = 'sine', pan = 0, volume = 0.16 }, index) => {
+    window.setTimeout(() => {
+      playSound({ freq, duration, type, pan, volume });
+    }, index * delayMs);
+  });
 }
 
 function pulseMetronome(phase) {
@@ -572,71 +586,55 @@ function pulseMetronome(phase) {
 
 function playCadenceBeat(phase) {
   const isLeftBeat = beatCount % 2 === 0;
-  const useHtmlAudio = document.visibilityState !== 'visible';
-
-  if (useHtmlAudio) {
-    playBeep();
-  } else if (phase === 'walking') {
-    playSound({
+  const tone = phase === 'walking'
+    ? {
       freq: isLeftBeat ? 540 : 500,
       duration: 0.12,
       type: 'triangle',
       pan: isLeftBeat ? -0.55 : 0.55,
       volume: 0.12
-    });
-  } else {
-    playSound({
+    }
+    : {
       freq: isLeftBeat ? 900 : 830,
       duration: 0.085,
       type: 'sine',
       pan: isLeftBeat ? -0.7 : 0.7,
       volume: 0.18
-    });
-  }
+    };
+
+  playSound(tone);
 
   pulseMetronome(phase);
   beatCount += 1;
 }
 
 function playCountdownTick() {
-  if (document.visibilityState !== 'visible') {
-    playBeep();
-    return;
-  }
-
-  playSound({ freq: 620, duration: 0.08, type: 'sine', volume: 0.13 });
+  playSound({ freq: 620, duration: 0.08, type: 'sine', volume: 0.13 }) || playBeep();
 }
 
 function playPhaseChangeSound(targetState) {
-  if (document.visibilityState !== 'visible') {
-    playHiddenSequence(2);
-    return;
-  }
-
   if (targetState === 'running') {
-    playSound({ freq: 1040, duration: 0.12, type: 'triangle', volume: 0.16 });
-    window.setTimeout(() => playSound({ freq: 1320, duration: 0.08, type: 'triangle', volume: 0.12 }), 80);
+    playToneSequence([
+      { freq: 1040, duration: 0.12, type: 'triangle', volume: 0.16 },
+      { freq: 1320, duration: 0.08, type: 'triangle', volume: 0.12 }
+    ], 80);
     return;
   }
 
   if (targetState === 'walking') {
-    playSound({ freq: 720, duration: 0.12, type: 'triangle', volume: 0.13 });
-    window.setTimeout(() => playSound({ freq: 520, duration: 0.11, type: 'triangle', volume: 0.11 }), 90);
+    playToneSequence([
+      { freq: 720, duration: 0.12, type: 'triangle', volume: 0.13 },
+      { freq: 520, duration: 0.11, type: 'triangle', volume: 0.11 }
+    ], 90);
   }
 }
 
 function playCompletedSound() {
-  if (document.visibilityState !== 'visible') {
-    playHiddenSequence(3, 140);
-    return;
-  }
-
-  const tones = [523.25, 659.25, 783.99];
-  tones.forEach((freq, index) => {
-    window.setTimeout(() => {
-      playSound({ freq, duration: 0.25, type: 'triangle', volume: 0.15 });
-    }, index * 120);
-  });
+  playToneSequence([
+    { freq: 523.25, duration: 0.25, type: 'triangle', volume: 0.15 },
+    { freq: 659.25, duration: 0.25, type: 'triangle', volume: 0.15 },
+    { freq: 783.99, duration: 0.25, type: 'triangle', volume: 0.15 }
+  ], 120);
 }
 
 function speakCue(text) {
@@ -896,12 +894,7 @@ function handleStartPause() {
 }
 
 function playWarningBeep() {
-  if (document.visibilityState !== 'visible') {
-    playBeep();
-    return;
-  }
-
-  playSound({ freq: 1000, duration: 0.12, type: 'square', volume: 0.13 });
+  playSound({ freq: 1000, duration: 0.12, type: 'square', volume: 0.13 }) || playBeep();
 }
 
 function handleReset() {
