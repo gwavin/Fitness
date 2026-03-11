@@ -1,0 +1,464 @@
+:root {
+  --run-color: #ff7a59;
+  --walk-color: #75d9b4;
+  --accent-color: #ffe28a;
+  --ink: #f7f4eb;
+  --muted: rgba(247, 244, 235, 0.72);
+  --panel: rgba(11, 27, 51, 0.72);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --shadow: rgba(4, 10, 21, 0.32);
+  --bg-a: #112949;
+  --bg-b: #204874;
+  --bg-c: #366b63;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Space Grotesk", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(255, 122, 89, 0.28), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(117, 217, 180, 0.24), transparent 30%),
+    linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 45%, var(--bg-c) 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.app-shell {
+  width: min(1160px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.25rem 0 2rem;
+}
+
+.hero-panel,
+.display-panel,
+.controls-panel {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px var(--shadow);
+}
+
+.hero-panel {
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.hero-panel::after {
+  content: "";
+  position: absolute;
+  right: -72px;
+  top: -72px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 226, 138, 0.25), transparent 65%);
+}
+
+.eyebrow,
+.display-label,
+.panel-heading p,
+.footnote {
+  color: var(--muted);
+}
+
+.eyebrow,
+.display-label {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+  margin: 0 0 0.45rem;
+}
+
+.hero-copy {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hero-copy h1 {
+  font-size: clamp(2rem, 3vw, 3.1rem);
+  margin: 0.3rem 0 0;
+}
+
+.hero-text {
+  max-width: 36rem;
+  margin: 0.3rem 0 0;
+  line-height: 1.55;
+}
+
+.version-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 226, 138, 0.16);
+  color: var(--accent-color);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.2fr) minmax(320px, 0.95fr);
+  gap: 1rem;
+}
+
+.display-panel,
+.controls-panel {
+  padding: 1.25rem;
+}
+
+.display-header,
+.buttons,
+.feedback-grid {
+  display: flex;
+  gap: 0.9rem;
+}
+
+.display-header {
+  align-items: end;
+  justify-content: space-between;
+}
+
+.display-header h2,
+.panel-heading h3 {
+  margin: 0;
+}
+
+.next-phase {
+  text-align: right;
+}
+
+.timer-display {
+  position: relative;
+  width: min(100%, 380px);
+  aspect-ratio: 1;
+  margin: 1.25rem auto 1.1rem;
+  display: grid;
+  place-items: center;
+}
+
+#progressCanvas {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 3rem;
+}
+
+#timer {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 700;
+  line-height: 0.95;
+}
+
+.cadence-readout {
+  justify-self: center;
+  min-width: 8.5rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.metronome-track {
+  position: absolute;
+  bottom: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5.8rem;
+  height: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 0.3;
+}
+
+.metronome-track.active {
+  opacity: 1;
+}
+
+.metronome-track.walking .metronome-dot {
+  background: var(--walk-color);
+}
+
+.metronome-track.running .metronome-dot {
+  background: var(--run-color);
+}
+
+.metronome-dot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 0 0 rgba(255, 226, 138, 0.4);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.metronome-track.active .metronome-dot {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 10px rgba(255, 226, 138, 0.1);
+}
+
+.stats-grid,
+.settings-grid,
+.preset-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.stats-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stat-card,
+.preset-panel,
+.settings-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+}
+
+.stat-card {
+  padding: 0.95rem 1rem;
+}
+
+.stat-card strong {
+  font-size: 1.3rem;
+}
+
+.preset-panel,
+.settings-panel {
+  padding: 1rem;
+}
+
+.panel-heading {
+  margin-bottom: 0.9rem;
+}
+
+.panel-heading p,
+.footnote {
+  margin: 0.3rem 0 0;
+  line-height: 1.45;
+}
+
+.preset-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.preset-chip,
+.primary-btn,
+.secondary-btn,
+.install-btn {
+  font: inherit;
+  border: none;
+  cursor: pointer;
+}
+
+.preset-chip {
+  padding: 0.85rem 1rem;
+  border-radius: 16px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid transparent;
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.preset-chip:hover,
+.preset-chip.active {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 226, 138, 0.35);
+}
+
+.settings-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field span,
+.toggle span {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.field input {
+  width: 100%;
+  padding: 0.88rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  color: #102339;
+  font: inherit;
+}
+
+.field input:focus {
+  outline: 2px solid rgba(255, 226, 138, 0.4);
+  border-color: rgba(255, 226, 138, 0.9);
+}
+
+.feedback-grid {
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.toggle input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.footnote {
+  margin-top: 0.9rem;
+}
+
+.buttons {
+  margin-top: 1rem;
+}
+
+.primary-btn,
+.secondary-btn,
+.install-btn {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: 18px;
+  font-weight: 700;
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+}
+
+.primary-btn {
+  color: #13253f;
+  background: linear-gradient(135deg, var(--accent-color), #ffd07a);
+  box-shadow: 0 18px 28px rgba(255, 208, 122, 0.2);
+}
+
+.secondary-btn,
+.install-btn {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.install-btn:hover,
+.preset-chip:hover {
+  box-shadow: 0 12px 24px rgba(4, 10, 21, 0.18);
+}
+
+.primary-btn:active,
+.secondary-btn:active,
+.install-btn:active,
+.preset-chip:active {
+  transform: scale(0.98);
+}
+
+.primary-btn:disabled,
+.secondary-btn:disabled,
+.install-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.install-btn {
+  margin-top: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 1rem, 100%);
+    padding-top: 0.6rem;
+  }
+
+  .hero-panel,
+  .display-panel,
+  .controls-panel {
+    border-radius: 22px;
+  }
+
+  .display-panel,
+  .controls-panel,
+  .hero-panel {
+    padding: 1rem;
+  }
+
+  .timer-overlay {
+    padding: 2rem;
+  }
+
+  .settings-grid,
+  .preset-list,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .display-header {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .next-phase {
+    text-align: left;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+}

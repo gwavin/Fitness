@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Run/Walk Metronome V2</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#183153">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Run/Walk V2">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./metronome.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero-panel">
+      <p class="eyebrow">Separate build</p>
+      <div class="hero-copy">
+        <div>
+          <span class="version-pill">V2</span>
+          <h1>Run/Walk Metronome</h1>
+        </div>
+        <p class="hero-text">A second version with separate run and walk cadence, clearer session planning, and recovery-friendly walk beats. The walking cadence defaults to a more comfortable stride.</p>
+      </div>
+    </section>
+
+    <section class="layout-grid">
+      <section class="display-panel">
+        <div class="display-header">
+          <div>
+            <p class="display-label">Current phase</p>
+            <h2 id="phase">Ready</h2>
+          </div>
+          <div class="next-phase">
+            <span class="display-label">Up next</span>
+            <strong id="nextPhase">Run</strong>
+          </div>
+        </div>
+
+        <div class="timer-display">
+          <canvas id="progressCanvas" width="280" height="280" aria-hidden="true"></canvas>
+          <div class="timer-overlay">
+            <div id="timer">02:00</div>
+            <div id="currentCadence" class="cadence-readout">170 BPM</div>
+          </div>
+          <div class="metronome-track" id="metronome" aria-hidden="true">
+            <div class="metronome-dot left"></div>
+            <div class="metronome-dot right"></div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="display-label">Laps</span>
+            <strong id="laps">0 / 3</strong>
+          </article>
+          <article class="stat-card">
+            <span class="display-label">Session</span>
+            <strong id="sessionTotal">09:00</strong>
+          </article>
+          <article class="stat-card">
+            <span class="display-label">Elapsed</span>
+            <strong id="elapsed">00:00</strong>
+          </article>
+          <article class="stat-card">
+            <span class="display-label">Per lap</span>
+            <strong id="lapDuration">03:00</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="controls-panel">
+        <div class="preset-panel">
+          <div class="panel-heading">
+            <h3>Interval presets</h3>
+            <p>Quick starting points for common rehab sets.</p>
+          </div>
+          <div class="preset-list" id="presetList">
+            <button type="button" class="preset-chip" data-run="60" data-walk="30" data-laps="6">60 / 30</button>
+            <button type="button" class="preset-chip" data-run="90" data-walk="45" data-laps="5">90 / 45</button>
+            <button type="button" class="preset-chip" data-run="120" data-walk="60" data-laps="3">120 / 60</button>
+            <button type="button" class="preset-chip" data-run="180" data-walk="90" data-laps="4">180 / 90</button>
+          </div>
+        </div>
+
+        <div class="settings-panel">
+          <div class="panel-heading">
+            <h3>Session setup</h3>
+            <p>Run at one rhythm, recover at another.</p>
+          </div>
+
+          <div class="settings-grid">
+            <label class="field">
+              <span>Run seconds</span>
+              <input type="number" id="runSeconds" value="120" min="1" step="1">
+            </label>
+            <label class="field">
+              <span>Walk seconds</span>
+              <input type="number" id="walkSeconds" value="60" min="1" step="1">
+            </label>
+            <label class="field">
+              <span>Run cadence</span>
+              <input type="number" id="runBpm" value="170" min="60" max="220" step="1">
+            </label>
+            <label class="field">
+              <span>Walk cadence</span>
+              <input type="number" id="walkBpm" value="114" min="60" max="180" step="1">
+            </label>
+            <label class="field">
+              <span>Goal laps</span>
+              <input type="number" id="goalLaps" value="3" min="1" step="1">
+            </label>
+            <label class="field">
+              <span>Countdown</span>
+              <input type="number" id="countdownSeconds" value="5" min="3" max="10" step="1">
+            </label>
+          </div>
+
+          <div class="feedback-grid">
+            <label class="toggle">
+              <input type="checkbox" id="voiceCues" checked>
+              <span>Voice phase cues</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="vibrationCues" checked>
+              <span>Vibration cues</span>
+            </label>
+          </div>
+
+          <p class="footnote">Walk cadence defaults to 114 BPM to feel closer to a relaxed recovery stride instead of a run beat.</p>
+        </div>
+
+        <div class="buttons">
+          <button id="startPauseBtn" class="primary-btn">Start</button>
+          <button id="resetBtn" class="secondary-btn" disabled>Reset</button>
+        </div>
+
+        <button id="installBtn" class="install-btn" hidden>Install app</button>
+      </section>
+    </section>
+  </main>
+
+  <script src="./metronome.js"></script>
+</body>
+</html>
