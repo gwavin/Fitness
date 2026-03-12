@@ -27,6 +27,8 @@ const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
 const WALK_TRANSITION_COUNTDOWN_SECONDS = 5;
 const RUN_TRANSITION_COUNTDOWN_SECONDS = 3;
+const SOUND_GAIN_MULTIPLIER = 1.3;
+const BEEP_WAVE_GAIN = 0.28 * SOUND_GAIN_MULTIPLIER;
 
 let audioCtx = null;
 let state = 'idle';
@@ -45,7 +47,7 @@ let wakeLock = null;
 let deferredPrompt = null;
 let isMetronomeRunning = false;
 let lastTransitionCueSecond = null;
-const BEEP_ELEMENT_VOLUME = 0.85;
+const BEEP_ELEMENT_BASE_VOLUME = 0.85;
 
 let settings = {
   runSec: 120,
@@ -81,6 +83,10 @@ function getCadenceForPhase(phase) {
   return phase === 'walking' ? settings.walkBpm : settings.runBpm;
 }
 
+function scaleSoundLevel(level) {
+  return Math.max(0.0001, Math.min(1.5, level * SOUND_GAIN_MULTIPLIER));
+}
+
 function createBeepDataUrl() {
   const sampleRate = 22050;
   const durationSec = 0.1;
@@ -98,7 +104,7 @@ function createBeepDataUrl() {
       envelope = Math.max(0, (durationSec - time) / 0.02);
     }
 
-    pcm[index] = Math.floor(32767 * 0.28 * envelope * Math.sin(2 * Math.PI * frequency * time));
+    pcm[index] = Math.floor(32767 * Math.min(0.95, BEEP_WAVE_GAIN) * envelope * Math.sin(2 * Math.PI * frequency * time));
   }
 
   const buffer = new ArrayBuffer(44 + pcm.length * 2);
@@ -151,7 +157,7 @@ function initializeAudioElement() {
 
   beepEl.preload = 'auto';
   beepEl.playsInline = true;
-  beepEl.volume = BEEP_ELEMENT_VOLUME;
+  beepEl.volume = Math.min(1, BEEP_ELEMENT_BASE_VOLUME * SOUND_GAIN_MULTIPLIER);
 }
 
 function playBeep() {
@@ -534,11 +540,12 @@ function playSound({
     const gain = audioCtx.createGain();
     const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
     const now = audioCtx.currentTime;
+    const scaledVolume = scaleSoundLevel(volume);
 
     oscillator.type = type;
     oscillator.frequency.setValueAtTime(freq, now);
 
-    gain.gain.setValueAtTime(volume, now);
+    gain.gain.setValueAtTime(scaledVolume, now);
     gain.gain.exponentialRampToValueAtTime(finalGain, now + duration);
 
     oscillator.connect(gain);
@@ -553,6 +560,54 @@ function playSound({
 
     oscillator.start(now);
     oscillator.stop(now + duration);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function playSweepSound({
+  startFreq,
+  peakFreq,
+  endFreq,
+  duration = 0.18,
+  type = 'sawtooth',
+  pan = 0,
+  volume = 0.2,
+  finalGain = 0.001
+}) {
+  if (!audioCtx || audioCtx.state === 'closed') {
+    return false;
+  }
+
+  try {
+    const oscillator = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+    const now = audioCtx.currentTime;
+    const scaledVolume = scaleSoundLevel(volume);
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(startFreq, now);
+    oscillator.frequency.linearRampToValueAtTime(peakFreq, now + (duration * 0.4));
+    oscillator.frequency.linearRampToValueAtTime(endFreq, now + duration);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(scaledVolume, now + 0.018);
+    gain.gain.exponentialRampToValueAtTime(finalGain, now + duration);
+
+    oscillator.connect(gain);
+
+    if (panner) {
+      panner.pan.setValueAtTime(pan, now);
+      gain.connect(panner);
+      panner.connect(audioCtx.destination);
+    } else {
+      gain.connect(audioCtx.destination);
+    }
+
+    oscillator.start(now);
+    oscillator.stop(now + duration + 0.02);
     return true;
   } catch {
     return false;
@@ -641,7 +696,7 @@ function playCompletedSound() {
 }
 
 function speakCue(text) {
-  if (!settings.voiceCues || !('speechSynthesis' in window)) {
+  if (!settings.voiceCues || document.visibilityState !== 'visible' || !('speechSynthesis' in window)) {
     return;
   }
 
@@ -662,12 +717,66 @@ function vibrateCue(pattern) {
   navigator.vibrate(pattern);
 }
 
-function speakTransitionCountdown(targetState, secondsLeft) {
-  const announcement = targetState === 'walking'
-    ? (secondsLeft === WALK_TRANSITION_COUNTDOWN_SECONDS ? `Walk in ${secondsLeft}` : `${secondsLeft}`)
-    : (secondsLeft === RUN_TRANSITION_COUNTDOWN_SECONDS ? `Run in ${secondsLeft}` : `${secondsLeft}`);
+function playTransitionCountdownTone(targetState, secondsLeft) {
+  if (targetState === 'walking') {
+    const walkCountdownFrequencies = {
+      5: 980,
+      4: 910,
+      3: 840,
+      2: 770,
+      1: 700
+    };
 
-  speakCue(announcement);
+    playToneSequence([
+      {
+        freq: walkCountdownFrequencies[secondsLeft] ?? 700,
+        duration: secondsLeft === 1 ? 0.12 : 0.09,
+        type: 'square',
+        volume: secondsLeft === 1 ? 0.18 : 0.15
+      }
+    ], 70);
+    return;
+  }
+
+  const runCountdownFrequencies = {
+    3: 760,
+    2: 940,
+    1: 1180
+  };
+
+  const tones = secondsLeft === 1
+    ? [
+      { freq: runCountdownFrequencies[secondsLeft], duration: 0.08, type: 'square', volume: 0.18 },
+      { freq: 1340, duration: 0.09, type: 'triangle', volume: 0.17 }
+    ]
+    : [
+      { freq: runCountdownFrequencies[secondsLeft] ?? 760, duration: 0.09, type: 'square', volume: 0.16 }
+    ];
+
+  playToneSequence(tones, 70);
+}
+
+function playRemainingLapHoots() {
+  const remainingLaps = Math.max(1, settings.goalLaps - lapCount);
+
+  for (let index = 0; index < remainingLaps; index += 1) {
+    window.setTimeout(() => {
+      const pan = index % 2 === 0 ? -0.14 : 0.14;
+      const played = playSweepSound({
+        startFreq: 430,
+        peakFreq: 860,
+        endFreq: 520,
+        duration: 0.18,
+        type: 'sawtooth',
+        pan,
+        volume: 0.22
+      });
+
+      if (!played) {
+        playBeep();
+      }
+    }, 140 + (index * 220));
+  }
 }
 
 function cueUpcomingPhaseCountdown() {
@@ -675,7 +784,7 @@ function cueUpcomingPhaseCountdown() {
     const secondsLeft = Math.ceil(totalPhaseDuration - phaseElapsed);
 
     if (secondsLeft > 0 && secondsLeft <= WALK_TRANSITION_COUNTDOWN_SECONDS && secondsLeft !== lastTransitionCueSecond) {
-      speakTransitionCountdown('walking', secondsLeft);
+      playTransitionCountdownTone('walking', secondsLeft);
       lastTransitionCueSecond = secondsLeft;
     }
 
@@ -690,7 +799,7 @@ function cueUpcomingPhaseCountdown() {
     const secondsLeft = Math.ceil(totalPhaseDuration - phaseElapsed);
 
     if (secondsLeft > 0 && secondsLeft <= RUN_TRANSITION_COUNTDOWN_SECONDS && secondsLeft !== lastTransitionCueSecond) {
-      speakTransitionCountdown('running', secondsLeft);
+      playTransitionCountdownTone('running', secondsLeft);
       lastTransitionCueSecond = secondsLeft;
     }
   }
@@ -698,8 +807,8 @@ function cueUpcomingPhaseCountdown() {
 
 function announcePhaseStart(targetState) {
   if (targetState === 'running') {
-    playPhaseChangeSound('running');
-    speakCue(`Run. Starting lap ${lapCount + 1} of ${settings.goalLaps}`);
+    playRemainingLapHoots();
+    speakCue('Run');
     vibrateCue([120, 40, 120]);
     return;
   }
@@ -934,10 +1043,6 @@ function handleStartPause() {
   }).catch((error) => {
     console.warn('Audio initialization failed', error);
   });
-}
-
-function playWarningBeep() {
-  playSound({ freq: 1000, duration: 0.12, type: 'square', volume: 0.13 }) || playBeep();
 }
 
 function handleReset() {
