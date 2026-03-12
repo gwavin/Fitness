@@ -25,6 +25,8 @@ const beepEl = getEl('beepAudio');
 const presetButtons = Array.from(document.querySelectorAll('.preset-chip'));
 const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
+const WALK_TRANSITION_COUNTDOWN_SECONDS = 5;
+const RUN_TRANSITION_COUNTDOWN_SECONDS = 3;
 
 let audioCtx = null;
 let state = 'idle';
@@ -42,6 +44,7 @@ let metronomeTimerId = null;
 let wakeLock = null;
 let deferredPrompt = null;
 let isMetronomeRunning = false;
+let lastTransitionCueSecond = null;
 const BEEP_ELEMENT_VOLUME = 0.85;
 
 let settings = {
@@ -659,10 +662,44 @@ function vibrateCue(pattern) {
   navigator.vibrate(pattern);
 }
 
+function speakTransitionCountdown(targetState, secondsLeft) {
+  const announcement = targetState === 'walking'
+    ? (secondsLeft === WALK_TRANSITION_COUNTDOWN_SECONDS ? `Walk in ${secondsLeft}` : `${secondsLeft}`)
+    : (secondsLeft === RUN_TRANSITION_COUNTDOWN_SECONDS ? `Run in ${secondsLeft}` : `${secondsLeft}`);
+
+  speakCue(announcement);
+}
+
+function cueUpcomingPhaseCountdown() {
+  if (state === 'running') {
+    const secondsLeft = Math.ceil(totalPhaseDuration - phaseElapsed);
+
+    if (secondsLeft > 0 && secondsLeft <= WALK_TRANSITION_COUNTDOWN_SECONDS && secondsLeft !== lastTransitionCueSecond) {
+      speakTransitionCountdown('walking', secondsLeft);
+      lastTransitionCueSecond = secondsLeft;
+    }
+
+    return;
+  }
+
+  if (state === 'walking') {
+    if (lapCount + 1 >= settings.goalLaps) {
+      return;
+    }
+
+    const secondsLeft = Math.ceil(totalPhaseDuration - phaseElapsed);
+
+    if (secondsLeft > 0 && secondsLeft <= RUN_TRANSITION_COUNTDOWN_SECONDS && secondsLeft !== lastTransitionCueSecond) {
+      speakTransitionCountdown('running', secondsLeft);
+      lastTransitionCueSecond = secondsLeft;
+    }
+  }
+}
+
 function announcePhaseStart(targetState) {
   if (targetState === 'running') {
     playPhaseChangeSound('running');
-    speakCue('Run');
+    speakCue(`Run. Starting lap ${lapCount + 1} of ${settings.goalLaps}`);
     vibrateCue([120, 40, 120]);
     return;
   }
@@ -683,6 +720,7 @@ function completeWorkout() {
   phaseElapsed = 0;
   totalPhaseDuration = 0;
   remaining = 0;
+  lastTransitionCueSecond = null;
   playCompletedSound();
   speakCue('Workout complete');
   vibrateCue([180, 70, 180, 70, 180]);
@@ -731,6 +769,10 @@ function mainLoop(timestamp) {
     }
   }
 
+  if (state === 'running' || state === 'walking') {
+    cueUpcomingPhaseCountdown();
+  }
+
   updateDisplay();
 
   if (phaseElapsed >= totalPhaseDuration) {
@@ -756,6 +798,7 @@ function startPhase(nextState, duration) {
   phaseStartTime = performance.now();
   beatCount = 0;
   lastCountdownSecond = null;
+  lastTransitionCueSecond = null;
 
   if (nextState === 'countdown') {
     playCountdownTick();
