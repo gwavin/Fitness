@@ -4,6 +4,8 @@ const HEART_RATE_CHARACTERISTIC = 'heart_rate_measurement';
 const BATTERY_SERVICE = 'battery_service';
 const BATTERY_CHARACTERISTIC = 'battery_level';
 const ACTIVE_STATES = ['countdown', 'warmup', 'sprint', 'recovery'];
+const TONE_VOLUME_MULTIPLIER = 1.9;
+const MAX_TONE_GAIN = 0.42;
 
 const getEl = (id) => document.getElementById(id);
 
@@ -199,11 +201,12 @@ function playSound({
     const gain = audioCtx.createGain();
     const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
     const now = audioCtx.currentTime;
+    const scaledVolume = Math.min(MAX_TONE_GAIN, Math.max(0.02, volume * TONE_VOLUME_MULTIPLIER));
 
     oscillator.type = type;
     oscillator.frequency.setValueAtTime(freq, now);
 
-    gain.gain.setValueAtTime(volume, now);
+    gain.gain.setValueAtTime(scaledVolume, now);
     gain.gain.exponentialRampToValueAtTime(finalGain, now + duration);
     oscillator.connect(gain);
 
