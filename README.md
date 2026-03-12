@@ -9,6 +9,7 @@ This repository hosts a static fitness and health website. It includes workout t
 - **assets/css/landing.css** – shared styling for the landing experience.
 
 ### `apps/`
+- **hiit-hrm/** - Garmin-ready HIIT PWA that pairs a BLE heart-rate strap, runs a warm-up, then gates sprint and recovery from live heart-rate thresholds.
 - **run-walk-metronome-v2/** - second-generation run/walk metronome with separate run and walk BPM settings, a recovery-friendly walking cadence, presets, session totals and optional voice/vibration cues.
 - **run-walk-metronome/** – progressive web app (PWA) for cadence-based run/walk intervals. Includes `metronome.css`, `metronome.js`, a scoped `sw.js` and a `legacy.html` single-file build.
 - **exercise-calculators/** – strength & conditioning utilities such as barbell complexes and heavy lifting timers.
