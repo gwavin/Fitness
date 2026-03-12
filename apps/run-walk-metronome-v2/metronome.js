@@ -641,7 +641,7 @@ function playCompletedSound() {
 }
 
 function speakCue(text) {
-  if (!settings.voiceCues || document.visibilityState !== 'visible' || !('speechSynthesis' in window)) {
+  if (!settings.voiceCues || !('speechSynthesis' in window)) {
     return;
   }
 
