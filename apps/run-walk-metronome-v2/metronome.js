@@ -27,6 +27,7 @@ const canvas = getEl('progressCanvas');
 const ctx = canvas.getContext('2d');
 const WALK_TRANSITION_COUNTDOWN_SECONDS = 5;
 const RUN_TRANSITION_COUNTDOWN_SECONDS = 3;
+const RUN_START_HOOT_DELAY_SECONDS = 2;
 const SOUND_GAIN_MULTIPLIER = 1.3;
 const BEEP_WAVE_GAIN = 0.28 * SOUND_GAIN_MULTIPLIER;
 
@@ -47,6 +48,7 @@ let wakeLock = null;
 let deferredPrompt = null;
 let isMetronomeRunning = false;
 let lastTransitionCueSecond = null;
+let hasPlayedRunStartHoots = false;
 const BEEP_ELEMENT_BASE_VOLUME = 0.85;
 
 let settings = {
@@ -761,22 +763,31 @@ function playRemainingLapHoots() {
 
   for (let index = 0; index < remainingLaps; index += 1) {
     window.setTimeout(() => {
-      const pan = index % 2 === 0 ? -0.14 : 0.14;
+      const pan = index % 2 === 0 ? -0.18 : 0.18;
       const played = playSweepSound({
-        startFreq: 430,
-        peakFreq: 860,
-        endFreq: 520,
-        duration: 0.18,
+        startFreq: 400,
+        peakFreq: 980,
+        endFreq: 500,
+        duration: 0.2,
         type: 'sawtooth',
         pan,
-        volume: 0.22
+        volume: 0.32
       });
 
       if (!played) {
         playBeep();
       }
-    }, 140 + (index * 220));
+    }, index * 220);
   }
+}
+
+function maybePlayRunStartHoots() {
+  if (state !== 'running' || hasPlayedRunStartHoots || phaseElapsed < RUN_START_HOOT_DELAY_SECONDS) {
+    return;
+  }
+
+  hasPlayedRunStartHoots = true;
+  playRemainingLapHoots();
 }
 
 function cueUpcomingPhaseCountdown() {
@@ -807,7 +818,6 @@ function cueUpcomingPhaseCountdown() {
 
 function announcePhaseStart(targetState) {
   if (targetState === 'running') {
-    playRemainingLapHoots();
     speakCue('Run');
     vibrateCue([120, 40, 120]);
     return;
@@ -830,6 +840,7 @@ function completeWorkout() {
   totalPhaseDuration = 0;
   remaining = 0;
   lastTransitionCueSecond = null;
+  hasPlayedRunStartHoots = false;
   playCompletedSound();
   speakCue('Workout complete');
   vibrateCue([180, 70, 180, 70, 180]);
@@ -882,6 +893,10 @@ function mainLoop(timestamp) {
     cueUpcomingPhaseCountdown();
   }
 
+  if (state === 'running') {
+    maybePlayRunStartHoots();
+  }
+
   updateDisplay();
 
   if (phaseElapsed >= totalPhaseDuration) {
@@ -908,6 +923,7 @@ function startPhase(nextState, duration) {
   beatCount = 0;
   lastCountdownSecond = null;
   lastTransitionCueSecond = null;
+  hasPlayedRunStartHoots = false;
 
   if (nextState === 'countdown') {
     playCountdownTick();
@@ -1061,6 +1077,7 @@ function handleReset() {
   totalPhaseDuration = 0;
   beatCount = 0;
   lastCountdownSecond = null;
+  hasPlayedRunStartHoots = false;
   metronomeEl.classList.remove('active', 'running', 'walking');
   startPauseBtn.textContent = 'Start';
   resetBtn.disabled = true;
