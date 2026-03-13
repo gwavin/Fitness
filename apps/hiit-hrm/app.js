@@ -6,6 +6,7 @@ const BATTERY_CHARACTERISTIC = 'battery_level';
 const ACTIVE_STATES = ['countdown', 'warmup', 'sprint', 'recovery'];
 const TONE_VOLUME_MULTIPLIER = 1.9;
 const MAX_TONE_GAIN = 0.42;
+const METRONOME_DOUBLE_BEAT_GUARD_MS = 120;
 
 const getEl = (id) => document.getElementById(id);
 
@@ -93,6 +94,9 @@ let metronomeTimerId = null;
 let coachCueTimerId = null;
 let beatCount = 0;
 let coachCueIndex = 0;
+let cadenceIntervalMs = 0;
+let nextMetronomeBeatAt = 0;
+let lastCadenceBeatAt = 0;
 let bluetoothDevice = null;
 let gattServer = null;
 let hrCharacteristic = null;
@@ -814,6 +818,13 @@ function pulseMetronome(phase) {
 }
 
 function playCadenceBeat(phase) {
+  const now = performance.now();
+
+  if (lastCadenceBeatAt && (now - lastCadenceBeatAt) < METRONOME_DOUBLE_BEAT_GUARD_MS) {
+    return;
+  }
+
+  lastCadenceBeatAt = now;
   const isLeftBeat = beatCount % 2 === 0;
   const tone = phase === 'warmup'
     ? {
@@ -841,6 +852,9 @@ function stopMetronome() {
     clearTimeout(metronomeTimerId);
     metronomeTimerId = null;
   }
+  cadenceIntervalMs = 0;
+  nextMetronomeBeatAt = 0;
+  lastCadenceBeatAt = 0;
   metronomeEl.classList.remove('active', 'warmup', 'sprint');
 }
 
@@ -852,20 +866,24 @@ function startMetronome(phase, startImmediately = false) {
   }
 
   const bpm = phase === 'warmup' ? settings.warmupCadence : settings.sprintCadence;
-  const intervalMs = (60 / bpm) * 1000;
+  cadenceIntervalMs = (60 / bpm) * 1000;
 
   const scheduleBeat = () => {
     playCadenceBeat(phase);
-    metronomeTimerId = window.setTimeout(scheduleBeat, intervalMs);
+    nextMetronomeBeatAt += cadenceIntervalMs;
+    const delayMs = Math.max(0, nextMetronomeBeatAt - performance.now());
+    metronomeTimerId = window.setTimeout(scheduleBeat, delayMs);
   };
 
   if (startImmediately) {
+    nextMetronomeBeatAt = performance.now();
     scheduleBeat();
     return;
   }
 
-  const elapsedWithinBeatMs = (phaseElapsed * 1000) % intervalMs;
-  const delayMs = elapsedWithinBeatMs === 0 ? intervalMs : intervalMs - elapsedWithinBeatMs;
+  const elapsedWithinBeatMs = (phaseElapsed * 1000) % cadenceIntervalMs;
+  const delayMs = elapsedWithinBeatMs === 0 ? cadenceIntervalMs : cadenceIntervalMs - elapsedWithinBeatMs;
+  nextMetronomeBeatAt = performance.now() + delayMs;
   metronomeTimerId = window.setTimeout(scheduleBeat, delayMs);
 }
 
@@ -874,20 +892,11 @@ function playCountdownTick() {
 }
 
 function announceWarmup() {
-  playToneSequence([
-    { freq: 540, duration: 0.14, type: 'triangle', volume: 0.12 },
-    { freq: 680, duration: 0.12, type: 'triangle', volume: 0.12 }
-  ], 90);
   speakCue(`Warm up run. Relaxed rhythm. ${settings.warmupCadence} cadence.`);
   vibrateCue([90, 40, 90]);
 }
 
 function announceSprint() {
-  playToneSequence([
-    { freq: 880, duration: 0.09, type: 'square', volume: 0.16 },
-    { freq: 1120, duration: 0.08, type: 'square', volume: 0.18 },
-    { freq: 1320, duration: 0.08, type: 'square', volume: 0.18 }
-  ], 75);
   speakCue(`Sprint now. Quick feet. ${settings.sprintCadence} cadence. Hit ${getTargetHr()} beats.`);
   vibrateCue([120, 40, 120, 40, 160]);
 }
@@ -929,10 +938,6 @@ function scheduleCoachCue() {
     const cue = cues[coachCueIndex % cues.length];
     coachCueIndex += 1;
     speakCue(cue);
-    playToneSequence([
-      { freq: 1180, duration: 0.06, type: 'square', volume: 0.14 },
-      { freq: 980, duration: 0.06, type: 'square', volume: 0.12 }
-    ], 70);
     scheduleCoachCue();
   }, settings.urgentCueSec * 1000);
 }
