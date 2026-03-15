@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Return to Barefoot Running &amp; Strength Training Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--green:#169B62;--orange:#FF883E;--white:#FFFFFF;--ink:#163029;--muted:#587067;--line:#d9e5e0;--soft:#f4faf7;--card:rgba(255,255,255,.94);--shadow:0 24px 48px rgba(15,52,43,.08);--radius:24px}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:"Manrope","Segoe UI",sans-serif;color:var(--ink);line-height:1.55;background:radial-gradient(circle at top left,rgba(22,155,98,.12),transparent 30%),radial-gradient(circle at top right,rgba(255,136,62,.12),transparent 24%),linear-gradient(180deg,#f7fbf9 0%,#fcfdfd 45%,#f7fbf9 100%)}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(22,155,98,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(22,155,98,.035) 1px,transparent 1px);background-size:24px 24px;mask-image:linear-gradient(180deg,rgba(0,0,0,.4),transparent 82%)}
+    a{color:var(--green)}
+    .page{position:relative;z-index:1;width:min(1120px,calc(100% - 2rem));margin:0 auto;padding:1.25rem 0 2.5rem}
+    .hero,.section,.mini,.callout,.side{background:var(--card);border:1px solid rgba(22,155,98,.12);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero{padding:1.75rem;overflow:hidden}
+    .hero::before{content:"";display:block;height:8px;margin:-1.75rem -1.75rem 1.25rem;background:linear-gradient(90deg,var(--green) 0 44%,var(--white) 44% 72%,var(--orange) 72% 100%)}
+    .hero-grid,.grid-2,.grid-3,.calendar-grid,.facts{display:grid;gap:1rem}
+    .hero-grid{grid-template-columns:minmax(0,1.5fr) minmax(300px,.95fr)}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .calendar-grid{grid-template-columns:1.2fr .8fr}
+    .facts{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:1.2rem}
+    .eyebrow,.jump,.tag{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .eyebrow{padding:.45rem .85rem;background:rgba(22,155,98,.08);color:var(--green);font-size:.78rem}
+    .jump{padding:.72rem 1rem;margin:.9rem .55rem 0 0;border:1px solid rgba(22,155,98,.12);background:rgba(255,255,255,.88);font-size:.84rem;color:var(--ink);text-decoration:none}
+    .jump--accent{background:rgba(255,136,62,.08);border-color:rgba(255,136,62,.24)}
+    .tag{padding:.28rem .55rem;background:rgba(22,155,98,.08);color:var(--green);font-size:.72rem}
+    h1{margin:.15rem 0 0;font-size:clamp(2rem,4vw,3.5rem);line-height:1.04;letter-spacing:-.04em}
+    h2{margin:0;font-size:clamp(1.28rem,2vw,1.75rem);letter-spacing:-.03em}
+    h3{margin:0 0 .35rem;color:var(--green);font-size:1rem}
+    p{margin:.85rem 0 0} .muted,.mini p,.side p,.section-intro,.profile-list span{color:var(--muted)}
+    .section{margin-top:1.2rem;padding:1.35rem}
+    .section-intro{max-width:74ch}
+    .section-head{display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem}
+    .icon{width:2.7rem;height:2.7rem;display:grid;place-items:center;border-radius:18px;background:linear-gradient(180deg,rgba(22,155,98,.12),rgba(255,136,62,.08));color:var(--green)}
+    .hero svg,.icon svg,.jump svg{width:1.1rem;height:1.1rem;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .side{padding:1.2rem}
+    .profile-list{list-style:none;padding:0;margin:0;display:grid;gap:.85rem}
+    .profile-list li{padding-bottom:.85rem;border-bottom:1px solid var(--line)}
+    .profile-list li:last-child{padding-bottom:0;border-bottom:0}
+    .profile-list strong{display:block;font-size:.95rem}
+    .equipment{margin-top:1rem;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+    .equipment li,.principles li{padding:.82rem .9rem;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+    .mini{padding:1rem}
+    .mini h3{font-size:.9rem;letter-spacing:.06em;text-transform:uppercase}
+    .principles{list-style:none;padding:0;margin:1rem 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+    .principles li strong{display:block;margin-bottom:.22rem}
+    .callout{margin-top:1rem;padding:1rem 1.05rem;background:linear-gradient(180deg,rgba(22,155,98,.07),rgba(255,136,62,.04))}
+    .callout strong{color:var(--green)}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:#fff}
+    table{width:100%;min-width:640px;border-collapse:collapse;font-size:.94rem}
+    th,td{padding:.9rem .95rem;text-align:left;vertical-align:top;border-bottom:1px solid #e8efeb}
+    th{background:linear-gradient(180deg,rgba(22,155,98,.1),rgba(22,155,98,.04));color:var(--green);font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    tbody tr:nth-child(even){background:rgba(244,250,247,.7)} tbody tr:last-child td{border-bottom:0}
+    .list-clean{list-style:none;padding:0;margin:0;display:grid;gap:.7rem}
+    .list-clean li{padding:.9rem 1rem;border-radius:18px;background:var(--soft);border:1px solid var(--line)}
+    .traffic{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1rem}
+    .traffic article{padding:1rem;border-radius:18px;border:1px solid var(--line);background:#fff}
+    .traffic .green{box-shadow:inset 0 4px 0 var(--green)} .traffic .amber{box-shadow:inset 0 4px 0 var(--orange)} .traffic .red{box-shadow:inset 0 4px 0 #d64545}
+    .footer{margin-top:1.35rem;text-align:center;color:var(--muted);font-size:.88rem}
+    @media (max-width:980px){.page{width:min(100% - 1rem,1120px);padding-top:.75rem}.hero,.section{padding:1.1rem}.hero::before{margin:-1.1rem -1.1rem 1rem}.hero-grid,.grid-2,.grid-3,.calendar-grid,.facts,.principles,.traffic,.equipment{grid-template-columns:1fr}}
+    @media print{@page{size:A4;margin:12mm}body{background:#fff}body::before,.footer,.jump{display:none}.page{width:100%;padding:0}.hero,.section,.mini,.callout,.side{box-shadow:none;background:#fff}.hero,.section{break-inside:avoid}table{min-width:0}a{color:inherit;text-decoration:none}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 13.5 10 17l8-10"></path></svg>
+            Return &amp; Diagnostic Week
+          </p>
+          <h1>Return to Barefoot Running &amp; Strength Training Plan</h1>
+          <p class="muted">
+            Professional single-page training document for a 46-year-old recreational athlete returning after a two-month break.
+            The plan assumes 11 of 12 shoulder rehabilitation and barefoot running weeks were previously completed, so the first step is
+            a controlled diagnostic re-entry rather than a full reset.
+          </p>
+          <a class="jump" href="#diagnostic-week">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>
+            Start with Week 0
+          </a>
+          <a class="jump jump--accent" href="#weekly-calendar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg>
+            Weekly calendar
+          </a>
+        </div>
+        <aside class="side" aria-label="Athlete profile">
+          <h3>Athlete Profile</h3>
+          <ul class="profile-list">
+            <li><strong>Age and context</strong><span>46-year-old recreational athlete returning to structured training after two months away.</span></li>
+            <li><strong>Training window</strong><span>35-minute morning sessions, three main training days per week.</span></li>
+            <li><strong>Running set-up</strong><span>Xero minimalist shoes, grass first, hard surfaces added only after adaptation.</span></li>
+            <li><strong>Previous work</strong><span>11 weeks of a 12-week shoulder rehabilitation and barefoot running program already completed.</span></li>
+          </ul>
+          <ul class="equipment">
+            <li>Squat rack</li>
+            <li>Flat bench</li>
+            <li>Adjustable dumbbells</li>
+            <li>20 kg dumbbell</li>
+            <li>12 kg kettlebell</li>
+          </ul>
+        </aside>
+      </div>
+      <div class="facts">
+        <article class="mini"><h3>Clinical focus</h3><p>Restore tolerance, not heroics. Symptoms, gait quality and shoulder control guide progression.</p></article>
+        <article class="mini"><h3>Run priority</h3><p>Cadence 170 to 180 steps per minute with quiet midfoot contact and tall posture.</p></article>
+        <article class="mini"><h3>Strength priority</h3><p>Rebuild barbell rhythm with clean technical reps before chasing previous numbers.</p></article>
+        <article class="mini"><h3>Progression gate</h3><p>Advance only if symptoms settle quickly and the next day feels normal.</p></article>
+      </div>
+    </header>
+
+    <section class="section" id="training-philosophy">
+      <div class="section-head">
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"></path><path d="M5 9h14"></path><path d="M7 21h10"></path></svg></div>
+        <h2>Training Philosophy</h2>
+      </div>
+      <p class="section-intro">This block should feel calm, clinical and repeatable. The goal is to finish each session with enough quality left in the tank to repeat it 48 hours later.</p>
+      <ul class="principles">
+        <li><strong>Use the diagnostic week first.</strong> Confirm the shoulder, feet, calves and Achilles respond well before volume rises.</li>
+        <li><strong>Keep the run relaxed.</strong> Light ground contact matters more than pace or distance.</li>
+        <li><strong>Lift submaximally.</strong> Week 1 to 2 strength work should leave obvious reps in reserve.</li>
+        <li><strong>Progress with symptom rules.</strong> Pain above 2 out of 10 or next-day flare-up means repeat, not advance.</li>
+      </ul>
+      <div class="callout"><strong>Simple rule:</strong> If cadence deteriorates, landing becomes noisy, or pressing feels unstable, stay on the same week and reduce ambition before you increase load.</div>
+    </section>
+
+    <section class="section" id="diagnostic-week">
+      <div class="section-head">
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h4l2-6 4 10 2-4h4"></path></svg></div>
+        <h2>Return-to-Training Diagnostic Week</h2>
+      </div>
+      <p class="section-intro">Week 0 is the re-entry protocol. Use the same warm-up on Monday, Wednesday and Friday. Monday is the main benchmark session; if it settles well, Wednesday and Friday repeat the run test and technical lifting at easy effort.</p>
+      <div class="grid-2">
+        <div>
+          <p class="tag">Warm-Up</p>
+          <div class="table-wrap" style="margin-top:.7rem">
+            <table aria-label="Warm-up">
+              <thead><tr><th>Order</th><th>Drill</th><th>Dose</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Brisk walk</td><td>2 minutes</td></tr>
+                <tr><td>2</td><td>Ankle circles</td><td>10 each side</td></tr>
+                <tr><td>3</td><td>Calf raises</td><td>10 reps</td></tr>
+                <tr><td>4</td><td>Hip hinges</td><td>10 reps</td></tr>
+                <tr><td>5</td><td>Band pull-aparts</td><td>10 reps</td></tr>
+                <tr><td>6</td><td>Shoulder CARs</td><td>10 reps</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <p class="tag">Barefoot Running Test</p>
+          <div class="table-wrap" style="margin-top:.7rem">
+            <table aria-label="Running test">
+              <thead><tr><th>Set</th><th>Run</th><th>Walk</th><th>Constraint</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>2 min jog</td><td>2 min walk</td><td>Upright posture</td></tr>
+                <tr><td>2</td><td>2 min jog</td><td>2 min walk</td><td>Cadence 170 to 180</td></tr>
+                <tr><td>3</td><td>2 min jog</td><td>2 min walk</td><td>Midfoot landing</td></tr>
+                <tr><td>4</td><td>2 min jog</td><td>2 min walk</td><td>Relax shoulders</td></tr>
+                <tr><td>5</td><td>2 min jog</td><td>2 min walk</td><td>Quiet feet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="grid-3">
+        <article class="mini"><h3>Bench press diagnostic</h3><p><strong>Warm-up:</strong> bar x10, 40 kg x5, 60 kg x3.<br><strong>Test:</strong> 70 kg x5 with controlled reps and no shoulder pinch.</p></article>
+        <article class="mini"><h3>Goblet squat diagnostic</h3><p><strong>Load:</strong> 20 kg dumbbell.<br><strong>Dose:</strong> 3 sets of 10 with stable heels, even depth and braced posture.</p></article>
+        <article class="mini"><h3>Shoulder diagnostic</h3><p><strong>Sequence:</strong> 10 push-ups, 10 inverted rows, 20-second dead hang. Stop if pain sharpens or stability drops.</p></article>
+      </div>
+      <div class="callout"><strong>Week 0 decision point:</strong> If the shoulder feels stable and calf or foot soreness settles by the next day, progress to Week 1. If not, repeat Week 0 once before extending the running intervals.</div>
+    </section>
+
+    <section class="section" id="barefoot-progression">
+      <div class="section-head">
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17c1.4-2.7 3.2-4.8 5.5-6.2"></path><path d="M11.5 10.8c1.2-.4 2.4-.6 3.5-.6 1.7 0 3 .4 4 1.3"></path><path d="M6 17c.9 1.5 2.4 2.5 4.5 3"></path></svg></div>
+        <h2>Barefoot Running Progression</h2>
+      </div>
+      <p class="section-intro">Weeks 1 to 4 stay on grass only. Use the Xero minimalist shoes, hold cadence steady, and treat each session as practice in elastic, quiet running rather than conditioning.</p>
+      <div class="table-wrap">
+        <table aria-label="Barefoot progression">
+          <thead><tr><th>Week</th><th>Prescription</th><th>Total run time</th><th>Total walk time</th><th>Surface</th><th>Coaching focus</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Week 1</strong></td><td>5 sets of 2 min run / 2 min walk</td><td>10 min</td><td>10 min</td><td>Grass only</td><td>Restore rhythm and tissue confidence</td></tr>
+            <tr><td><strong>Week 2</strong></td><td>5 sets of 3 min run / 2 min walk</td><td>15 min</td><td>10 min</td><td>Grass only</td><td>Hold cadence without over-striding</td></tr>
+            <tr><td><strong>Week 3</strong></td><td>5 sets of 4 min run / 2 min walk</td><td>20 min</td><td>10 min</td><td>Grass only</td><td>Keep posture tall as fatigue rises</td></tr>
+            <tr><td><strong>Week 4</strong></td><td>5 sets of 5 min run / 2 min walk</td><td>25 min</td><td>10 min</td><td>Grass only</td><td>Maintain quiet foot strike</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid-2">
+        <article class="mini"><h3>Non-negotiables</h3><p>Cadence 170 to 180 steps per minute, midfoot landing, upright posture and no pace-chasing.</p></article>
+        <article class="mini"><h3>Hard surface introduction</h3><p>Introduce only after Week 4, and only if calves, feet and Achilles are settling fully within 24 hours.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="strength-program">
+      <div class="section-head">
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h3v6H3zM18 9h3v6h-3zM6 11h12M9 8v8M15 8v8"></path></svg></div>
+        <h2>Strength Training Program</h2>
+      </div>
+      <p class="section-intro">The strength work is paired with the running sessions so the week stays simple. Loads should feel intentionally conservative at first and rise only when technique remains stable.</p>
+      <div class="table-wrap">
+        <table aria-label="Strength program">
+          <thead><tr><th>Workout</th><th>Main lifts</th><th>Week 1 to 2 structure</th><th>Week 3 to 4 structure</th><th>Programming note</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Workout A</strong></td><td>Bench press<br>Squat</td><td>3 x 5 on both lifts at RPE 6 to 7</td><td>4 x 4 on both lifts at RPE 7</td><td>Start about 10 to 15 percent below pre-break work sets and add load only if bar speed stays even.</td></tr>
+            <tr><td><strong>Workout B</strong></td><td>Shoulder press<br>Deadlift</td><td>Press 3 x 5, deadlift 3 x 4 at easy technical loads</td><td>Press 4 x 4, deadlift 4 x 3 with full resets</td><td>Deadlifts should feel crisp. If the shoulder dislikes the press, reduce load before reducing range.</td></tr>
+            <tr><td><strong>Workout C</strong></td><td>Clean<br>Row<br>Hangs</td><td>Clean 5 x 2, row 3 x 8, hangs 3 x 20 seconds</td><td>Clean 6 x 2, row 4 x 6, hangs 3 x 30 seconds</td><td>If the clean feels rusty, use a clean pull or high pull in Week 1 and rebuild timing first.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid-2">
+        <article class="mini"><h3>Load guidance</h3><p>Use 2.5 kg jumps for upper-body lifts and 2.5 to 5 kg jumps for lower-body lifts only when the last session still had reps in reserve.</p></article>
+        <article class="mini"><h3>Session flow</h3><p>Warm-up 5 minutes, run block 20 to 25 minutes depending on week, then move straight into the day's lifts with efficient rest periods.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="weekly-calendar">
+      <div class="section-head">
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg></div>
+        <h2>Weekly Calendar</h2>
+      </div>
+      <p class="section-intro">The weekly rhythm remains stable across the block. During Week 0, use the same Monday, Wednesday and Friday structure, but treat lifting as diagnostic rather than progressive.</p>
+      <div class="calendar-grid">
+        <div class="table-wrap">
+          <table aria-label="Weekly calendar">
+            <thead><tr><th>Day</th><th>Morning session</th><th>Evening focus</th><th>Primary goal</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Monday</strong></td><td>Run + Workout A</td><td>15-minute mobility routine</td><td>Bench and squat pattern re-entry</td></tr>
+              <tr><td><strong>Tuesday</strong></td><td>Optional easy walk or full rest</td><td>Mobility only</td><td>Recover calves, feet and shoulder</td></tr>
+              <tr><td><strong>Wednesday</strong></td><td>Run + Workout B</td><td>15-minute mobility routine</td><td>Overhead tolerance and hinge strength</td></tr>
+              <tr><td><strong>Thursday</strong></td><td>Optional easy walk or full rest</td><td>Mobility only</td><td>Restore ankle range and thoracic rotation</td></tr>
+              <tr><td><strong>Friday</strong></td><td>Run + Workout C</td><td>15-minute mobility routine</td><td>Power mechanics, row volume and hangs</td></tr>
+              <tr><td><strong>Saturday</strong></td><td>Easy walk, optional light grass exposure if fresh</td><td>Optional calf stretching</td><td>Promote circulation without fatigue</td></tr>
+              <tr><td><strong>Sunday</strong></td><td>Full rest</td><td>Reset for next week</td><td>Let adaptation consolidate</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="side">
+          <h3>Scheduling Notes</h3>
+          <p><strong>Run first, lift second.</strong> The run remains the main tissue exposure for the lower leg and foot.</p>
+          <p><strong>Protect recovery days.</strong> Tuesday and Thursday are there to help the program work, not because training is missing.</p>
+          <p><strong>Keep Saturday flexible.</strong> If the lower legs feel heavy, take the full rest option.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="mobility-routine">
+      <div class="section-head">
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 20c0-3 2-5 5-5s5 2 5 5"></path><path d="M12 15V5"></path><path d="M9 8h6"></path></svg></div>
+        <h2>Mobility Routine</h2>
+      </div>
+      <p class="section-intro">Use this 15-minute evening session on both training and recovery days. The intention is to preserve motion and reduce stiffness, not to create more training stress.</p>
+      <div class="table-wrap">
+        <table aria-label="Mobility routine">
+          <thead><tr><th>Block</th><th>Exercise suggestion</th><th>Dose</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Shoulder mobility</strong></td><td>Shoulder CARs, wall slides, light band pull-aparts</td><td>3 minutes total</td><td>Maintain pain-free overhead motion and scapular control</td></tr>
+            <tr><td><strong>Ankle dorsiflexion</strong></td><td>Knee-to-wall rocks or split-stance ankle drives</td><td>3 minutes total</td><td>Support smooth midfoot loading during running</td></tr>
+            <tr><td><strong>Calf stretching</strong></td><td>Straight-knee and bent-knee calf stretch</td><td>2 x 30 seconds each position per side</td><td>Reduce next-day calf tightness</td></tr>
+            <tr><td><strong>Thoracic rotation</strong></td><td>Open-book rotations or thread-the-needle</td><td>3 to 4 minutes total</td><td>Improve posture and shoulder mechanics</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="safety-guidance">
+      <div class="section-head">
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V7l-8-4Z"></path><path d="m9.5 12 1.7 1.7 3.3-3.4"></path></svg></div>
+        <h2>Safety Guidance</h2>
+      </div>
+      <p class="section-intro">Use a traffic-light system to decide whether to advance. Conservative decisions early in the block usually create better momentum later.</p>
+      <div class="traffic">
+        <article class="green"><h3>Green light</h3><p>Pain 0 to 2 out of 10, no limp, no slappy landing, no shoulder instability, and morning stiffness settles by the next day. Continue.</p></article>
+        <article class="amber"><h3>Amber light</h3><p>Symptoms are mild but noticeable, or soreness lasts into the next day. Repeat the same week and reduce load slightly.</p></article>
+        <article class="red"><h3>Red light</h3><p>Sharp pain, altered gait, marked Achilles pain, swelling or shoulder instability. Stop and seek clinical review before progressing.</p></article>
+      </div>
+      <div class="grid-2">
+        <div class="callout"><strong>Running stop signs:</strong> forefoot burning, calf tightening that changes cadence, or the need to reach forward with the foot to keep pace.</div>
+        <div class="callout"><strong>Lifting stop signs:</strong> shoulder pinching on pressing, loss of scapular control, or repeated grindy reps that alter movement quality.</div>
+      </div>
+    </section>
+
+    <p class="footer">Built as a printable physiotherapy-style training document. Return to <a href="../index.html">the main Fitness hub</a>.</p>
+  </main>
+</body>
+</html>
