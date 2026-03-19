@@ -251,52 +251,65 @@
 
     .hero{
       background:
-        radial-gradient(circle at top right,rgba(255,255,255,.16),transparent 24%),
-        linear-gradient(135deg,#0c6b5d,#005c49 54%,#0f766e 100%);
+        radial-gradient(circle at top right,rgba(255,255,255,.14),transparent 22%),
+        linear-gradient(135deg,#0c6b5d,#005c49 56%,#0f766e 100%);
       color:#fff;
-      padding:28px;
-      border-radius:30px;
-      box-shadow:0 28px 48px rgba(0,92,73,.18);
+      padding:20px 22px;
+      border-radius:24px;
+      box-shadow:0 22px 38px rgba(0,92,73,.14);
       margin-bottom:2px;
       overflow:hidden;
     }
     .hero-grid{
       display:grid;
-      grid-template-columns:1.45fr 1fr;
-      gap:20px;
-      align-items:start;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:18px;
+      align-items:center;
     }
     .hero h2{
       font-family:var(--display);
-      font-size:1.75rem;
-      line-height:1.08;
+      font-size:1.32rem;
+      line-height:1.04;
       letter-spacing:-.04em;
-      margin-bottom:12px;
+      margin-bottom:6px;
       max-width:18ch;
     }
     .hero p{
       color:rgba(255,255,255,.92);
-      max-width:58ch;
-      font-size:1.04rem;
+      max-width:52ch;
+      font-size:.96rem;
     }
-    .hero-points{display:grid;gap:12px}
-    .hero-point{
-      padding:14px 16px;
-      border-radius:18px;
-      background:rgba(255,255,255,.12);
+    .hero-links{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:10px;
+      align-items:center;
+    }
+    .hero-link{
+      display:inline-flex;
+      align-items:center;
+      min-height:40px;
+      padding:0 14px;
+      border-radius:999px;
       border:1px solid rgba(255,255,255,.18);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
-      backdrop-filter:blur(8px);
-    }
-    .hero-point strong{
-      display:block;
-      margin-bottom:6px;
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      text-decoration:none;
       font-family:var(--display);
+      font-size:.8rem;
       font-weight:700;
-      letter-spacing:-.02em;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      transition:background .16s ease,transform .16s ease,border-color .16s ease;
+    }
+    .hero-link:hover{
+      background:rgba(255,255,255,.18);
+      border-color:rgba(255,255,255,.26);
+      transform:translateY(-1px);
     }
 
-    .stack{display:grid;gap:12px;margin-bottom:2px}
+    .stack{display:grid;gap:12px;margin-bottom:0}
     .notice{
       border-radius:20px;
       padding:16px 18px;
@@ -530,28 +543,51 @@
     .radio-row{display:grid;gap:12px;margin-bottom:18px}
 
     .actions{
+      position:sticky;
+      top:14px;
+      z-index:18;
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:12px;
-      margin-top:10px;
+      gap:14px;
+      margin-bottom:2px;
       padding:16px 18px;
-      border:1px solid var(--border);
+      border:1px solid var(--border-strong);
       border-radius:22px;
-      background:rgba(255,255,255,.88);
-      backdrop-filter:blur(16px);
-      box-shadow:var(--shadow);
+      background:rgba(255,255,255,.94);
+      backdrop-filter:blur(18px);
+      box-shadow:0 20px 34px rgba(4,39,31,.12);
     }
     .cluster{display:flex;gap:10px;flex-wrap:wrap}
+    .quick-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+    }
+    .quick-links a{
+      color:var(--muted);
+      text-decoration:none;
+      font-family:var(--display);
+      font-size:.78rem;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      opacity:.88;
+    }
+    .quick-links a:hover{
+      color:var(--hse);
+      opacity:1;
+    }
     .btn{
       border:0;
       border-radius:16px;
       min-height:50px;
-      padding:12px 19px;
+      padding:12px 20px;
       background:linear-gradient(180deg,var(--hse),var(--accent));
       color:#fff;
       font-family:var(--display);
-      font-weight:700;
+      font-weight:800;
       letter-spacing:-.01em;
       cursor:pointer;
       transition:transform .16s ease,box-shadow .16s ease,opacity .16s ease,background .16s ease;
@@ -734,6 +770,7 @@
       .layout{grid-template-columns:1fr}
       .sidebar{position:static}
       .hero-grid,.detail,.review,.support-grid,.formula{grid-template-columns:1fr}
+      .hero-links{justify-content:flex-start}
     }
     @media (max-width:720px){
       .wrap{padding:22px 14px 34px}
@@ -741,6 +778,7 @@
       .grid{grid-template-columns:1fr}
       .head,.actions{flex-direction:column;align-items:stretch}
       .cluster{width:100%;flex-direction:column}
+      .quick-links{gap:10px}
       .btn{width:100%}
       .decision-value{font-size:2rem}
       .unit{
@@ -759,7 +797,7 @@
   <div class="wrap">
     <header>
       <div class="shield" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z" fill="var(--hse)" opacity=".2"/><path d="M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4zm0 0v10" stroke="var(--hse)" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-      <div><div class="pill">Gentamicin safety workflow</div><h1>Gentamicin Calculator</h1><p>This version is built as a locked, step-by-step dosing workflow. The user always sees the current pathway, the current step, what is still missing, and whether anything should stop the calculation before a recommendation is shown.</p></div>
+      <div><div class="pill">Gentamicin safety workflow</div><h1>Gentamicin Calculator</h1><p>Built for quick clinical use: choose the pathway, enter the essentials, review safety, and act. Guidance and reference material stay available further down the page.</p></div>
     </header>
     <div class="layout">
       <aside class="sidebar">
@@ -768,9 +806,10 @@
         <section class="panel" id="stickyAlerts" aria-live="polite"></section>
       </aside>
       <main>
-        <section class="hero"><div class="hero-grid"><div><h2>Keep the user inside one clear decision path</h2><p>Each step unlocks the next one. The recommendation is only shown when the essential fields are present and no hard stop is active. If a previous level means hold, the page says hold instead of quietly leaving a dose visible on screen.</p></div><div class="hero-points"><div class="hero-point"><strong>You are here</strong>The sidebar always shows the active step and the chosen scenario.</div><div class="hero-point"><strong>Unsafe states are loud</strong>Contraindications and level-based holds are promoted to the primary action.</div><div class="hero-point"><strong>Handoff-ready output</strong>The final screen summarises the dose, why it was chosen, and what to do next.</div></div></div></section>
-        <div id="formAlerts" class="stack" aria-live="polite"></div>
+        <section class="hero"><div class="hero-grid"><div><div class="eyebrow" style="color:rgba(255,255,255,.78);margin-bottom:8px">Clinician workflow</div><h2>Stay in the calculation path.</h2><p>The upper half stays lean. If you need a refresher, use the quick links instead of scrolling through teaching copy.</p></div><div class="hero-links"><a class="hero-link" href="#quickGuide">Quick guide</a><a class="hero-link" href="#scenarioSupport">Scenario notes</a><a class="hero-link" href="#referenceLibrary">Formula reference</a></div></div></section>
         <form id="gentForm" novalidate>
+          <div class="actions"><div><div class="eyebrow" style="margin-bottom:6px">Step controls</div><div class="quick-links"><a href="#quickGuide">Quick guide</a><a href="#scenarioSupport">Scenario notes</a><a href="#referenceLibrary">Reference</a></div></div><div class="cluster"><button type="button" class="btn ghost" id="backBtn">Back</button><button type="button" class="btn ghost" id="resetBtn">Start over</button><button type="button" class="btn" id="nextBtn">Continue</button></div></div>
+          <div id="formAlerts" class="stack" aria-live="polite"></div>
           <section class="card step active" data-step="1">
             <div class="head"><div><div class="eyebrow">Step 1</div><h3>Select the dosing pathway</h3><p>Pick the pathway that best matches the patient. The rest of the workflow adapts to this choice, and the recommendation will stay visibly tied to it.</p></div></div>
             <div class="scenario-grid">
@@ -818,10 +857,10 @@
             <div class="result" id="result" aria-live="polite"></div>
             <div class="cluster" style="margin-top:18px"><button type="button" class="btn secondary" id="printBtn" disabled>Print summary</button><button type="button" class="btn ghost" id="copyBtn" disabled>Copy summary</button></div>
           </section>
-          <div class="actions"><button type="button" class="btn ghost" id="backBtn">Back</button><div class="cluster"><button type="button" class="btn ghost" id="resetBtn">Start over</button><button type="button" class="btn" id="nextBtn">Continue</button></div></div>
         </form>
-        <div class="support-grid"><section class="support"><div class="eyebrow">Current scenario reference</div><h4 id="referenceTitle">Choose a pathway first</h4><p id="referenceTarget">The TDM target and pathway-specific monitoring note will appear here once a scenario is selected.</p><p id="referenceNote" style="margin-top:10px"></p></section><section class="support"><div class="eyebrow">Administration notes</div><ul id="adminList"><li>Select a pathway to load the relevant administration notes.</li></ul></section></div>
-        <details><summary><span>Formulas and guardrails</span><span class="chip" style="padding:6px 10px">Reference</span></summary><div class="details-body"><div class="formula"><div><h4>Adult body size calculations</h4><p style="margin-bottom:8px">IBW (Devine): <code>50 + 2.3 x (inches over 60)</code> for males, <code>45.5 + 2.3 x (inches over 60)</code> for females.</p><p style="margin-bottom:8px">Adjusted dosing weight when actual body weight exceeds 120% of IBW: <code>IBW + 0.4 x (ABW - IBW)</code>.</p><p>Cockcroft-Gault uses actual body weight if underweight, ideal body weight if non-obese, and adjusted dosing weight if obese.</p></div><div><h4>Dosing bands in this prototype</h4><p style="margin-bottom:8px">Adult once-daily: CrCl &gt;50 = 5 mg/kg (max 480 mg), CrCl 10 to 50 = 3 mg/kg (max 280 mg), CrCl &lt;10 = 1.5 mg/kg STAT (max 160 mg), rounded to the nearest 40 mg.</p><p style="margin-bottom:8px">Paediatric: 7 mg/kg once daily, capped at 560 mg.</p><p style="margin-bottom:8px">Neonatal: 5 mg/kg with interval driven here by postnatal age.</p><p>Endocarditis synergy: 1 mg/kg with interval selected from renal function bands, but ongoing decisions should remain consult-led.</p></div></div></div></details>
+        <div class="support-grid" id="scenarioSupport"><section class="support"><div class="eyebrow">Current scenario reference</div><h4 id="referenceTitle">Choose a pathway first</h4><p id="referenceTarget">The TDM target and pathway-specific monitoring note will appear here once a scenario is selected.</p><p id="referenceNote" style="margin-top:10px"></p></section><section class="support"><div class="eyebrow">Administration notes</div><ul id="adminList"><li>Select a pathway to load the relevant administration notes.</li></ul></section></div>
+        <details id="quickGuide"><summary><span>Quick guide and safety reminders</span><span class="chip" style="padding:6px 10px">Guide</span></summary><div class="details-body"><div class="formula"><div><h4>Fast path for regular users</h4><p style="margin-bottom:10px">1. Select the pathway. 2. Enter only the required patient values. 3. Switch to TDM only if the next action depends on a previous trough. 4. Use the recommendation screen as the live handoff summary.</p><p>Copy and print stay disabled until the workflow reaches a valid recommendation.</p></div><div><h4>Keep in view</h4><p style="margin-bottom:10px">If a previous level means hold, the result screen promotes hold instead of leaving a dose visible. Myasthenia remains a hard stop. Adult renal impairment below 30 mL/min keeps specialist review visible on screen.</p><p>Use the scenario notes and formula reference below only when you need them.</p></div></div></div></details>
+        <details id="referenceLibrary"><summary><span>Formulas and guardrails</span><span class="chip" style="padding:6px 10px">Reference</span></summary><div class="details-body"><div class="formula"><div><h4>Adult body size calculations</h4><p style="margin-bottom:8px">IBW (Devine): <code>50 + 2.3 x (inches over 60)</code> for males, <code>45.5 + 2.3 x (inches over 60)</code> for females.</p><p style="margin-bottom:8px">Adjusted dosing weight when actual body weight exceeds 120% of IBW: <code>IBW + 0.4 x (ABW - IBW)</code>.</p><p>Cockcroft-Gault uses actual body weight if underweight, ideal body weight if non-obese, and adjusted dosing weight if obese.</p></div><div><h4>Dosing bands in this prototype</h4><p style="margin-bottom:8px">Adult once-daily: CrCl &gt;50 = 5 mg/kg (max 480 mg), CrCl 10 to 50 = 3 mg/kg (max 280 mg), CrCl &lt;10 = 1.5 mg/kg STAT (max 160 mg), rounded to the nearest 40 mg.</p><p style="margin-bottom:8px">Paediatric: 7 mg/kg once daily, capped at 560 mg.</p><p style="margin-bottom:8px">Neonatal: 5 mg/kg with interval driven here by postnatal age.</p><p>Endocarditis synergy: 1 mg/kg with interval selected from renal function bands, but ongoing decisions should remain consult-led.</p></div></div></div></details>
         <div class="disclaimer"><strong>Disclaimer:</strong> Educational prototype only. Do not use this page as a substitute for local HSE policy, microbiology/pharmacy advice, or clinical judgment. Last updated: <span id="buildDate"></span>.</div>
         <footer>Enhanced Gentamicin Calculator prototype. Built to make workflow position and safety state visible at all times.</footer>
       </main>
