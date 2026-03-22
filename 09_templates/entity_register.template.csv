@@ -1,0 +1,2 @@
+entity_type,entity_name,source_file,source_section,normalised_name,confidence,notes
+medication,Metformin,source_html/patient-summary.html,Current Medicines,metformin,0.98,Example extracted entity

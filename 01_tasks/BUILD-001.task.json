@@ -1,0 +1,37 @@
+{
+  "task_id": "BUILD-001",
+  "title": "Initial index of source HTML archive",
+  "owner": "controller",
+  "status": "complete",
+  "priority": "high",
+  "type": "one_off",
+  "system": "codex",
+  "objective": "Create an initial manifest and starter summary of the downloaded HTML build archive",
+  "background": "The workflow needs a first read-only inventory of the local source_html snapshot before deeper extraction work begins.",
+  "inputs": [
+    {
+      "name": "source_html_directory",
+      "path": "source_html/",
+      "description": "Local archive snapshot scanned recursively without editing source files."
+    }
+  ],
+  "constraints": [
+    "read_only",
+    "no_live_edits",
+    "no_patient_data_export"
+  ],
+  "deliverables": [
+    "03_outputs/BUILD-001/file_manifest.csv",
+    "03_outputs/BUILD-001/archive_summary.md",
+    "02_context/BUILD-001.context.json"
+  ],
+  "evaluation": [
+    "Every file under source_html is listed in the manifest.",
+    "The summary records counts, obvious issues, and next steps.",
+    "No files inside source_html are modified."
+  ],
+  "dependencies": [],
+  "notes": "Initial scan found only the placeholder file source_html/.gitkeep and no HTML content yet.",
+  "created_at": "2026-03-22T10:49:21+00:00",
+  "updated_at": "2026-03-22T10:49:21+00:00"
+}

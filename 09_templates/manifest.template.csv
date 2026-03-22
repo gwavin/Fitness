@@ -1,0 +1,2 @@
+path,title,file_type,last_modified,size_bytes,hash,topic,medication_names,notes
+source_html/patient-summary.html,Patient Summary,html,2026-03-22T09:00:00Z,24576,sha256:replace-me,medication review,"metformin; atorvastatin",Primary source file

@@ -56,6 +56,31 @@
       color:var(--muted);
     }
 
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .hero-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#eff6ff;
+      color:#1e40af;
+      padding:10px 14px;
+      font-weight:600;
+      text-decoration:none;
+    }
+
+    .hero-link--ghost{
+      background:#ffffff;
+      color:var(--muted);
+    }
+
     .grid{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -169,6 +194,10 @@
         Low-intensity, long-horizon progression for <strong>durable running</strong> and
         <strong>resilient strength</strong>, built to fit a morning window ending by 06:45.
       </p>
+      <div class="hero-actions">
+        <a class="hero-link" href="compact-training-plan-evening-shoulder-ritual.html">Open the 8 pm Shoulder Ritual</a>
+        <a class="hero-link hero-link--ghost" href="../index.html#programs">Back to programs hub</a>
+      </div>
     </section>
 
     <div class="grid">

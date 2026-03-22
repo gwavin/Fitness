@@ -1,0 +1,24 @@
+{
+  "task_id": "BUILD-001",
+  "summary": "Initial read-only scan of source_html to identify available files and prepare a basic archive summary",
+  "source_locations": [
+    "source_html/"
+  ],
+  "selected_files": [
+    "source_html/.gitkeep"
+  ],
+  "excluded_files": [],
+  "assumptions": [
+    "source_html is a local snapshot, not a live production workspace.",
+    "The current contents represent the available archive for this first pass."
+  ],
+  "risks": [
+    "Metadata extraction is incomplete when files are non-HTML or missing titles.",
+    "File quality may be mixed once real archive content is added."
+  ],
+  "open_questions": [
+    "Should medication names be extracted in the next pass?",
+    "Should build object terms be extracted in the next pass?"
+  ],
+  "prepared_at": "2026-03-22T10:49:21+00:00"
+}

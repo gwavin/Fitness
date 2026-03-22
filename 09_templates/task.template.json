@@ -1,0 +1,39 @@
+{
+  "task_id": "TASK-2026-03-001",
+  "title": "Build medication summary export",
+  "owner": "codex",
+  "status": "draft",
+  "priority": "medium",
+  "type": "implementation",
+  "system": "local-ai-workflow",
+  "objective": "Create a structured export from a local source file for downstream review.",
+  "background": "A source document has been gathered and needs a repeatable processing task with clear outputs.",
+  "inputs": [
+    {
+      "name": "source_html",
+      "path": "source_html/patient-summary.html",
+      "description": "Primary HTML file to inspect and process."
+    }
+  ],
+  "constraints": [
+    "Do not overwrite approved outputs without confirmation.",
+    "Keep changes within the local project workspace.",
+    "Record assumptions where source data is incomplete."
+  ],
+  "deliverables": [
+    "A result note in 03_outputs/",
+    "A review-ready artefact for 04_reviews/"
+  ],
+  "evaluation": [
+    "Outputs are complete, traceable, and easy to review.",
+    "Referenced files and assumptions are clearly listed.",
+    "Any gaps or risks are called out plainly."
+  ],
+  "dependencies": [
+    "Context pack prepared in 02_context/",
+    "Relevant source files available in source_html/"
+  ],
+  "notes": "Replace placeholder values before moving the task to in_progress.",
+  "created_at": "2026-03-22T09:00:00Z",
+  "updated_at": "2026-03-22T09:00:00Z"
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "TASK-2026-03-001",
+  "summary": "This context pack captures the source files, working assumptions, and known risks for the current task.",
+  "source_locations": [
+    "source_html/",
+    "resources/",
+    "plans/"
+  ],
+  "selected_files": [
+    "source_html/patient-summary.html",
+    "resources/warmup.txt"
+  ],
+  "excluded_files": [
+    "archive/",
+    "assets/"
+  ],
+  "assumptions": [
+    "The latest source_html file is the preferred source of truth.",
+    "Missing metadata will be noted rather than inferred."
+  ],
+  "risks": [
+    "Source files may use inconsistent labels or formatting.",
+    "Historic content in archive/ may be out of date."
+  ],
+  "open_questions": [
+    "Which output format is required for hand-off?",
+    "Should older source files be compared or ignored?"
+  ],
+  "prepared_at": "2026-03-22T09:15:00Z"
+}

@@ -42,3 +42,32 @@ This repository hosts a static fitness and health website. It includes workout t
 
 ## Contributing
 Issue reports and pull requests should be made on [GitHub](https://github.com/gwavin/Fitness). Each page links to its edit form (for example in `index.html` lines 209‑210).
+## Local AI orchestration workflow
+This repository also includes a controlled workflow where tasks, context packs, outputs, reviews, and decisions are stored separately for traceability.
+
+- 00_inbox/ - intake area for new requests, notes, and raw materials.
+- 01_tasks/ - active task definitions and work items.
+- 02_context/ - context packs, references, and supporting background.
+- 03_outputs/ - generated deliverables and completed artifacts.
+- 04_reviews/ - review notes, QA checks, and feedback logs.
+- 05_decisions/ - decision records and rationale.
+- 06_logs/ - run logs, execution notes, and audit trails.
+- 07_scripts/ - local helper scripts for the workflow.
+- 08_prompts/ - reusable prompts and prompt variants.
+- 09_templates/ - starter templates for recurring work.
+- source_html/ - source HTML captured or prepared for processing.
+- archive/ - retired tasks, outputs, and historical materials.
+
+## Core Templates
+- `09_templates/task.template.json` - task brief with scope, inputs, constraints, and deliverables.
+- `09_templates/context.template.json` - context pack with selected files, assumptions, risks, and open questions.
+- `09_templates/result.template.md` - result note for work completed, findings, outputs, and limits.
+- `09_templates/review.template.md` - review note for checks, concerns, and outcome.
+- `09_templates/decision.template.md` - decision record with rationale and follow-on actions.
+- `09_templates/manifest.template.csv` - source file register for tracking file metadata and topic tags.
+- `09_templates/entity_register.template.csv` - entity register for extracted names and source references.
+- `08_prompts/codex_role_builder.md` - implementation prompt for safe file generation and local changes.
+- `08_prompts/reviewer_role.md` - reviewer prompt for completeness, consistency, risks, and next steps.
+
+## First Task
+- `BUILD-001` created the first read-only index of `source_html/` and produced a starter context file, manifest, and archive summary in the workflow folders.
