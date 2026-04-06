@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rental Property Management Prototype</title>
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar" aria-label="Primary">
+      <div class="brand"><h2>RentFlow Prototype</h2><p>Static admin prototype</p></div>
+      <nav class="nav">
+        <a data-nav-link href="#/dashboard">Dashboard</a>
+        <a data-nav-link href="#/landlords">Landlords</a>
+        <a data-nav-link href="#/tenants">Tenants</a>
+        <a data-nav-link href="#/properties">Properties</a>
+        <a data-nav-link href="#/tenancies">Tenancies</a>
+        <a data-nav-link href="#/ledger">Monthly Ledger</a>
+        <a data-nav-link href="#/monthly-statement">Monthly Statement</a>
+        <a data-nav-link href="#/yearly-statement">Yearly Statement</a>
+        <a data-nav-link href="#/settings">Settings</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="mobile-top no-print">
+        <button id="menu-toggle" class="btn" aria-expanded="false" aria-controls="sidebar">Menu</button>
+        <strong>RentFlow</strong>
+      </div>
+      <div id="app" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="modal" class="modal" aria-modal="true" role="dialog"></div>
+
+  <script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>
