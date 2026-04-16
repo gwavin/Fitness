@@ -29,11 +29,20 @@ function renderDashboard() {
   const state = services.getState();
   const currentMonth = monthKey();
   const entries = services.getLedgerEntries(currentMonth);
-  const byType = (type) => entries.filter(e => e.type === type).reduce((s, e) => s + Number(e.amount || 0), 0);
-  const rentDue = byType(ENTRY_TYPES.RENT_CHARGE);
-  const paid = byType(ENTRY_TYPES.PAYMENT_RECEIVED);
-  const deductions = byType(ENTRY_TYPES.REPAIR_DEDUCTION);
-  const fees = byType(ENTRY_TYPES.AGENT_FEE);
+
+  const totals = entries.reduce((acc, e) => {
+    const amt = Number(e.amount || 0);
+    if (e.type === ENTRY_TYPES.RENT_CHARGE) acc.rentDue += amt;
+    else if (e.type === ENTRY_TYPES.PAYMENT_RECEIVED) acc.paid += amt;
+    else if (e.type === ENTRY_TYPES.REPAIR_DEDUCTION) acc.deductions += amt;
+    else if (e.type === ENTRY_TYPES.AGENT_FEE) acc.fees += amt;
+    return acc;
+  }, { rentDue: 0, paid: 0, deductions: 0, fees: 0 });
+
+  const rentDue = totals.rentDue;
+  const paid = totals.paid;
+  const deductions = totals.deductions;
+  const fees = totals.fees;
   const net = paid - deductions - fees;
 
   const recent = (state.activity || []).slice(0, 8)
