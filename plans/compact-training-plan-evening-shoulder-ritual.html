@@ -182,10 +182,28 @@
       font-size:0.92rem;
     }
 
+    .section-gap{
+      margin-top:20px;
+    }
+
+    .safety-callout{
+      border-left-color:var(--amber);
+      background:var(--amber-soft);
+    }
+
     @media (max-width:700px){
       .wrap{padding:12px}
       .evening-shell{padding:14px}
       .evening-card{padding:12px}
+      .mini-table{display:block; overflow-x:auto}
+    }
+
+    @media print{
+      body{background:#ffffff}
+      .wrap{max-width:none; padding:0}
+      .topbar{display:none}
+      .evening-shell{box-shadow:none}
+      .evening-card, .callout, .mini-table{break-inside:avoid}
     }
   </style>
 </head>
@@ -193,6 +211,7 @@
   <main class="wrap">
     <nav class="topbar" aria-label="Plan navigation">
       <a class="toplink" href="training-plan-long-term-progression-next-two-weeks.html">Morning companion: Compact Training Plan</a>
+      <a class="toplink" href="#knee-resilience">Jump to Knee Resilience Block</a>
       <a class="toplink toplink--ghost" href="../index.html#programs">Back to programs hub</a>
     </nav>
 
@@ -372,6 +391,148 @@
             <div class="callout">
               <strong>Best test:</strong> if the shoulder feels better or unchanged the next morning, the routine is pitched correctly.
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="evening-block section-gap" id="knee-resilience">
+      <div class="evening-shell">
+        <h2 class="evening-title">Knee Resilience Block</h2>
+        <p class="evening-sub">
+          A 10-15 minute indoor knee-strengthening block designed to build quadriceps, glute, hamstring,
+          calf and balance capacity without turning the evening routine into a full leg workout.
+        </p>
+
+        <div class="evening-grid">
+          <div class="evening-card">
+            <span class="pill pill-green">Practical Setup</span>
+            <h3>Frequency and Equipment</h3>
+            <ul>
+              <li><strong>Frequency:</strong> 3 evenings per week</li>
+              <li><strong>Duration:</strong> 10-15 minutes</li>
+              <li><strong>Equipment:</strong> chair, wall, stairs or stable step, towel, optional dumbbell or kettlebell</li>
+              <li><strong>Timing:</strong> after the shoulder routine, before stretching or mobility</li>
+            </ul>
+            <p class="muted">This is a general strengthening and resilience add-on, not a diagnosis or injury treatment plan.</p>
+          </div>
+
+          <div class="evening-card">
+            <span class="pill pill-amber">Safety Rule</span>
+            <h3>Keep Stop Rules Visible</h3>
+            <div class="callout safety-callout">
+              Mild discomfort up to <strong>2-3/10</strong> is acceptable if it settles quickly. Stop or regress for sharp pain,
+              increased swelling, giving way, locking, or next-day deterioration.
+            </div>
+            <p>Seek GP or physio review for persistent swelling, instability, locking, inability to fully straighten, or worsening pain.</p>
+          </div>
+        </div>
+
+        <div class="evening-grid" style="margin-top:14px;">
+          <div class="evening-card">
+            <span class="pill pill-blue">Warm-up / Activation - 2 Minutes</span>
+            <h3>Prepare the Joint</h3>
+            <table class="mini-table">
+              <thead><tr><th>Movement</th><th>Prescription</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td>Heel slides</td><td>10 slow reps each leg</td><td>Restore comfortable range and warm the joint</td></tr>
+                <tr><td>Quad squeeze</td><td>5 reps x 5-second hold each leg</td><td>Activate quadriceps without heavy knee loading</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="evening-card">
+            <span class="pill pill-green">Finisher - 2 Minutes</span>
+            <h3>Calf and Balance</h3>
+            <table class="mini-table">
+              <thead><tr><th>Movement</th><th>Prescription</th><th>Progression</th></tr></thead>
+              <tbody>
+                <tr><td>Calf raise</td><td>12-20 reps</td><td>Single-leg calf raise</td></tr>
+                <tr><td>Single-leg balance</td><td>20-30 seconds each side</td><td>Slow head turns while balancing</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="evening-card" style="margin-top:14px;">
+          <span class="pill pill-blue">Main Strength Circuit - 2 Rounds</span>
+          <h3>Controlled Knee Capacity</h3>
+          <table class="mini-table">
+            <thead><tr><th>Movement</th><th>Prescription</th><th>Progression</th><th>Cue / Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>Chair sit-to-stand</td><td>8-12 reps</td><td>Hold 12 kg kettlebell or dumbbell at chest height</td><td>Knees track over toes; avoid inward collapse</td></tr>
+              <tr><td>Wall sit</td><td>20-40 second hold</td><td>Increase hold time before depth</td><td>Shallow and controlled is better than deep and sore</td></tr>
+              <tr><td>Step-up</td><td>6-10 reps each leg</td><td>3-second controlled lowering phase</td><td>Use bottom stair or stable step; avoid wobble or inward collapse</td></tr>
+              <tr><td>Glute bridge</td><td>10-15 reps</td><td>Pause at the top; later use single-leg only if pain-free</td><td>Glutes and hamstrings support knee control</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="evening-grid" style="margin-top:14px;">
+          <div class="evening-card">
+            <span class="pill pill-green">Weekly Pattern</span>
+            <h3>Simple Schedule</h3>
+            <table class="mini-table">
+              <tbody>
+                <tr><th>Monday</th><td>Knee Resilience Block</td></tr>
+                <tr><th>Tuesday</th><td>Shoulder routine only</td></tr>
+                <tr><th>Wednesday</th><td>Knee Resilience Block</td></tr>
+                <tr><th>Thursday</th><td>Shoulder routine only</td></tr>
+                <tr><th>Friday</th><td>Knee Resilience Block</td></tr>
+                <tr><th>Weekend</th><td>Optional gentle mobility only</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="evening-card">
+            <span class="pill pill-amber">Regression Options</span>
+            <h3>If Sore</h3>
+            <ul>
+              <li>Reduce step height.</li>
+              <li>Reduce the range of the wall sit.</li>
+              <li>Remove load.</li>
+              <li>Replace sit-to-stand with quad squeezes.</li>
+              <li>Perform one round only.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="evening-grid" style="margin-top:14px;">
+          <div class="evening-card">
+            <span class="pill pill-blue">Progression</span>
+            <h3>Weeks 1-2: Build the Base</h3>
+            <ul>
+              <li>Chair sit-to-stand, shallow wall sit, and low step-up</li>
+              <li>Glute bridge, calf raise, and balance</li>
+              <li>No jumping, twisting, deep squats, or lunges</li>
+            </ul>
+            <h4>Weeks 3-4</h4>
+            <p>Add goblet-loaded sit-to-stand <strong>or</strong> longer wall sits <strong>or</strong> slower step-downs. Progress only one variable at a time.</p>
+          </div>
+
+          <div class="evening-card">
+            <span class="pill pill-green">Progression</span>
+            <h3>Weeks 5+: Optional Additions</h3>
+            <ul>
+              <li>Shallow reverse lunge</li>
+              <li>Lateral step-down</li>
+              <li>Slow split squat</li>
+              <li>Single-leg Romanian deadlift</li>
+            </ul>
+            <p class="muted">Avoid pivot drills until the knee has been consistently symptom-free and reliable.</p>
+          </div>
+        </div>
+
+        <div class="evening-card" style="margin-top:14px;">
+          <span class="pill pill-amber">Progression Rules</span>
+          <h3>Progress Only When</h3>
+          <ul>
+            <li>There is no increased swelling, sharp pain, or giving way.</li>
+            <li>Symptoms are no worse the next day.</li>
+            <li>Technique remains controlled.</li>
+          </ul>
+          <div class="callout safety-callout">
+            <strong>Conservative rule:</strong> change only one variable at a time, such as reps, hold time, range, step height, or load.
           </div>
         </div>
       </div>
