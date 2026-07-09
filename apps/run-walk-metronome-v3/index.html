@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Run/Walk Metronome V3</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#111827">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Run/Walk V3">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="./metronome.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a href="../../index.html">Fitness home</a>
+      <a href="../run-walk-metronome-v2/index.html">Timer V2</a>
+      <button type="button" id="installBtn" hidden>Install</button>
+    </header>
+
+    <section class="timer-stage" aria-labelledby="appTitle">
+      <div class="stage-copy">
+        <p class="version">V3 smooth rhythm build</p>
+        <h1 id="appTitle">Run/Walk Metronome</h1>
+        <p>Audio beats are scheduled ahead on the Web Audio clock for a steadier feel. The screen can lag; the rhythm should not.</p>
+      </div>
+
+      <div class="phase-card" data-phase="idle" id="phaseCard">
+        <div class="phase-row">
+          <div>
+            <span class="label">Current</span>
+            <strong id="phaseLabel">Ready</strong>
+          </div>
+          <div>
+            <span class="label">Next</span>
+            <strong id="nextLabel">Run</strong>
+          </div>
+        </div>
+
+        <div class="dial" aria-label="Timer display">
+          <canvas id="progressCanvas" width="320" height="320" aria-hidden="true"></canvas>
+          <div class="dial-copy">
+            <span id="timerText">02:00</span>
+            <small id="cadenceText">Run 170 / Walk 114</small>
+          </div>
+        </div>
+
+        <div class="rhythm-strip" aria-label="Beat indicator">
+          <span class="step-dot" id="leftDot">L</span>
+          <div>
+            <span class="label">Rhythm source</span>
+            <strong id="rhythmStatus">Audio clock standby</strong>
+          </div>
+          <span class="step-dot" id="rightDot">R</span>
+        </div>
+
+        <div class="primary-actions">
+          <button type="button" class="primary-btn" id="startPauseBtn">Start</button>
+          <button type="button" class="secondary-btn" id="resetBtn" disabled>Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="details-grid">
+      <form class="settings-panel" id="settingsForm">
+        <div class="panel-heading">
+          <h2>Session setup</h2>
+          <p>Large, boring controls for tired hands.</p>
+        </div>
+
+        <div class="presets" aria-label="Interval presets">
+          <button type="button" data-preset data-run="60" data-walk="30" data-laps="6">60/30 x6</button>
+          <button type="button" data-preset data-run="90" data-walk="45" data-laps="5">90/45 x5</button>
+          <button type="button" data-preset data-run="120" data-walk="60" data-laps="3">120/60 x3</button>
+          <button type="button" data-preset data-run="180" data-walk="90" data-laps="4">180/90 x4</button>
+        </div>
+
+        <div class="settings-grid">
+          <label>
+            <span>Run seconds</span>
+            <input id="runSec" name="runSec" type="number" min="1" max="3600" step="1" value="120">
+          </label>
+          <label>
+            <span>Walk seconds</span>
+            <input id="walkSec" name="walkSec" type="number" min="1" max="3600" step="1" value="60">
+          </label>
+          <label>
+            <span>Run BPM</span>
+            <input id="runBpm" name="runBpm" type="number" min="60" max="220" step="1" value="170">
+          </label>
+          <label>
+            <span>Walk BPM</span>
+            <input id="walkBpm" name="walkBpm" type="number" min="50" max="180" step="1" value="114">
+          </label>
+          <label>
+            <span>Laps</span>
+            <input id="goalLaps" name="goalLaps" type="number" min="1" max="999" step="1" value="3">
+          </label>
+          <label>
+            <span>Countdown</span>
+            <input id="countdownSec" name="countdownSec" type="number" min="0" max="15" step="1" value="5">
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <label class="toggle">
+            <input id="vibrationCues" type="checkbox" checked>
+            <span>Vibration cues</span>
+          </label>
+          <label class="toggle">
+            <input id="voiceCues" type="checkbox">
+            <span>Voice phase cues</span>
+          </label>
+        </div>
+      </form>
+
+      <aside class="session-panel">
+        <div class="panel-heading">
+          <h2>Session</h2>
+          <p>Everything here is derived from absolute elapsed time.</p>
+        </div>
+
+        <div class="metric-list">
+          <div><span class="label">Lap</span><strong id="lapText">0 / 3</strong></div>
+          <div><span class="label">Elapsed</span><strong id="elapsedText">00:00</strong></div>
+          <div><span class="label">Total</span><strong id="totalText">09:05</strong></div>
+          <div><span class="label">Per lap</span><strong id="lapDurationText">03:00</strong></div>
+        </div>
+
+        <div class="timeline" id="timeline" aria-label="Session phase timeline"></div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./timer-core.browser.js"></script>
+  <script src="./metronome.js"></script>
+</body>
+</html>
