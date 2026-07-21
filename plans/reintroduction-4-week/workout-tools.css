@@ -1,0 +1,25 @@
+button,input,select,textarea{font:inherit}
+.workout-timer{display:inline-flex;align-items:center;gap:6px;margin-left:6px;padding:4px 6px;border:1px solid #bfdbfe;border-radius:8px;background:#eff6ff;white-space:nowrap}
+.timer-display{min-width:4.5ch;font-variant-numeric:tabular-nums;font-weight:800;color:#1e40af}
+.workout-timer button,.log-add,.log-export,.log-remove{border:1px solid #93c5fd;border-radius:7px;background:#fff;color:#1e40af;padding:5px 9px;font-weight:700;cursor:pointer}
+.workout-log{border-color:#bbf7d0;background:#f7fff9}
+.workout-log h2{margin:.2rem 0}
+.log-date{display:flex;align-items:center;gap:10px;font-weight:700;margin:12px 0}
+.log-date input,.log-summary input,.log-summary textarea,.log-table input,.log-table select{width:100%;border:1px solid #b9c7da;border-radius:7px;background:#fff;padding:8px;color:var(--ink)}
+.log-table-wrap{overflow-x:auto}
+.log-table{min-width:860px}
+.log-table th:nth-child(1){width:27%}
+.log-table th:nth-child(2){width:7%}
+.log-table th:nth-child(3),.log-table th:nth-child(4),.log-table th:nth-child(5){width:11%}
+.log-table th:nth-child(6){width:22%}
+.log-remove{color:#991b1b;border-color:#fecaca}
+.log-add{margin-top:10px}
+.log-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.log-summary label{font-weight:700}
+.log-summary input,.log-summary textarea{display:block;margin-top:5px;font-weight:400}
+.log-notes{grid-column:1/-1}
+.log-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:14px}
+.log-export{background:var(--green);border-color:var(--green);color:#fff;padding:9px 13px}
+.save-status{color:var(--green);font-weight:700}
+@media(max-width:700px){.log-summary{grid-template-columns:1fr}.workout-timer{margin:6px 0 0}}
+@media print{.workout-timer,.workout-log{display:none}}
