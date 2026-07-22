@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChangeRequester | SharePoint POC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div>
+                    <h1>ChangeRequester POC</h1>
+                    <p class="subtitle">No-Premium License | Direct SharePoint List Submission</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Configuration Card -->
+        <section class="card config-card">
+            <div class="card-header">
+                <h2>SharePoint Site & List Configuration</h2>
+                <span class="badge badge-info">Standard Licensing (Free)</span>
+            </div>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="sp-site-url">SharePoint Site URL <span class="required">*</span></label>
+                    <input type="url" id="sp-site-url" placeholder="https://yourcompany.sharepoint.com/sites/YourSiteName">
+                    <small class="help-text">Paste the full URL to your SharePoint site.</small>
+                </div>
+                <div class="form-group full-width">
+                    <label for="sp-list-name">SharePoint List Name <span class="required">*</span></label>
+                    <input type="text" id="sp-list-name" value="ChangeRequests" placeholder="e.g. ChangeRequests">
+                    <small class="help-text">The exact name of the list you created in SharePoint.</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Status Toast Banner -->
+        <div id="status-toast" class="toast hidden">
+            <span id="toast-message"></span>
+            <button id="toast-close" type="button">&times;</button>
+        </div>
+
+        <main class="main-content">
+            <!-- Simplified Single-Item Form -->
+            <section class="card form-card">
+                <div class="card-header">
+                    <h2>Submit Change Request</h2>
+                    <p>Fills single entry into your SharePoint List, triggering CSV generation.</p>
+                </div>
+
+                <form id="poc-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="req-name">Requester Name <span class="required">*</span></label>
+                            <input type="text" id="req-name" required placeholder="e.g. Alex Morgan">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="change-title">Change Title <span class="required">*</span></label>
+                            <input type="text" id="change-title" required placeholder="e.g. Server Maintenance Upgrade">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="change-desc">Change Description <span class="required">*</span></label>
+                            <textarea id="change-desc" rows="3" required placeholder="Brief description of the change..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="btn-submit-sp" class="btn-success">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            Submit directly to SharePoint List
+                        </button>
+                        <button type="button" id="btn-download-csv" class="btn-primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            Download Local .CSV Backup
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
