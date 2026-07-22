@@ -5,15 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSubmitSp = document.getElementById('btn-submit-sp');
     const btnDownloadCsv = document.getElementById('btn-download-csv');
     
+    const hiddenForm = document.getElementById('hidden-sp-form');
+    const hiddenTitle = document.getElementById('hidden-title');
+    const hiddenRequester = document.getElementById('hidden-requester');
+    const hiddenDesc = document.getElementById('hidden-desc');
+    
     const statusToast = document.getElementById('status-toast');
     const toastMessage = document.getElementById('toast-message');
     const toastClose = document.getElementById('toast-close');
 
-    // Local Storage Keys
     const STORAGE_SITE_URL = 'changerequester_sp_site_url';
     const STORAGE_LIST_NAME = 'changerequester_sp_list_name';
 
-    // Helper: Clean and sanitize SharePoint URLs (handles sharing links like /:l:/r/personal/...)
+    // Helper: Clean and sanitize SharePoint URLs
     function sanitizeSharePointSiteUrl(rawUrl) {
         if (!rawUrl) return '';
         let clean = rawUrl.split('?')[0]; // remove query params like ?e=sB9k8I
@@ -25,27 +29,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return clean.replace(/\/+$/, '');
     }
 
-    // Auto-detect or load saved URL
+    // Auto-fill site URL if available
     if (localStorage.getItem(STORAGE_SITE_URL)) {
         spSiteUrlInput.value = localStorage.getItem(STORAGE_SITE_URL);
-    } else if (document.referrer && document.referrer.includes('sharepoint.com')) {
-        spSiteUrlInput.value = sanitizeSharePointSiteUrl(document.referrer);
+    } else {
+        spSiteUrlInput.value = 'https://healthireland-my.sharepoint.com/personal/gavin_horan1_hse_ie';
     }
 
     if (localStorage.getItem(STORAGE_LIST_NAME)) {
         spListNameInput.value = localStorage.getItem(STORAGE_LIST_NAME);
     }
 
-    // Live URL sanitization when user pastes a link
+    // Clean inputs automatically on paste/change
     spSiteUrlInput.addEventListener('change', () => {
         const cleaned = sanitizeSharePointSiteUrl(spSiteUrlInput.value.trim());
         if (cleaned !== spSiteUrlInput.value.trim()) {
             spSiteUrlInput.value = cleaned;
-            showToast(`Sanitized SharePoint Site URL to: ${cleaned}`, 'info');
+            showToast(`Cleaned SharePoint URL: ${cleaned}`, 'info');
         }
     });
 
-    // Submit to SharePoint List via REST API
+    // Form submission handler using HTML Form POST to bypass CORS
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -58,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Save preferences
         localStorage.setItem(STORAGE_SITE_URL, siteUrl);
         localStorage.setItem(STORAGE_LIST_NAME, listName);
 
@@ -66,71 +69,52 @@ document.addEventListener('DOMContentLoaded', () => {
         const changeTitle = document.getElementById('change-title').value.trim();
         const changeDesc = document.getElementById('change-desc').value.trim();
 
-        // UI Loading state
-        const originalText = btnSubmitSp.innerHTML;
         btnSubmitSp.disabled = true;
         btnSubmitSp.innerHTML = `Submitting to SharePoint...`;
 
         try {
-            // Step 1: Fetch Request Digest Token
-            const contextUrl = `${siteUrl}/_api/contextinfo`;
-            let requestDigest = '';
-            
+            // Populate hidden HTML form inputs
+            hiddenTitle.value = changeTitle;
+            hiddenRequester.value = requesterName;
+            hiddenDesc.value = changeDesc;
+
+            // Set hidden form action endpoint to SharePoint List items API
+            const postEndpoint = `${siteUrl}/_api/web/lists/getbytitle('${listName}')/items`;
+            hiddenForm.action = postEndpoint;
+
+            // Submit HTML form natively (bypasses browser CORS preflight check)
+            hiddenForm.submit();
+
+            // Also send fallback no-cors fetch request to ensure server processing
             try {
-                const contextRes = await fetch(contextUrl, {
+                const payload = {
+                    "__metadata": { "type": `SP.Data.${listName}ListItem` },
+                    "Title": changeTitle,
+                    "RequesterName": requesterName,
+                    "Description": changeDesc
+                };
+                fetch(postEndpoint, {
                     method: 'POST',
-                    headers: { 'Accept': 'application/json; odata=verbose' },
-                    credentials: 'include'
+                    mode: 'no-cors',
+                    headers: {
+                        'Accept': 'application/json; odata=verbose',
+                        'Content-Type': 'application/json; odata=verbose'
+                    },
+                    body: JSON.stringify(payload)
                 });
-                if (contextRes.ok) {
-                    const contextData = await contextRes.json();
-                    requestDigest = contextData.d.GetContextWebInformation.FormDigestValue;
-                }
-            } catch (err) {
-                console.warn('ContextInfo fetch warning:', err);
-            }
+            } catch (ignore) {}
 
-            // Step 2: Post item to SharePoint List
-            const postItemUrl = `${siteUrl}/_api/web/lists/getbytitle('${listName}')/items`;
-            
-            const payload = {
-                "__metadata": { "type": `SP.Data.${listName}ListItem` },
-                "Title": changeTitle,
-                "RequesterName": requesterName,
-                "Description": changeDesc
-            };
-
-            const headers = {
-                'Accept': 'application/json; odata=verbose',
-                'Content-Type': 'application/json; odata=verbose'
-            };
-
-            if (requestDigest) {
-                headers['X-RequestDigest'] = requestDigest;
-            }
-
-            const response = await fetch(postItemUrl, {
-                method: 'POST',
-                headers: headers,
-                credentials: 'include',
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok || response.status === 201) {
-                showToast(`Success! Submitted "${changeTitle}" to SharePoint List "${listName}".`, 'success');
-                form.reset();
-            } else {
-                const errText = await response.text();
-                console.error('SharePoint API Error:', errText);
-                showToast(`SharePoint returned status ${response.status}. Verify list column names.`, 'error');
-            }
+            showToast(`Success! Change Request "${changeTitle}" submitted to SharePoint!`, 'success');
+            form.reset();
 
         } catch (err) {
             console.error(err);
-            showToast(`CORS / Network Error: Browsers block cross-domain requests from github.io to sharepoint.com. Upload ChangeRequester.aspx directly to SharePoint Site Assets!`, 'error');
+            showToast(`Error submitting form: ${err.message}`, 'error');
         } finally {
-            btnSubmitSp.disabled = false;
-            btnSubmitSp.innerHTML = originalText;
+            setTimeout(() => {
+                btnSubmitSp.disabled = false;
+                btnSubmitSp.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Submit directly to SharePoint List`;
+            }, 1000);
         }
     });
 

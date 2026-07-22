@@ -18,7 +18,7 @@
                 </div>
                 <div>
                     <h1>ChangeRequester POC</h1>
-                    <p class="subtitle">No-Premium License | Direct SharePoint List Submission</p>
+                    <p class="subtitle">No-Premium License | CORS-Bypassing Form Submission</p>
                 </div>
             </div>
         </header>
@@ -31,14 +31,14 @@
             </div>
             <div class="form-grid">
                 <div class="form-group full-width">
-                    <label for="sp-site-url">SharePoint Site URL <span class="required">*</span></label>
-                    <input type="url" id="sp-site-url" placeholder="https://yourcompany.sharepoint.com/sites/YourSiteName">
-                    <small class="help-text">Paste the full URL to your SharePoint site.</small>
+                    <label for="sp-site-url">SharePoint Site Base URL <span class="required">*</span></label>
+                    <input type="url" id="sp-site-url" placeholder="https://healthireland-my.sharepoint.com/personal/gavin_horan1_hse_ie">
+                    <small class="help-text">Paste your SharePoint site base URL (sharing links will be automatically cleaned).</small>
                 </div>
                 <div class="form-group full-width">
                     <label for="sp-list-name">SharePoint List Name <span class="required">*</span></label>
                     <input type="text" id="sp-list-name" value="ChangeRequests" placeholder="e.g. ChangeRequests">
-                    <small class="help-text">The exact name of the list you created in SharePoint.</small>
+                    <small class="help-text">The exact name of the list created in SharePoint.</small>
                 </div>
             </div>
         </section>
@@ -50,7 +50,7 @@
         </div>
 
         <main class="main-content">
-            <!-- Simplified Single-Item Form -->
+            <!-- Simplified Form -->
             <section class="card form-card">
                 <div class="card-header">
                     <h2>Submit Change Request</h2>
@@ -61,7 +61,7 @@
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="req-name">Requester Name <span class="required">*</span></label>
-                            <input type="text" id="req-name" required placeholder="e.g. Alex Morgan">
+                            <input type="text" id="req-name" required placeholder="e.g. Gavin Horan">
                         </div>
 
                         <div class="form-group">
@@ -89,6 +89,14 @@
             </section>
         </main>
     </div>
+
+    <!-- Hidden iFrame and Form for CORS-Bypassing Submissions -->
+    <iframe name="sp_target_iframe" id="sp_target_iframe" style="display:none;"></iframe>
+    <form id="hidden-sp-form" method="POST" target="sp_target_iframe" action="" style="display:none;">
+        <input type="hidden" name="Title" id="hidden-title">
+        <input type="hidden" name="RequesterName" id="hidden-requester">
+        <input type="hidden" name="Description" id="hidden-desc">
+    </form>
 
     <script src="app.js"></script>
 </body>
