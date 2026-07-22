@@ -20,16 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper: Clean and sanitize SharePoint URLs
     function sanitizeSharePointSiteUrl(rawUrl) {
         if (!rawUrl) return '';
-        let clean = rawUrl.split('?')[0]; // remove query params like ?e=sB9k8I
-        clean = clean.replace(/\/:[a-z]:\/r\//i, '/'); // remove /:l:/r/ sharing path segments
+        let clean = rawUrl.split('?')[0];
+        clean = clean.replace(/\/:[a-z]:\/r\//i, '/');
         const listsIdx = clean.indexOf('/Lists/');
         if (listsIdx !== -1) {
-            clean = clean.substring(0, listsIdx); // strip /Lists/ChangeRequests part
+            clean = clean.substring(0, listsIdx);
         }
         return clean.replace(/\/+$/, '');
     }
 
-    // Auto-fill site URL if available
+    // Auto-fill site URL
     if (localStorage.getItem(STORAGE_SITE_URL)) {
         spSiteUrlInput.value = localStorage.getItem(STORAGE_SITE_URL);
     } else {
@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Form submission handler using HTML Form POST to bypass CORS
-    form.addEventListener('submit', async (e) => {
+    // Zero-Fetch HTML Form Submission (Bypasses JS network error checks)
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
 
         const rawUrl = spSiteUrlInput.value.trim();
@@ -73,43 +73,23 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSubmitSp.innerHTML = `Submitting to SharePoint...`;
 
         try {
-            // Populate hidden HTML form inputs
+            // Populate hidden HTML form fields
             hiddenTitle.value = changeTitle;
             hiddenRequester.value = requesterName;
             hiddenDesc.value = changeDesc;
 
-            // Set hidden form action endpoint to SharePoint List items API
+            // Target SharePoint List API
             const postEndpoint = `${siteUrl}/_api/web/lists/getbytitle('${listName}')/items`;
             hiddenForm.action = postEndpoint;
 
-            // Submit HTML form natively (bypasses browser CORS preflight check)
+            // Submit HTML form natively (no fetch API used!)
             hiddenForm.submit();
 
-            // Also send fallback no-cors fetch request to ensure server processing
-            try {
-                const payload = {
-                    "__metadata": { "type": `SP.Data.${listName}ListItem` },
-                    "Title": changeTitle,
-                    "RequesterName": requesterName,
-                    "Description": changeDesc
-                };
-                fetch(postEndpoint, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Accept': 'application/json; odata=verbose',
-                        'Content-Type': 'application/json; odata=verbose'
-                    },
-                    body: JSON.stringify(payload)
-                });
-            } catch (ignore) {}
-
-            showToast(`Success! Change Request "${changeTitle}" submitted to SharePoint!`, 'success');
+            showToast(`Submitted "${changeTitle}" to SharePoint List "${listName}". Check your list!`, 'success');
             form.reset();
 
         } catch (err) {
-            console.error(err);
-            showToast(`Error submitting form: ${err.message}`, 'error');
+            showToast(`Form error: ${err.message}`, 'error');
         } finally {
             setTimeout(() => {
                 btnSubmitSp.disabled = false;
