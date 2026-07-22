@@ -13,32 +13,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const STORAGE_SITE_URL = 'changerequester_sp_site_url';
     const STORAGE_LIST_NAME = 'changerequester_sp_list_name';
 
-    // Auto-detect SharePoint site URL if hosted inside SharePoint
-    if (window.location.origin.includes('sharepoint.com')) {
-        // Extract current site web URL (e.g., https://tenant.sharepoint.com/sites/sitename)
-        const pathParts = window.location.pathname.split('/');
-        if (pathParts.length >= 3 && pathParts[1] === 'sites') {
-            spSiteUrlInput.value = `${window.location.origin}/${pathParts[1]}/${pathParts[2]}`;
-        } else {
-            spSiteUrlInput.value = window.location.origin;
+    // Helper: Clean and sanitize SharePoint URLs (handles sharing links like /:l:/r/personal/...)
+    function sanitizeSharePointSiteUrl(rawUrl) {
+        if (!rawUrl) return '';
+        let clean = rawUrl.split('?')[0]; // remove query params like ?e=sB9k8I
+        clean = clean.replace(/\/:[a-z]:\/r\//i, '/'); // remove /:l:/r/ sharing path segments
+        const listsIdx = clean.indexOf('/Lists/');
+        if (listsIdx !== -1) {
+            clean = clean.substring(0, listsIdx); // strip /Lists/ChangeRequests part
         }
-    } else if (localStorage.getItem(STORAGE_SITE_URL)) {
+        return clean.replace(/\/+$/, '');
+    }
+
+    // Auto-detect or load saved URL
+    if (localStorage.getItem(STORAGE_SITE_URL)) {
         spSiteUrlInput.value = localStorage.getItem(STORAGE_SITE_URL);
+    } else if (document.referrer && document.referrer.includes('sharepoint.com')) {
+        spSiteUrlInput.value = sanitizeSharePointSiteUrl(document.referrer);
     }
 
     if (localStorage.getItem(STORAGE_LIST_NAME)) {
         spListNameInput.value = localStorage.getItem(STORAGE_LIST_NAME);
     }
 
+    // Live URL sanitization when user pastes a link
+    spSiteUrlInput.addEventListener('change', () => {
+        const cleaned = sanitizeSharePointSiteUrl(spSiteUrlInput.value.trim());
+        if (cleaned !== spSiteUrlInput.value.trim()) {
+            spSiteUrlInput.value = cleaned;
+            showToast(`Sanitized SharePoint Site URL to: ${cleaned}`, 'info');
+        }
+    });
+
     // Submit to SharePoint List via REST API
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        let siteUrl = spSiteUrlInput.value.trim().replace(/\/+$/, '');
+        const rawUrl = spSiteUrlInput.value.trim();
+        const siteUrl = sanitizeSharePointSiteUrl(rawUrl);
         const listName = spListNameInput.value.trim();
 
-        if (!listName) {
-            showToast('Please enter your SharePoint List Name.', 'error');
+        if (!siteUrl || !listName) {
+            showToast('Please enter your SharePoint Site URL and List Name.', 'error');
             return;
         }
 
@@ -56,24 +72,26 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSubmitSp.innerHTML = `Submitting to SharePoint...`;
 
         try {
-            // Determine base URL: if hosted on SharePoint, can use relative path or full URL
-            const baseUrl = siteUrl ? siteUrl : '';
-
             // Step 1: Fetch Request Digest Token
-            const contextUrl = `${baseUrl}/_api/contextinfo`;
-            const contextRes = await fetch(contextUrl, {
-                method: 'POST',
-                headers: { 'Accept': 'application/json; odata=verbose' }
-            });
-
+            const contextUrl = `${siteUrl}/_api/contextinfo`;
             let requestDigest = '';
-            if (contextRes.ok) {
-                const contextData = await contextRes.json();
-                requestDigest = contextData.d.GetContextWebInformation.FormDigestValue;
+            
+            try {
+                const contextRes = await fetch(contextUrl, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json; odata=verbose' },
+                    credentials: 'include'
+                });
+                if (contextRes.ok) {
+                    const contextData = await contextRes.json();
+                    requestDigest = contextData.d.GetContextWebInformation.FormDigestValue;
+                }
+            } catch (err) {
+                console.warn('ContextInfo fetch warning:', err);
             }
 
             // Step 2: Post item to SharePoint List
-            const postItemUrl = `${baseUrl}/_api/web/lists/getbytitle('${listName}')/items`;
+            const postItemUrl = `${siteUrl}/_api/web/lists/getbytitle('${listName}')/items`;
             
             const payload = {
                 "__metadata": { "type": `SP.Data.${listName}ListItem` },
@@ -94,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(postItemUrl, {
                 method: 'POST',
                 headers: headers,
+                credentials: 'include',
                 body: JSON.stringify(payload)
             });
 
@@ -103,12 +122,12 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const errText = await response.text();
                 console.error('SharePoint API Error:', errText);
-                showToast(`SharePoint returned status ${response.status}. Check column names in list.`, 'error');
+                showToast(`SharePoint returned status ${response.status}. Verify list column names.`, 'error');
             }
 
         } catch (err) {
             console.error(err);
-            showToast(`CORS / Network error: ${err.message}. If running locally (file://), upload index.html directly into SharePoint Site Assets!`, 'error');
+            showToast(`CORS / Network Error: Browsers block cross-domain requests from github.io to sharepoint.com. Upload ChangeRequester.aspx directly to SharePoint Site Assets!`, 'error');
         } finally {
             btnSubmitSp.disabled = false;
             btnSubmitSp.innerHTML = originalText;
@@ -146,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toastMessage.textContent = msg;
         statusToast.className = `toast ${type}`;
         statusToast.classList.remove('hidden');
-        setTimeout(() => statusToast.classList.add('hidden'), 6000);
+        setTimeout(() => statusToast.classList.add('hidden'), 7000);
     }
 
     toastClose.addEventListener('click', () => statusToast.classList.add('hidden'));
