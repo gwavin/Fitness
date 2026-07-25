@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "fitness-todays-workout-v1";
+  const STORAGE_KEY = "fitness-todays-workout-baseline-v2";
   const rows = [...document.querySelectorAll("[data-exercise]")];
   const saveStatus = document.querySelector("#save-status");
   const sessionNote = document.querySelector("#session-note");
