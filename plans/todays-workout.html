@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's workout</title>
+  <link rel="stylesheet" href="todays-workout.css">
+</head>
+<body>
+  <main class="wrap">
+    <nav class="topbar" aria-label="Page navigation">
+      <a href="../index.html">&larr; Fitness home</a>
+      <span class="saved-note">Static, private, and saved only in this browser</span>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Today&#39;s workout</p>
+      <h1>Show up. Stay controlled. Finish with more in reserve.</h1>
+      <p class="hero__lead">Today is a baseline, not a test. Use smooth, comfortable reps and stop each set while your technique is still crisp.</p>
+      <p class="hero__meta">About 35 minutes &middot; Target effort RPE 5&ndash;6/10 &middot; No maximal work</p>
+    </header>
+
+    <div class="layout">
+      <div class="stack">
+        <section class="card safety" aria-labelledby="safety-heading">
+          <h2 id="safety-heading">Safety first</h2>
+          <p><strong>Stop the exercise</strong> for sharp or increasing pain, a painful shoulder pinch, joint instability or giving way, new numbness or weakness, dizziness, chest pain, or unusual shortness of breath. Do not work through symptoms that change your movement.</p>
+          <p>Seek assessment from an appropriately qualified healthcare professional if symptoms are severe, persist, recur, or limit normal activity. This workout is general training guidance, not medical advice or a diagnosis.</p>
+        </section>
+
+        <section class="card" aria-labelledby="warmup-heading">
+          <h2 id="warmup-heading">1. Warm-up &mdash; 6 minutes</h2>
+          <ol>
+            <li>Easy march, walk, or bike &mdash; 2 minutes.</li>
+            <li>Gentle neck turns &mdash; 5 each side, only through a comfortable range; do not force the stiff direction.</li>
+            <li>Shoulder-blade squeezes &mdash; 8 slow reps, arms relaxed.</li>
+            <li>Ankle rocks holding support &mdash; 8 each side, heel down.</li>
+            <li>Box squats to a comfortable height &mdash; 6 easy reps.</li>
+          </ol>
+          <p class="plan-note"><strong>Readiness check:</strong> if the warm-up makes symptoms worse rather than easier, switch to a comfortable walk or stop for the day.</p>
+        </section>
+
+        <section class="card" aria-labelledby="work-heading">
+          <h2 id="work-heading">2. Conservative baseline</h2>
+          <p class="muted">Rest about one minute between sets. Choose loads that leave roughly 4&ndash;5 good reps in reserve. The goal is repeatable work, not fatigue.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Exercise</th><th>Today</th><th>Key guardrail</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Goblet box squat</td><td>2 &times; 6</td><td>Comfortable depth; use the box for control. Stop for ankle pain or instability.</td></tr>
+                <tr><td>Chest-supported dumbbell row</td><td>3 &times; 8</td><td>Lead with the elbows; no shrugging or neck strain. This is today&#39;s main pull-up builder.</td></tr>
+                <tr><td>Low step-up with support</td><td>2 &times; 6 each side</td><td>Use a low step and hand support. Quiet, controlled foot contact.</td></tr>
+                <tr><td>Dumbbell Romanian deadlift</td><td>2 &times; 8</td><td>Light load, soft knees, short range if needed; stop before form changes.</td></tr>
+                <tr><td>Incline bodyweight row</td><td>2 &times; 6</td><td>Use a secure bar or suspension straps. Make the angle easy; keep shoulders away from ears.</td></tr>
+                <tr><td>Supported calf raise</td><td>2 &times; 10</td><td>Hold support, move slowly, and keep pressure even through the foot.</td></tr>
+                <tr><td>Optional neutral-grip floor press</td><td>1 &times; 8</td><td>Very light and pain-free only. Skip it if the shoulder feels irritated; no overhead pressing today.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="finish-heading">
+          <h2 id="finish-heading">3. Finish &mdash; 3 minutes</h2>
+          <ul>
+            <li>Easy walk and relaxed breathing &mdash; 1 minute.</li>
+            <li>Gentle ankle circles &mdash; 5 each direction per side.</li>
+            <li>Comfortable neck turns &mdash; 3 each side. Stay well short of forcing range.</li>
+          </ul>
+          <p><strong>Progress rule:</strong> repeat this baseline before adding work. If technique stayed crisp and there is no meaningful symptom flare during or after the session, add only one small change next time: a little load, one rep per set, or one set to a pulling exercise.</p>
+        </section>
+
+        <section class="card" id="workout-log" aria-labelledby="log-heading">
+          <h2 id="log-heading">Log what you actually did</h2>
+          <p class="muted">Record the whole exercise here. For example, “8 each side” can go in reps and any set-by-set detail can go in notes.</p>
+          <label for="session-date"><strong>Session date</strong></label>
+          <input class="session-note" id="session-date" type="date">
+
+          <div data-exercise="Goblet box squat" class="log-grid">
+            <label>Goblet box squat</label>
+            <label>Weight (kg)<input data-field="weight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
+            <label>Sets<input data-field="sets" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label>RPE (1&ndash;10)<input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal"></label>
+            <label>Notes<textarea data-field="notes" rows="1"></textarea></label>
+          </div>
+          <div data-exercise="Chest-supported dumbbell row" class="log-grid">
+            <label>Chest-supported dumbbell row</label>
+            <label>Weight (kg)<input data-field="weight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
+            <label>Sets<input data-field="sets" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label>RPE (1&ndash;10)<input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal"></label>
+            <label>Notes<textarea data-field="notes" rows="1"></textarea></label>
+          </div>
+          <div data-exercise="Low step-up with support" class="log-grid">
+            <label>Low step-up with support</label>
+            <label>Weight (kg)<input data-field="weight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
+            <label>Sets<input data-field="sets" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label>RPE (1&ndash;10)<input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal"></label>
+            <label>Notes<textarea data-field="notes" rows="1"></textarea></label>
+          </div>
+          <div data-exercise="Dumbbell Romanian deadlift" class="log-grid">
+            <label>Dumbbell Romanian deadlift</label>
+            <label>Weight (kg)<input data-field="weight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
+            <label>Sets<input data-field="sets" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label>RPE (1&ndash;10)<input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal"></label>
+            <label>Notes<textarea data-field="notes" rows="1"></textarea></label>
+          </div>
+          <div data-exercise="Incline bodyweight row" class="log-grid">
+            <label>Incline bodyweight row</label>
+            <label>Weight (kg)<input data-field="weight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
+            <label>Sets<input data-field="sets" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label>RPE (1&ndash;10)<input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal"></label>
+            <label>Notes<textarea data-field="notes" rows="1"></textarea></label>
+          </div>
+          <div data-exercise="Supported calf raise" class="log-grid">
+            <label>Supported calf raise</label>
+            <label>Weight (kg)<input data-field="weight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
+            <label>Sets<input data-field="sets" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label>RPE (1&ndash;10)<input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal"></label>
+            <label>Notes<textarea data-field="notes" rows="1"></textarea></label>
+          </div>
+          <div data-exercise="Optional neutral-grip floor press" class="log-grid">
+            <label>Optional neutral-grip floor press</label>
+            <label>Weight (kg)<input data-field="weight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
+            <label>Sets<input data-field="sets" type="number" min="0" step="1" inputmode="numeric"></label>
+            <label>RPE (1&ndash;10)<input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal"></label>
+            <label>Notes<textarea data-field="notes" rows="1"></textarea></label>
+          </div>
+
+          <label class="session-note-label" for="session-note">Session note</label>
+          <textarea class="session-note" id="session-note" placeholder="Energy, stiffness, joint response, or what to adjust next time"></textarea>
+          <div class="log-actions">
+            <button id="download-csv" type="button">Download workout CSV</button>
+            <span id="save-status" class="save-status" role="status" aria-live="polite">Changes save automatically</span>
+          </div>
+          <p class="footnote">Your entries stay in this browser&#39;s local storage. They are not uploaded anywhere. Clearing site data will remove them, so download the CSV when you want a portable copy.</p>
+        </section>
+      </div>
+
+      <aside class="card timer-card" aria-labelledby="timer-heading">
+        <h2 id="timer-heading">One-minute timer</h2>
+        <p class="muted">Use for an exercise interval or rest.</p>
+        <div id="timer-display" class="timer-display" role="timer" aria-label="Time remaining">01:00</div>
+        <div class="button-row">
+          <button type="button" data-timer-label="Exercise minute">Start exercise</button>
+          <button type="button" data-timer-label="Rest minute">Start rest</button>
+          <button type="button" id="timer-reset" class="secondary">Reset</button>
+        </div>
+        <p id="timer-status" class="timer-status" role="status" aria-live="assertive">Completion is shown here and signalled with a short sound or vibration where supported.</p>
+      </aside>
+    </div>
+  </main>
+  <script src="todays-workout.js"></script>
+</body>
+</html>
