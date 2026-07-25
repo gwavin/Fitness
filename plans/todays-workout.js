@@ -6,10 +6,12 @@
   const saveStatus = document.querySelector("#save-status");
   const sessionNote = document.querySelector("#session-note");
   const sessionDate = document.querySelector("#session-date");
+  const sessionFields = [...document.querySelectorAll("[data-session-field]")];
 
   const emptyLog = () => ({
     date: new Date().toISOString().slice(0, 10),
     sessionNote: "",
+    ...Object.fromEntries(sessionFields.map((field) => [field.dataset.sessionField, ""])),
     exercises: rows.map((row) => ({
       exercise: row.dataset.exercise,
       weight: "",
@@ -30,8 +32,11 @@
   function fillForm() {
     sessionDate.value = log.date;
     sessionNote.value = log.sessionNote || "";
-    rows.forEach((row, index) => {
-      const entry = log.exercises?.find((item) => item.exercise === row.dataset.exercise) || log.exercises?.[index] || {};
+    sessionFields.forEach((field) => {
+      field.value = log[field.dataset.sessionField] || "";
+    });
+    rows.forEach((row) => {
+      const entry = log.exercises?.find((item) => item.exercise === row.dataset.exercise) || {};
       row.querySelectorAll("[data-field]").forEach((input) => {
         input.value = entry[input.dataset.field] || "";
       });
@@ -42,6 +47,7 @@
     log = {
       date: sessionDate.value,
       sessionNote: sessionNote.value,
+      ...Object.fromEntries(sessionFields.map((field) => [field.dataset.sessionField, field.value])),
       exercises: rows.map((row) => {
         const entry = { exercise: row.dataset.exercise };
         row.querySelectorAll("[data-field]").forEach((input) => {
@@ -72,7 +78,8 @@
   const csvCell = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
   document.querySelector("#download-csv").addEventListener("click", () => {
     readForm();
-    const header = ["date", "exercise", "actual_weight_kg", "actual_reps", "actual_sets", "rpe_1_10", "notes", "session_note"];
+    const sessionHeaders = sessionFields.map((field) => field.dataset.sessionField);
+    const header = ["date", "exercise", "weight_or_assistance", "actual_reps", "actual_sets", "rpe_1_10", "notes", "session_note", ...sessionHeaders];
     const csvRows = [
       header,
       ...log.exercises.map((entry) => [
@@ -83,7 +90,8 @@
         entry.sets,
         entry.rpe,
         entry.notes,
-        log.sessionNote
+        log.sessionNote,
+        ...sessionHeaders.map((key) => log[key])
       ])
     ];
     const blob = new Blob(["\ufeff" + csvRows.map((row) => row.map(csvCell).join(",")).join("\r\n")], {

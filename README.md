@@ -19,7 +19,7 @@ This repository hosts a static fitness and health website. It includes workout t
 - **demo/** – interactive prototype showing theme switching and JSON-driven content.
 
 ### `plans/`
-- **todays-workout.html** – conservative adaptive baseline workout with local logging, CSV export and one-minute exercise/rest timers.
+- **todays-workout.html** – 45-minute performance baseline with exercise guidance, local logging, CSV export and one-minute exercise/rest timers.
 - **august-rehab/** – twelve-week shoulder & barefoot running rehab program (`week01.html` through `week12.html`).
 - **workouts/** – detailed session write-ups, ankle rehab routines and rest-day templates.
 - **exercise-plan.html**, **fitness-plan-index.html**, **fitness-index.html**, **workout-template.html** – additional planning frameworks and indices.

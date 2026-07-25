@@ -98,6 +98,26 @@ h1 { margin: 0; font-size: clamp(2rem, 6vw, 4rem); line-height: 1.05; }
 .safety h2 { color: var(--red); }
 .plan-note { padding: 0.8rem 1rem; border-radius: 0.75rem; background: var(--amber-soft); color: #593208; }
 
+.exercise-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.exercise-card {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: #fbfdfb;
+}
+
+.exercise-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.exercise-card p { margin: 0.55rem 0 0; }
+.exercise-card__heading { display: flex; justify-content: space-between; align-items: baseline; gap: 0.8rem; }
+.exercise-card__heading h3 { margin: 0; }
+.exercise-card__heading span { color: var(--green); font-size: 0.82rem; font-weight: 800; white-space: nowrap; }
+.exercise-grid--finish .exercise-card:last-child { grid-column: auto; }
+
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 720px; }
 th, td { padding: 0.8rem 0.7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
@@ -168,6 +188,25 @@ button.secondary:hover { background: var(--green-soft); }
 .log-grid textarea { min-height: 2.6rem; resize: vertical; }
 .session-note-label { display: block; margin-top: 1rem; font-weight: 750; }
 .session-note { min-height: 5rem; resize: vertical; }
+.baseline-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0.7rem 0 1.1rem;
+}
+
+.baseline-summary label { color: var(--muted); font-size: 0.8rem; font-weight: 750; }
+.baseline-summary input {
+  display: block;
+  width: 100%;
+  margin-top: 0.3rem;
+  border: 1px solid #aebfb3;
+  border-radius: 0.55rem;
+  padding: 0.55rem;
+  color: var(--ink);
+  background: #fff;
+}
+
 .log-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: 1rem; }
 .save-status { color: var(--green); font-weight: 750; }
 .footnote { font-size: 0.9rem; color: var(--muted); }
@@ -175,6 +214,9 @@ button.secondary:hover { background: var(--green-soft); }
 @media (max-width: 860px) {
   .layout { grid-template-columns: 1fr; }
   .timer-card { position: static; order: -1; }
+  .exercise-grid { grid-template-columns: 1fr; }
+  .exercise-card:last-child:nth-child(odd), .exercise-grid--finish .exercise-card:last-child { grid-column: auto; }
+  .baseline-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .log-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .log-grid label:first-child, .log-grid label:last-child { grid-column: 1 / -1; }
 }
@@ -182,6 +224,8 @@ button.secondary:hover { background: var(--green-soft); }
 @media (max-width: 520px) {
   .wrap { width: min(100% - 1rem, 1120px); }
   .topbar { align-items: flex-start; flex-direction: column; }
+  .exercise-card__heading { align-items: flex-start; flex-direction: column; gap: 0.2rem; }
+  .baseline-summary { grid-template-columns: 1fr; }
   .log-grid { grid-template-columns: 1fr; }
   .log-grid label:first-child, .log-grid label:last-child { grid-column: auto; }
   button { width: 100%; }
