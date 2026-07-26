@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#143d29">
+  <title>Today's workout</title>
+  <link rel="stylesheet" href="todays-workout.css">
+</head>
+<body>
+  <noscript>
+    <p class="noscript">This workout runner needs JavaScript for logging, timers and the recap. The workout itself remains available in <code>current-workout.js</code>.</p>
+  </noscript>
+
+  <header class="site-header">
+    <a class="home-link" href="../../index.html" aria-label="Return to Fitness home">← Fitness home</a>
+    <span class="privacy-note">Private on this device</span>
+  </header>
+
+  <main class="app-shell" id="app">
+    <section class="loading-card" aria-live="polite">Loading today's workout…</section>
+  </main>
+
+  <div class="rest-dock" id="rest-dock" hidden>
+    <div>
+      <span class="rest-dock__label">Rest</span>
+      <strong id="rest-display">01:00</strong>
+    </div>
+    <div class="rest-dock__actions">
+      <button type="button" class="button button--quiet" id="rest-minus" aria-label="Reduce rest by 15 seconds">−15</button>
+      <button type="button" class="button" id="rest-toggle">Start</button>
+      <button type="button" class="button button--quiet" id="rest-plus" aria-label="Add 15 seconds">+15</button>
+    </div>
+  </div>
+
+  <script src="current-workout.js"></script>
+  <script src="todays-workout.js"></script>
+</body>
+</html>
