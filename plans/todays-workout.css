@@ -165,15 +165,14 @@ button.secondary:hover { background: var(--green-soft); }
 
 .log-grid {
   display: grid;
-  grid-template-columns: minmax(11rem, 1.6fr) repeat(4, minmax(5rem, 0.65fr)) minmax(12rem, 1.8fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.7rem;
   align-items: end;
-  padding: 0.85rem 0;
-  border-bottom: 1px solid var(--line);
+  padding: 0.85rem 0 0;
 }
 
 .log-grid label { color: var(--muted); font-size: 0.78rem; font-weight: 700; }
-.log-grid label:first-child { color: var(--ink); font-size: 0.92rem; }
+.log-grid label:last-child { grid-column: 1 / -1; }
 .log-grid input, .log-grid textarea, .session-note {
   display: block;
   width: 100%;
@@ -186,6 +185,11 @@ button.secondary:hover { background: var(--green-soft); }
 }
 
 .log-grid textarea { min-height: 2.6rem; resize: vertical; }
+.exercise-log {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
 .session-note-label { display: block; margin-top: 1rem; font-weight: 750; }
 .session-note { min-height: 5rem; resize: vertical; }
 .baseline-summary {
@@ -217,8 +221,7 @@ button.secondary:hover { background: var(--green-soft); }
   .exercise-grid { grid-template-columns: 1fr; }
   .exercise-card:last-child:nth-child(odd), .exercise-grid--finish .exercise-card:last-child { grid-column: auto; }
   .baseline-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .log-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .log-grid label:first-child, .log-grid label:last-child { grid-column: 1 / -1; }
+  .log-grid label:last-child { grid-column: 1 / -1; }
 }
 
 @media (max-width: 520px) {
@@ -227,7 +230,7 @@ button.secondary:hover { background: var(--green-soft); }
   .exercise-card__heading { align-items: flex-start; flex-direction: column; gap: 0.2rem; }
   .baseline-summary { grid-template-columns: 1fr; }
   .log-grid { grid-template-columns: 1fr; }
-  .log-grid label:first-child, .log-grid label:last-child { grid-column: auto; }
+  .log-grid label:last-child { grid-column: auto; }
   button { width: 100%; }
 }
 

@@ -73,7 +73,9 @@
     }, 1800);
   }
 
-  document.querySelector("#workout-log").addEventListener("input", save);
+  document.addEventListener("input", (event) => {
+    if (event.target.matches("[data-field], [data-session-field], #session-date, #session-note")) save();
+  });
 
   const csvCell = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`;
   document.querySelector("#download-csv").addEventListener("click", () => {
@@ -108,10 +110,12 @@
   const display = document.querySelector("#timer-display");
   const timerStatus = document.querySelector("#timer-status");
   const timerButtons = [...document.querySelectorAll("[data-timer-label]")];
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
   let remaining = 60;
   let endAt = 0;
   let interval;
   let activeLabel = "timer";
+  let audioContext;
 
   function renderTimer() {
     const seconds = Math.max(0, Math.ceil(remaining));
@@ -125,19 +129,37 @@
     if (message) timerStatus.textContent = message;
   }
 
+  async function ensureAudioContext() {
+    try {
+      if (!AudioContext) return undefined;
+      if (!audioContext || audioContext.state === "closed") audioContext = new AudioContext();
+      if (audioContext.state === "suspended") await audioContext.resume();
+      return audioContext;
+    } catch {
+      audioContext = undefined;
+      return undefined;
+    }
+  }
+
+  function playTone(context, frequency, startTime, duration, gainLevel) {
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.frequency.value = frequency;
+    gain.gain.setValueAtTime(0.001, startTime);
+    gain.gain.exponentialRampToValueAtTime(gainLevel, startTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+    oscillator.connect(gain).connect(context.destination);
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+  }
+
   function signalCompletion() {
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const context = new AudioContext();
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.frequency.value = 740;
-      gain.gain.setValueAtTime(0.12, context.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.45);
-      oscillator.connect(gain).connect(context.destination);
-      oscillator.start();
-      oscillator.stop(context.currentTime + 0.45);
-      oscillator.addEventListener("ended", () => context.close());
+      if (!audioContext || audioContext.state !== "running") return;
+      const now = audioContext.currentTime;
+      playTone(audioContext, 660, now, 0.18, 0.14);
+      playTone(audioContext, 880, now + 0.22, 0.18, 0.14);
+      playTone(audioContext, 1100, now + 0.44, 0.32, 0.16);
     } catch {
       // The live status text below is the accessible fallback when audio is unavailable.
     }
@@ -155,8 +177,9 @@
   }
 
   timerButtons.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       stopTimer();
+      await ensureAudioContext();
       remaining = 60;
       activeLabel = button.dataset.timerLabel;
       endAt = Date.now() + 60000;
