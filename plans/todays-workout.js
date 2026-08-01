@@ -110,10 +110,12 @@
   const display = document.querySelector("#timer-display");
   const timerStatus = document.querySelector("#timer-status");
   const timerButtons = [...document.querySelectorAll("[data-timer-label]")];
+  const alarmStop = document.querySelector("#alarm-stop");
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   let remaining = 60;
   let endAt = 0;
   let interval;
+  let alarmInterval;
   let activeLabel = "timer";
   let audioContext;
 
@@ -126,6 +128,14 @@
     clearInterval(interval);
     interval = undefined;
     timerButtons.forEach((button) => button.removeAttribute("aria-pressed"));
+    if (message) timerStatus.textContent = message;
+  }
+
+  function stopAlarm(message) {
+    clearInterval(alarmInterval);
+    alarmInterval = undefined;
+    alarmStop.hidden = true;
+    alarmStop.classList.remove("alarm-stop");
     if (message) timerStatus.textContent = message;
   }
 
@@ -153,7 +163,7 @@
     oscillator.stop(startTime + duration);
   }
 
-  function signalCompletion() {
+  function playAlarmPattern() {
     try {
       if (!audioContext || audioContext.state !== "running") return;
       const now = audioContext.currentTime;
@@ -166,11 +176,19 @@
     navigator.vibrate?.([160, 80, 160]);
   }
 
+  function signalCompletion() {
+    stopAlarm();
+    playAlarmPattern();
+    alarmStop.hidden = false;
+    alarmStop.classList.add("alarm-stop");
+    alarmInterval = setInterval(playAlarmPattern, 1500);
+  }
+
   function tick() {
     remaining = Math.max(0, (endAt - Date.now()) / 1000);
     renderTimer();
     if (remaining <= 0) {
-      stopTimer(`${activeLabel} complete. Audio or vibration signal played where supported.`);
+      stopTimer(`${activeLabel} complete. Alarm repeating until stopped where supported.`);
       signalCompletion();
       document.title = "Timer complete — Today's workout";
     }
@@ -179,20 +197,27 @@
   timerButtons.forEach((button) => {
     button.addEventListener("click", async () => {
       stopTimer();
+      stopAlarm();
       await ensureAudioContext();
-      remaining = 60;
+      remaining = Number(button.dataset.timerSeconds) || 60;
       activeLabel = button.dataset.timerLabel;
-      endAt = Date.now() + 60000;
+      endAt = Date.now() + remaining * 1000;
       button.setAttribute("aria-pressed", "true");
-      timerStatus.textContent = `${activeLabel} running. A visible message and optional sound will signal completion.`;
+      timerStatus.textContent = `${activeLabel} running. Alarm will repeat until stopped when complete.`;
       document.title = "Timer running — Today's workout";
       interval = setInterval(tick, 250);
       tick();
     });
   });
 
+  alarmStop.addEventListener("click", () => {
+    stopAlarm("Alarm stopped.");
+    document.title = "Today's workout";
+  });
+
   document.querySelector("#timer-reset").addEventListener("click", () => {
     remaining = 60;
+    stopAlarm();
     stopTimer("Timer reset to one minute.");
     renderTimer();
     document.title = "Today's workout";

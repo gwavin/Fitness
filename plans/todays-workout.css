@@ -141,6 +141,9 @@ td:first-child { font-weight: 750; }
 
 .button-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .timer-card .button-row { justify-content: center; }
+.timer-presets { margin-bottom: 0.6rem; }
+.timer-presets button { flex: 1 1 8.2rem; }
+.timer-controls button { min-width: 7rem; }
 
 button {
   border: 1px solid var(--green);
@@ -160,6 +163,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visib
 
 button.secondary { background: #fff; color: var(--green-dark); }
 button.secondary:hover { background: var(--green-soft); }
+button.alarm-stop {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+button.alarm-stop:hover { background: #6f1717; }
 
 .timer-status { min-height: 3em; margin-bottom: 0; color: var(--muted); }
 

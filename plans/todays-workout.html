@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Today's workout</title>
-  <link rel="stylesheet" href="todays-workout.css?v=20260801">
+  <link rel="stylesheet" href="todays-workout.css?v=20260801-2">
 </head>
 <body>
   <main class="wrap">
@@ -180,15 +180,21 @@
       </div>
 
       <aside class="card timer-card" aria-labelledby="timer-heading">
-        <h2 id="timer-heading">One-minute timer</h2>
-        <p class="muted">Use for an exercise interval or rest.</p>
+        <h2 id="timer-heading">Workout timer</h2>
+        <p class="muted">Use the presets for warm-up, exercise, rest, or conditioning blocks.</p>
         <div id="timer-display" class="timer-display" role="timer" aria-label="Time remaining">01:00</div>
-        <div class="button-row">
-          <button type="button" data-timer-label="Exercise minute">Start exercise</button>
-          <button type="button" data-timer-label="Rest minute">Start rest</button>
+        <div class="button-row timer-presets">
+          <button type="button" data-timer-label="Warm-up march" data-timer-seconds="120">March 2:00</button>
+          <button type="button" data-timer-label="Exercise minute" data-timer-seconds="60">Exercise 1:00</button>
+          <button type="button" data-timer-label="Rest minute" data-timer-seconds="60">Rest 1:00</button>
+          <button type="button" data-timer-label="Benchmark block" data-timer-seconds="300">Block 5:00</button>
+          <button type="button" data-timer-label="Conditioning block" data-timer-seconds="300">Conditioning 5:00</button>
+        </div>
+        <div class="button-row timer-controls">
+          <button type="button" id="alarm-stop" class="secondary" hidden>Stop alarm</button>
           <button type="button" id="timer-reset" class="secondary">Reset</button>
         </div>
-        <p id="timer-status" class="timer-status" role="status" aria-live="assertive">Completion is shown here and signalled with a short sound or vibration where supported.</p>
+        <p id="timer-status" class="timer-status" role="status" aria-live="assertive">Completion is shown here and the alarm repeats until stopped where sound or vibration is supported.</p>
       </aside>
     </div>
   </main>
