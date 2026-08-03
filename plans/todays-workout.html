@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tomorrow's back-friendly workout</title>
-  <link rel="stylesheet" href="todays-workout.css?v=20260801-2">
+  <link rel="stylesheet" href="todays-workout.css?v=20260803-1">
 </head>
 <body>
   <main class="wrap">
@@ -33,7 +33,16 @@
           <h2 id="warmup-heading">0:00&ndash;7:00 &mdash; Readiness and warm-up</h2>
           <p>Before starting, record how the lower back, shoulder, neck, and ankle feel today. These numbers are context, not a pass/fail score.</p>
           <ol>
-            <li>Brisk walk or easy march &mdash; 2 minutes. You should still be able to speak comfortably.</li>
+            <li>Brisk walk or easy march &mdash; 2 minutes. You should still be able to speak comfortably.
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>March timer</strong><output data-timer-display role="timer">02:00</output></div>
+                <div class="button-row">
+                  <button type="button" data-timer-label="Warm-up march" data-timer-seconds="120">Start 2:00</button>
+                  <button type="button" class="secondary" data-timer-stop hidden>Stop</button>
+                </div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+              </div>
+            </li>
             <li>Gentle neck turns &mdash; 5 each side, only through a comfortable range; do not force the stiff direction.</li>
             <li>Shoulder-blade squeezes and band pull-aparts &mdash; 8 slow reps of each, arms below painful range.</li>
             <li>Ankle rocks holding support &mdash; 8 each side, heel down.</li>
@@ -51,6 +60,11 @@
               <p><strong>What it trains:</strong> legs and trunk while the box gives you a repeatable depth for future comparisons.</p>
               <p><strong>How:</strong> hold one dumbbell at the chest, sit between the hips until you lightly touch the box, then drive the floor away. Keep the whole foot planted and knees tracking with the toes.</p>
               <p><strong>Guardrail:</strong> choose a box height that lets the ankle feel stable. Do not chase depth or bounce off the box.</p>
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>Squat timer</strong><output data-timer-display role="timer">05:00</output></div>
+                <div class="button-row"><button type="button" data-timer-label="Goblet box squat block" data-timer-seconds="300">Start 5:00 block</button><button type="button" class="secondary" data-timer-label="Goblet box squat rest" data-timer-seconds="60">Rest 1:00</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+              </div>
               <div data-exercise="Goblet box squat" class="log-grid exercise-log">
                 <label>Weight / assistance<input data-field="weight" type="text" inputmode="decimal"></label>
                 <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
@@ -64,6 +78,11 @@
               <p><strong>What it trains:</strong> upper-back and arm pulling strength without asking the neck or lower back to brace heavily.</p>
               <p><strong>How:</strong> lie chest-down on a slightly inclined bench, let the dumbbells hang, then pull the elbows toward the back pockets. Pause briefly and lower fully under control.</p>
               <p><strong>Guardrail:</strong> keep the neck long and shoulders away from the ears; stop before shrugging or twisting begins.</p>
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>Row timer</strong><output data-timer-display role="timer">05:00</output></div>
+                <div class="button-row"><button type="button" data-timer-label="Chest-supported row block" data-timer-seconds="300">Start 5:00 block</button><button type="button" class="secondary" data-timer-label="Chest-supported row rest" data-timer-seconds="60">Rest 1:00</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+              </div>
               <div data-exercise="Chest-supported dumbbell row" class="log-grid exercise-log">
                 <label>Weight / assistance<input data-field="weight" type="text" inputmode="decimal"></label>
                 <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
@@ -77,6 +96,11 @@
               <p><strong>What it trains:</strong> glutes and hip extension from a supported floor position, without a loaded standing hinge.</p>
               <p><strong>How:</strong> lie on your back with knees bent and feet planted. Gently brace, press through the feet, and lift the hips only as high as feels comfortable. Pause briefly, then lower slowly.</p>
               <p><strong>Guardrail:</strong> use bodyweight first. Keep the ribs relaxed and stop before the lower back arches or discomfort increases.</p>
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>Bridge timer</strong><output data-timer-display role="timer">05:00</output></div>
+                <div class="button-row"><button type="button" data-timer-label="Floor glute bridge block" data-timer-seconds="300">Start 5:00 block</button><button type="button" class="secondary" data-timer-label="Floor glute bridge rest" data-timer-seconds="60">Rest 1:00</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+              </div>
               <div data-exercise="Floor glute bridge" class="log-grid exercise-log">
                 <label>Weight / assistance<input data-field="weight" type="text" placeholder="Bodyweight first"></label>
                 <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
@@ -90,6 +114,11 @@
               <p><strong>What it trains:</strong> pressing strength with the floor limiting shoulder extension and total range.</p>
               <p><strong>How:</strong> lie on the floor with palms facing each other, elbows about 30&ndash;45 degrees from the body, and press smoothly without forcing the shoulders forward.</p>
               <p><strong>Guardrail:</strong> use a modest load and stop for pinching or increasing shoulder pain. This is a tolerance benchmark, not a pressing contest.</p>
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>Press timer</strong><output data-timer-display role="timer">05:00</output></div>
+                <div class="button-row"><button type="button" data-timer-label="Floor press block" data-timer-seconds="300">Start 5:00 block</button><button type="button" class="secondary" data-timer-label="Floor press rest" data-timer-seconds="60">Rest 1:00</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+              </div>
               <div data-exercise="Neutral-grip dumbbell floor press" class="log-grid exercise-log">
                 <label>Weight / assistance<input data-field="weight" type="text" inputmode="decimal"></label>
                 <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
@@ -104,6 +133,11 @@
               <p><strong>How:</strong> use a secure bar low enough to keep one or both feet on a box. Start with long arms, lightly push through the feet as needed, and pull the chest toward the bar. Complete 3 sets of 3&ndash;6 smooth reps.</p>
               <p><strong>Baseline:</strong> record reps plus the box height and whether one or two feet assisted you. Use the same setup next time. A securely anchored resistance band is optional, not required.</p>
               <p><strong>Guardrail:</strong> no uncontrolled hanging. If the overhead start position is uncomfortable, substitute an incline bodyweight row and record the bar height.</p>
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>Pull-up timer</strong><output data-timer-display role="timer">05:00</output></div>
+                <div class="button-row"><button type="button" data-timer-label="Foot-assisted pull-up block" data-timer-seconds="300">Start 5:00 block</button><button type="button" class="secondary" data-timer-label="Foot-assisted pull-up rest" data-timer-seconds="60">Rest 1:00</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+              </div>
               <div data-exercise="Foot-assisted pull-up" class="log-grid exercise-log">
                 <label>Weight / assistance<input data-field="weight" type="text" placeholder="Bodyweight / feet"></label>
                 <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
@@ -122,6 +156,11 @@
               <div class="exercise-card__heading"><h3>Single-leg balance + calf raise</h3><span>5 minutes</span></div>
               <p><strong>How:</strong> stand beside support and time one stable single-leg hold per side, up to 30 seconds. Then hold support and perform one controlled set of calf raises per side, stopping at technical fatigue or 15 reps.</p>
               <p><strong>Record:</strong> balance seconds and calf-raise reps for each side. A fingertip save is fine; note it rather than pretending it did not happen.</p>
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>Balance timer</strong><output data-timer-display role="timer">00:30</output></div>
+                <div class="button-row"><button type="button" data-timer-label="Single-leg balance" data-timer-seconds="30">Start 0:30</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready. Restart for the other side.</p>
+              </div>
               <div data-exercise="Single-leg balance and calf raise" class="log-grid exercise-log">
                 <label>Weight / assistance<input data-field="weight" type="text" placeholder="Bodyweight / support"></label>
                 <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
@@ -134,6 +173,11 @@
               <div class="exercise-card__heading"><h3>Brisk conditioning</h3><span>5 minutes</span></div>
               <p><strong>How:</strong> walk briskly, march, or use a light step-up rhythm. Set a pace where breathing is clearly elevated but you can still speak a full sentence.</p>
               <p><strong>Record:</strong> distance, step count, or the exact activity and pace, plus whether the talk test stayed comfortable.</p>
+              <div class="inline-timer" data-inline-timer>
+                <div class="inline-timer__readout"><strong>Conditioning timer</strong><output data-timer-display role="timer">05:00</output></div>
+                <div class="button-row"><button type="button" data-timer-label="Brisk conditioning" data-timer-seconds="300">Start 5:00</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+                <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+              </div>
               <div data-exercise="Five-minute brisk conditioning" class="log-grid exercise-log">
                 <label>Weight / assistance<input data-field="weight" type="text" placeholder="Bodyweight"></label>
                 <label>Reps<input data-field="reps" type="text" inputmode="numeric"></label>
@@ -144,6 +188,11 @@
             </article>
           </div>
           <p><strong>Final 2 minutes:</strong> record the immediate lower-back, shoulder, neck, and ankle response. Add the next-morning response later. Do not repeat or progress an exercise that causes a meaningful delayed flare-up.</p>
+          <div class="inline-timer" data-inline-timer>
+            <div class="inline-timer__readout"><strong>Final check timer</strong><output data-timer-display role="timer">02:00</output></div>
+            <div class="button-row"><button type="button" data-timer-label="Final response check" data-timer-seconds="120">Start 2:00</button><button type="button" class="secondary" data-timer-stop hidden>Stop</button></div>
+            <p data-timer-status class="timer-status" role="status" aria-live="assertive">Ready.</p>
+          </div>
         </section>
 
         <section class="card" id="workout-log" aria-labelledby="log-heading">
@@ -182,25 +231,8 @@
         </section>
       </div>
 
-      <aside class="card timer-card" aria-labelledby="timer-heading">
-        <h2 id="timer-heading">Workout timer</h2>
-        <p class="muted">Use the presets for warm-up, exercise, rest, or conditioning blocks.</p>
-        <div id="timer-display" class="timer-display" role="timer" aria-label="Time remaining">01:00</div>
-        <div class="button-row timer-presets">
-          <button type="button" data-timer-label="Warm-up march" data-timer-seconds="120">March 2:00</button>
-          <button type="button" data-timer-label="Exercise minute" data-timer-seconds="60">Exercise 1:00</button>
-          <button type="button" data-timer-label="Rest minute" data-timer-seconds="60">Rest 1:00</button>
-          <button type="button" data-timer-label="Benchmark block" data-timer-seconds="300">Block 5:00</button>
-          <button type="button" data-timer-label="Conditioning block" data-timer-seconds="300">Conditioning 5:00</button>
-        </div>
-        <div class="button-row timer-controls">
-          <button type="button" id="alarm-stop" class="secondary" hidden>Stop alarm</button>
-          <button type="button" id="timer-reset" class="secondary">Reset</button>
-        </div>
-        <p id="timer-status" class="timer-status" role="status" aria-live="assertive">Completion is shown here and the alarm repeats until stopped where sound or vibration is supported.</p>
-      </aside>
     </div>
   </main>
-  <script src="todays-workout.js"></script>
+  <script src="todays-workout.js?v=20260803-1"></script>
 </body>
 </html>
