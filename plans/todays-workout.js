@@ -107,36 +107,42 @@
     saveStatus.textContent = "CSV downloaded";
   });
 
-  const display = document.querySelector("#timer-display");
-  const timerStatus = document.querySelector("#timer-status");
   const timerButtons = [...document.querySelectorAll("[data-timer-label]")];
-  const alarmStop = document.querySelector("#alarm-stop");
+  const stopButtons = [...document.querySelectorAll("[data-timer-stop]")];
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   let remaining = 60;
   let endAt = 0;
   let interval;
   let alarmInterval;
   let activeLabel = "timer";
+  let activeTimer;
+  let activeDisplay;
+  let activeStatus;
+  let activeStop;
   let audioContext;
 
   function renderTimer() {
+    if (!activeDisplay) return;
     const seconds = Math.max(0, Math.ceil(remaining));
-    display.textContent = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+    activeDisplay.textContent = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
   }
 
   function stopTimer(message) {
     clearInterval(interval);
     interval = undefined;
     timerButtons.forEach((button) => button.removeAttribute("aria-pressed"));
-    if (message) timerStatus.textContent = message;
+    if (message && activeStatus) activeStatus.textContent = message;
   }
 
   function stopAlarm(message) {
     clearInterval(alarmInterval);
     alarmInterval = undefined;
-    alarmStop.hidden = true;
-    alarmStop.classList.remove("alarm-stop");
-    if (message) timerStatus.textContent = message;
+    stopButtons.forEach((button) => {
+      button.hidden = true;
+      button.classList.remove("alarm-stop");
+      button.textContent = "Stop";
+    });
+    if (message && activeStatus) activeStatus.textContent = message;
   }
 
   async function ensureAudioContext() {
@@ -179,8 +185,9 @@
   function signalCompletion() {
     stopAlarm();
     playAlarmPattern();
-    alarmStop.hidden = false;
-    alarmStop.classList.add("alarm-stop");
+    activeStop.hidden = false;
+    activeStop.textContent = "Stop alarm";
+    activeStop.classList.add("alarm-stop");
     alarmInterval = setInterval(playAlarmPattern, 1500);
   }
 
@@ -190,39 +197,43 @@
     if (remaining <= 0) {
       stopTimer(`${activeLabel} complete. Alarm repeating until stopped where supported.`);
       signalCompletion();
-      document.title = "Timer complete — Today's workout";
+      document.title = "Timer complete — Tomorrow's workout";
     }
   }
 
   timerButtons.forEach((button) => {
     button.addEventListener("click", async () => {
+      const nextTimer = button.closest("[data-inline-timer]");
+      if (activeTimer && activeTimer !== nextTimer && activeStatus) {
+        activeStatus.textContent = "Stopped when another timer started.";
+      }
       stopTimer();
       stopAlarm();
       await ensureAudioContext();
+      activeTimer = nextTimer;
+      activeDisplay = activeTimer.querySelector("[data-timer-display]");
+      activeStatus = activeTimer.querySelector("[data-timer-status]");
+      activeStop = activeTimer.querySelector("[data-timer-stop]");
       remaining = Number(button.dataset.timerSeconds) || 60;
       activeLabel = button.dataset.timerLabel;
       endAt = Date.now() + remaining * 1000;
       button.setAttribute("aria-pressed", "true");
-      timerStatus.textContent = `${activeLabel} running. Alarm will repeat until stopped when complete.`;
-      document.title = "Timer running — Today's workout";
+      activeStop.hidden = false;
+      activeStatus.textContent = `${activeLabel} running. Alarm will repeat until stopped when complete.`;
+      document.title = "Timer running — Tomorrow's workout";
       interval = setInterval(tick, 250);
       tick();
     });
   });
 
-  alarmStop.addEventListener("click", () => {
-    stopAlarm("Alarm stopped.");
-    document.title = "Today's workout";
-  });
-
-  document.querySelector("#timer-reset").addEventListener("click", () => {
-    remaining = 60;
-    stopAlarm();
-    stopTimer("Timer reset to one minute.");
-    renderTimer();
-    document.title = "Today's workout";
+  stopButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const alarmWasRunning = Boolean(alarmInterval);
+      stopTimer();
+      stopAlarm(alarmWasRunning ? "Alarm stopped." : "Timer stopped.");
+      document.title = "Tomorrow's back-friendly workout";
+    });
   });
 
   fillForm();
-  renderTimer();
 })();
