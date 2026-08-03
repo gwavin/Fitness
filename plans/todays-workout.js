@@ -107,6 +107,20 @@
     saveStatus.textContent = "CSV downloaded";
   });
 
+  document.querySelector("#reset-workout-log").addEventListener("click", () => {
+    const confirmed = window.confirm("Reset all saved records for this workout? This cannot be undone unless you downloaded a CSV first.");
+    if (!confirmed) return;
+
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      log = emptyLog();
+      fillForm();
+      saveStatus.textContent = "Workout records reset";
+    } catch {
+      saveStatus.textContent = "Could not reset the saved records on this device.";
+    }
+  });
+
   const timerButtons = [...document.querySelectorAll("[data-timer-label]")];
   const stopButtons = [...document.querySelectorAll("[data-timer-stop]")];
   const AudioContext = window.AudioContext || window.webkitAudioContext;
