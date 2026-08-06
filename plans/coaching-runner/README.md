@@ -1,11 +1,11 @@
 # Coaching Workout Runner
 
-This is a local-only, 45-minute workout runner. It has no ChatGPT or OpenAI API integration and does not upload session data.
+This is a local-only workout runner whose duration is defined by the current reviewed prescription. It has no ChatGPT or OpenAI API integration and does not upload session data.
 
 ## Coaching handoff cycle
 
 1. Gavin opens the Today’s Workout runner.
-2. Gavin completes the reviewed 45-minute session.
+2. Gavin completes the reviewed session.
 3. The runner records sets, responses and notes locally.
 4. Gavin downloads the JSON or Markdown coaching handoff.
 5. Gavin optionally downloads the audio reflection.

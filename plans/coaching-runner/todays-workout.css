@@ -160,7 +160,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus
 .field--wide { grid-column: 1 / -1; }
 .field span { color: var(--muted); font-size: 0.82rem; font-weight: 800; }
 
-input, textarea {
+input, textarea, select {
+  font: inherit;
   width: 100%;
   min-height: 3rem;
   border: 1px solid #aebdb2;

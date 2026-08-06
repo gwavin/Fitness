@@ -79,14 +79,14 @@
     return {
       id: `${workout.id}-${now}`,
       workoutId: workout.id,
-      workoutDate: localDate(),
+      workoutDate: workout.publishedFor || localDate(),
       startedAt: now,
       completedAt: "",
       activeStepIndex: 0,
-      readiness: { energy: "", shoulder: "", neck: "", ankle: "", notes: "" },
+      readiness: { energy: "", back: "", shoulder: "", neck: "", ankle: "", notes: "" },
       exerciseLogs: {},
       outcome: {
-        shoulder: "", neck: "", ankle: "", sessionRpe: "", reflection: "", whatFeltStrong: "", whatLimitedSession: "", changeForNextTime: "", nextMorning: ""
+        back: "", shoulder: "", neck: "", ankle: "", sessionRpe: "", apprehension: "", painOrTechniqueChange: "", reflection: "", whatFeltStrong: "", whatLimitedSession: "", changeForNextTime: "", nextMorning: ""
       }
     };
   }
@@ -122,17 +122,25 @@
         <h3>Before you begin</h3>
         <div class="form-grid" id="readiness-form">
           <label class="field"><span>Energy, 1–5</span><input id="energy" type="number" min="1" max="5" inputmode="numeric" value="${escapeText(session?.readiness?.energy)}"></label>
+          <label class="field"><span>Back, 0–10</span><input id="back-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.back)}"></label>
           <label class="field"><span>Shoulder, 0–10</span><input id="shoulder-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.shoulder)}"></label>
           <label class="field"><span>Neck, 0–10</span><input id="neck-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.neck)}"></label>
           <label class="field"><span>Ankle, 0–10</span><input id="ankle-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.ankle)}"></label>
-          <label class="field field--wide"><span>Anything I should know today?</span><textarea id="readiness-notes" placeholder="Sleep, soreness, time pressure, equipment changes…">${escapeText(session?.readiness?.notes)}</textarea></label>
+          <label class="field field--wide"><span>Any new pain, weakness, numbness or altered movement?</span><textarea id="readiness-notes" placeholder="Also note sleep, soreness, apprehension, time pressure or equipment changes…">${escapeText(session?.readiness?.notes)}</textarea></label>
         </div>
         <div class="button-row">
-          <button class="button button--large" type="button" id="begin-workout">${session ? "Continue workout" : "Begin 45-minute workout"}</button>
+          <button class="button button--large" type="button" id="begin-workout">${session ? "Continue workout" : `Begin ${workout.durationMinutes}-minute workout`}</button>
           ${session ? '<button class="button button--danger" type="button" id="discard-session">Discard unfinished session</button>' : ""}
         </div>
         <p class="status" id="save-status">Entries save automatically on this device.</p>
       </section>
+
+      ${workout.previousSession ? `
+        <section class="card panel">
+          <h2>Previous session · ${escapeText(formatDate(workout.previousSession.date))}</h2>
+          <p>${escapeText(workout.previousSession.context)}</p>
+          <ul>${(workout.previousSession.results || []).map((result) => `<li>${escapeText(result)}</li>`).join("")}</ul>
+        </section>` : ""}
 
       ${recent.length ? `
         <section class="card panel">
@@ -149,6 +157,7 @@
       if (!session) session = newSession();
       session.readiness = {
         energy: document.querySelector("#energy").value,
+        back: document.querySelector("#back-before").value,
         shoulder: document.querySelector("#shoulder-before").value,
         neck: document.querySelector("#neck-before").value,
         ankle: document.querySelector("#ankle-before").value,
@@ -166,6 +175,7 @@
       if (!session) return;
       session.readiness = {
         energy: document.querySelector("#energy").value,
+        back: document.querySelector("#back-before").value,
         shoulder: document.querySelector("#shoulder-before").value,
         neck: document.querySelector("#neck-before").value,
         ankle: document.querySelector("#ankle-before").value,
@@ -197,9 +207,9 @@
   function previousFor(step) {
     const prior = latestCompletedComparable();
     const log = prior?.exerciseLogs?.[step.id];
-    if (!log?.sets?.length) return "";
+    if (!log?.sets?.length) return step.previousResult || "";
     const useful = log.sets.filter((set) => set.load || set.reps || set.rpe);
-    if (!useful.length) return "";
+    if (!useful.length) return step.previousResult || "";
     return useful.map((set) => `${set.label}: ${set.load || "—"} · ${set.reps || "—"} reps · RPE ${set.rpe || "—"}`).join(" | ");
   }
 
@@ -213,6 +223,10 @@
     const step = workout.steps[activeStepIndex];
     const log = ensureExerciseLog(step);
     const previous = previousFor(step);
+    if (!restRunning) {
+      restSeconds = Number(step.restSeconds) || 60;
+      updateRestDisplay();
+    }
     const elapsed = Math.max(0, (Date.now() - new Date(session.startedAt).getTime()) / 1000);
     const totalSeconds = workout.durationMinutes * 60;
     const remaining = totalSeconds - elapsed;
@@ -236,12 +250,13 @@
         <div class="exercise-card__body">
           <p class="prescription">${escapeText(step.prescription)}</p>
           ${Array.isArray(step.instructions) ? `<ol class="instruction-list">${step.instructions.map((item) => `<li>${escapeText(item)}</li>`).join("")}</ol>` : ""}
-          ${(step.technique || step.guardrail) ? `
+          ${(step.technique || step.guardrail || step.progression) ? `
             <details class="details-box">
-              <summary>Technique and guardrails</summary>
+              <summary>Technique, guardrails and next-step logic</summary>
               <div class="details-box__content">
                 ${step.technique ? `<p><strong>Technique:</strong> ${escapeText(step.technique)}</p>` : ""}
                 ${step.guardrail ? `<p class="guardrail"><strong>Guardrail:</strong> ${escapeText(step.guardrail)}</p>` : ""}
+                ${step.progression ? `<p><strong>Following session:</strong> ${escapeText(step.progression)}</p>` : ""}
               </div>
             </details>` : ""}
           ${previous ? `<p class="previous-result"><strong>Last comparable session:</strong> ${escapeText(previous)}</p>` : ""}
@@ -327,6 +342,7 @@
       "",
       "READINESS",
       `Energy: ${session.readiness.energy || "not recorded"}/5`,
+      `Back: ${session.readiness.back || "not recorded"}/10`,
       `Shoulder: ${session.readiness.shoulder || "not recorded"}/10`,
       `Neck: ${session.readiness.neck || "not recorded"}/10`,
       `Ankle: ${session.readiness.ankle || "not recorded"}/10`,
@@ -347,15 +363,18 @@
     lines.push(
       "",
       "IMMEDIATE RESPONSE",
+      `Back: ${session.outcome.back || "not recorded"}/10`,
       `Shoulder: ${session.outcome.shoulder || "not recorded"}/10`,
       `Neck: ${session.outcome.neck || "not recorded"}/10`,
       `Ankle: ${session.outcome.ankle || "not recorded"}/10`,
       `Overall session RPE: ${session.outcome.sessionRpe || "not recorded"}/10`,
+      `Apprehension: ${session.outcome.apprehension || "not recorded"}`,
+      `Pain or technique alteration: ${session.outcome.painOrTechniqueChange || "none recorded"}`,
       `Reflection: ${session.outcome.reflection || "none recorded"}`,
       `Next-morning response: ${session.outcome.nextMorning || "not yet recorded"}`,
       "",
       "COACHING REQUEST",
-      "Please review this session, ask about anything clinically or practically important, and prepare my next workout. The fixed training window is 45 minutes. Prefer progressive, repeatable work over novelty."
+      `Please review this session, ask about anything clinically or practically important, and prepare my next workout. The current training window is ${workout.durationMinutes} minutes. Prefer progressive, repeatable work over novelty.`
     );
     return lines.join("\n");
   }
@@ -368,13 +387,13 @@
       schemaVersion: 1,
       exportedAt: new Date().toISOString(),
       source: { application: "Gavin Fitness Coaching Runner", runnerVersion: "1.0.0", workoutDefinitionId: workout.id, workoutDefinitionSchemaVersion: workout.schemaVersion },
-      session: { sessionId: session.id, workoutDate: session.workoutDate || localDate(), startedAt: session.startedAt || null, completedAt, plannedDurationMinutes: 45, actualDurationMinutes, completedStepCount: completedExerciseCount(), totalStepCount: workout.steps.length, completionStatus: completedAt ? "completed" : "in-progress" },
-      readiness: { energy: session.readiness.energy, shoulderSymptoms: session.readiness.shoulder, neckStiffness: session.readiness.neck, ankleSymptoms: session.readiness.ankle, context: session.readiness.notes },
+      session: { sessionId: session.id, workoutDate: session.workoutDate || localDate(), startedAt: session.startedAt || null, completedAt, plannedDurationMinutes: workout.durationMinutes, actualDurationMinutes, completedStepCount: completedExerciseCount(), totalStepCount: workout.steps.length, completionStatus: completedAt ? "completed" : "in-progress" },
+      readiness: { energy: session.readiness.energy, backSymptoms: session.readiness.back || "", shoulderSymptoms: session.readiness.shoulder, neckStiffness: session.readiness.neck, ankleSymptoms: session.readiness.ankle, context: session.readiness.notes },
       steps: workout.steps.map((step) => {
         const log = session.exerciseLogs?.[step.id] || { sets: [], notes: "" };
         return { stepId: step.id, name: step.name, block: step.block, plannedStartMinute: step.startMinute, plannedEndMinute: step.endMinute, completed: Boolean(log.notes || log.sets?.some((set) => set.load || set.reps || set.rpe)), sets: (log.sets || []).map((set) => ({ label: set.label, loadOrAssistance: set.load, repsOrResult: set.reps, rpe: set.rpe, notes: "" })), stepNotes: log.notes || "" };
       }),
-      outcome: { overallSessionRpe: session.outcome.sessionRpe, shoulderSymptomsAfter: session.outcome.shoulder, neckStiffnessAfter: session.outcome.neck, ankleSymptomsAfter: session.outcome.ankle, whatFeltStrong: session.outcome.whatFeltStrong, whatLimitedSession: session.outcome.whatLimitedSession, changeForNextTime: session.outcome.changeForNextTime, nextMorningResponse: session.outcome.nextMorning },
+      outcome: { overallSessionRpe: session.outcome.sessionRpe, backSymptomsAfter: session.outcome.back || "", shoulderSymptomsAfter: session.outcome.shoulder, neckStiffnessAfter: session.outcome.neck, ankleSymptomsAfter: session.outcome.ankle, apprehensionResponse: session.outcome.apprehension || "", painOrTechniqueChange: session.outcome.painOrTechniqueChange || "", whatFeltStrong: session.outcome.whatFeltStrong, whatLimitedSession: session.outcome.whatLimitedSession, changeForNextTime: session.outcome.changeForNextTime, nextMorningResponse: session.outcome.nextMorning },
       audio: { recorded: Boolean(audioUrl), downloadedFilename: null, includedInJson: false },
       safetyFlags: { userReportedStopSignal: false, details: "" }
     };
@@ -387,7 +406,7 @@
       const sets = step.sets.map((set) => `- ${set.label}: ${value(set.loadOrAssistance)}; ${value(set.repsOrResult)}; RPE ${value(set.rpe)}`).join("\n");
       return `### ${step.name}\n${sets || "- No structured result recorded"}${step.stepNotes ? `\n- Notes: ${step.stepNotes}` : ""}`;
     }).join("\n\n");
-    return `# Workout session handoff\n\n## Session\nWorkout: ${workout.title}\nDate: ${value(data.session.workoutDate)}\nPlanned duration: 45 minutes\n\n## Readiness\nEnergy: ${value(data.readiness.energy)}\nShoulder: ${value(data.readiness.shoulderSymptoms)}\nNeck: ${value(data.readiness.neckStiffness)}\nAnkle: ${value(data.readiness.ankleSymptoms)}\nContext: ${value(data.readiness.context)}\n\n## Completed work\n${work}\n\n## Immediate response\nOverall RPE: ${value(data.outcome.overallSessionRpe)}\nShoulder: ${value(data.outcome.shoulderSymptomsAfter)}\nNeck: ${value(data.outcome.neckStiffnessAfter)}\nAnkle: ${value(data.outcome.ankleSymptomsAfter)}\n\n## What felt strong\n${value(data.outcome.whatFeltStrong)}\n\n## What limited the session\n${value(data.outcome.whatLimitedSession)}\n\n## What should change next time\n${value(data.outcome.changeForNextTime)}\n\n## Next-morning response\n${value(data.outcome.nextMorningResponse)}\n\n## Audio\nRecorded locally: ${data.audio.recorded ? "yes" : "no"}. Audio is separate and is not included in this handoff.`;
+    return `# Workout session handoff\n\n## Session\nWorkout: ${workout.title}\nDate: ${value(data.session.workoutDate)}\nPlanned duration: ${workout.durationMinutes} minutes\n\n## Readiness\nEnergy: ${value(data.readiness.energy)}\nBack: ${value(data.readiness.backSymptoms)}\nShoulder: ${value(data.readiness.shoulderSymptoms)}\nNeck: ${value(data.readiness.neckStiffness)}\nAnkle: ${value(data.readiness.ankleSymptoms)}\nContext: ${value(data.readiness.context)}\n\n## Completed work\n${work}\n\n## Immediate response\nOverall RPE: ${value(data.outcome.overallSessionRpe)}\nBack: ${value(data.outcome.backSymptomsAfter)}\nShoulder: ${value(data.outcome.shoulderSymptomsAfter)}\nNeck: ${value(data.outcome.neckStiffnessAfter)}\nAnkle: ${value(data.outcome.ankleSymptomsAfter)}\nApprehension: ${value(data.outcome.apprehensionResponse)}\nPain or technique alteration: ${value(data.outcome.painOrTechniqueChange)}\n\n## What felt strong\n${value(data.outcome.whatFeltStrong)}\n\n## What limited the session\n${value(data.outcome.whatLimitedSession)}\n\n## What should change next time\n${value(data.outcome.changeForNextTime)}\n\n## Next-morning response\n${value(data.outcome.nextMorningResponse)}\n\n## Audio\nRecorded locally: ${data.audio.recorded ? "yes" : "no"}. Audio is separate and is not included in this handoff.`;
   }
 
   function downloadText(filename, type, contents) {
@@ -421,10 +440,13 @@
 
         <h2>Immediate response</h2>
         <div class="form-grid" id="outcome-form">
+          <label class="field"><span>Back, 0–10</span><input data-outcome="back" type="number" min="0" max="10" value="${escapeText(session.outcome.back)}"></label>
           <label class="field"><span>Shoulder, 0–10</span><input data-outcome="shoulder" type="number" min="0" max="10" value="${escapeText(session.outcome.shoulder)}"></label>
           <label class="field"><span>Neck, 0–10</span><input data-outcome="neck" type="number" min="0" max="10" value="${escapeText(session.outcome.neck)}"></label>
           <label class="field"><span>Ankle, 0–10</span><input data-outcome="ankle" type="number" min="0" max="10" value="${escapeText(session.outcome.ankle)}"></label>
           <label class="field"><span>Session RPE, 1–10</span><input data-outcome="sessionRpe" type="number" min="1" max="10" step="0.5" value="${escapeText(session.outcome.sessionRpe)}"></label>
+          <label class="field field--wide"><span>Apprehension response</span><select data-outcome="apprehension"><option value="">Select one</option><option value="reduced" ${session.outcome.apprehension === "reduced" ? "selected" : ""}>Reduced</option><option value="unchanged" ${session.outcome.apprehension === "unchanged" ? "selected" : ""}>Unchanged</option><option value="increased" ${session.outcome.apprehension === "increased" ? "selected" : ""}>Increased</option></select></label>
+          <label class="field field--wide"><span>Any pain or technique alteration?</span><textarea data-outcome="painOrTechniqueChange">${escapeText(session.outcome.painOrTechniqueChange)}</textarea></label>
           <label class="field field--wide"><span>What felt strong?</span><textarea data-outcome="whatFeltStrong">${escapeText(session.outcome.whatFeltStrong)}</textarea></label>
           <label class="field field--wide"><span>What limited the session?</span><textarea data-outcome="whatLimitedSession">${escapeText(session.outcome.whatLimitedSession)}</textarea></label>
           <label class="field field--wide"><span>What should change next time?</span><textarea data-outcome="changeForNextTime">${escapeText(session.outcome.changeForNextTime)}</textarea></label>
