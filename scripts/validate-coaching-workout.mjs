@@ -24,8 +24,8 @@ try { workout = value(); ws(); if (input[position] === ";") position++; ws(); if
 const problems = [];
 const required = (name) => { if (!workout[name] || (Array.isArray(workout[name]) && !workout[name].length)) problems.push(`Missing required ${name}.`); };
 if (workout.schemaVersion !== 1) problems.push("schemaVersion must be 1.");
-["id", "title", "purpose", "steps"].forEach(required);
-if (workout.durationMinutes !== 45) problems.push("durationMinutes must equal 45.");
+["id", "publishedFor", "title", "purpose", "steps"].forEach(required);
+if (!Number.isFinite(workout.durationMinutes) || workout.durationMinutes <= 0 || workout.durationMinutes > 60) problems.push("durationMinutes must be a positive number no greater than 60.");
 if (!workout.safetySummary || !String(workout.safetySummary).trim()) problems.push("Required safetySummary text is missing.");
 const ids = new Set();
 let previousEnd = -1;
@@ -33,13 +33,15 @@ let previousEnd = -1;
   const label = `Step ${index + 1}`;
   if (!step.id) problems.push(`${label} is missing an id.`); else if (ids.has(step.id)) problems.push(`${label} has duplicate id '${step.id}'.`); else ids.add(step.id);
   if (!step.name) problems.push(`${label} is missing a name.`);
+  if (!step.block) problems.push(`${label} is missing a block.`);
+  if (!step.prescription) problems.push(`${label} is missing a prescription.`);
   if (!Number.isFinite(step.startMinute) || !Number.isFinite(step.endMinute)) problems.push(`${label} has invalid startMinute or endMinute.`);
   else { if (step.endMinute < step.startMinute) problems.push(`${label} ends before it starts.`); if (step.startMinute < previousEnd) problems.push(`${label} is not in chronological order.`); previousEnd = step.endMinute; }
   if (!Array.isArray(step.setPlan)) problems.push(`${label} setPlan must be an array.`);
 });
 if (workout.steps?.[0]?.startMinute !== 0) problems.push("The first step must begin at minute 0.");
-if (workout.steps?.at(-1)?.endMinute !== 45) problems.push("The final step must end at minute 45.");
+if (workout.steps?.at(-1)?.endMinute !== workout.durationMinutes) problems.push("The final step must end at durationMinutes.");
 if (problems.length) fail(problems.join("\n"));
-console.log(`Valid workout: ${workout.id} (${workout.steps.length} steps, 45 minutes)`);
+console.log(`Valid workout: ${workout.id} (${workout.steps.length} steps, ${workout.durationMinutes} minutes)`);
 
 function fail(message) { console.error(`Validation failed: ${message}`); process.exit(1); }
