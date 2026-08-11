@@ -1,118 +1,131 @@
 window.CURRENT_WORKOUT = {
   schemaVersion: 1,
-  id: "back-aware-strength-progression-2026-08-07-v1",
-  publishedFor: "2026-08-07",
-  durationMinutes: 40,
-  title: "Cautious strength progression",
-  purpose: "Continue the successful 5 August session by progressing bench press, consolidating supported rows and carefully reintroducing squatting while the back continues to improve.",
-  targetEffort: "About RPE 5 overall. Keep at least three technically sound repetitions in reserve and finish capable of more.",
-  safetySummary: "Stop or modify for sharp or increasing pain, new weakness or numbness, instability, altered movement, protective leaning, spasm, or symptoms that change your technique. Ordinary stiffness that improves with movement is acceptable context.",
-  coachNote: "This is a direct progression from 5 August, not a new programme. Use the fallbacks early if the warm-up or technique says today is not the day to progress.",
+  id: "controlled-strength-progression-2026-08-12-v1",
+  publishedFor: "2026-08-12",
+  durationMinutes: 45,
+  title: "Controlled strength progression",
+  purpose: "Progress squat and bench conservatively, establish a measurable row baseline, and restore the missed shoulder-prehab work.",
+  targetEffort: "Controlled work only: symptom-governed squatting, technically sound benching, and no maximal or testing efforts.",
+  safetySummary: "Do not train through new numbness, weakness, radiating pain or another neurological symptom. Stop or reduce any movement that causes sharp or increasing pain, spasm, altered technique or progressive discomfort.",
+  coachNote: "Squat is a rehabilitative progression; bench is a normal strength progression; row establishes the missing load baseline; shoulder work rebuilds tolerance with light resistance.",
   previousSession: {
-    date: "2026-08-05",
+    date: "2026-08-10",
     title: "Completed strength session",
-    context: "Energy 3/10. Back 3/10 before and after; shoulder, neck and ankle 0/10 before and after. Overall RPE 3. Back was tight but improving. A pleasant, restorative 8.7 km easy cycle was completed on 6 August in about 22 minutes at an average heart rate of approximately 112 bpm.",
+    context: "Energy 5/5; back 3/10; shoulder, neck and ankle 0/10; no neurological symptoms. The session went well. An aerobic cycling session followed on 11 August.",
     results: [
-      "Bench press — 65 kg, 3 sets of 5, RPE 4.5. Note: Careful, spiky back.",
-      "Chest-supported dumbbell row — 17 kg, 10 repetitions, RPE 5. Set count was not recorded. Note: No response from back.",
-      "Upper-back and shoulder finish — 10 each, RPE 3, including a 20-second hang."
+      "Squat — 45 kg for 3 sets of 5 after warm-ups.",
+      "Bench press — 70 kg for 3 sets of 5 after warm-ups.",
+      "Chest-supported row — 3 sets of 10; resistance was not recorded.",
+      "Shoulder and prehab work was missed."
     ]
   },
   steps: [
     {
-      id: "readiness-warm-up-2026-08-07",
-      block: "Readiness and warm-up",
-      name: "Readiness check and warm-up",
+      id: "readiness-2026-08-12",
+      block: "Readiness",
+      name: "Readiness and squat decision",
       startMinute: 0,
-      endMinute: 5,
-      prescription: "Record readiness, then complete the sequence at an easy effort.",
+      endMinute: 3,
+      prescription: "Review the recorded readiness scores and the on-screen squat recommendation before loading the bar.",
       instructions: [
-        "Easy march or cycle — 2 minutes.",
-        "Shoulder-blade squeezes — 10 repetitions.",
-        "Ankle rocks — 8 each side.",
-        "Bodyweight box squats — 6–8 comfortable repetitions.",
-        "Empty-bar bench press warm-up."
+        "Proceed towards 47.5 kg only when back discomfort is 0–3/10, no neurological symptoms are present and warm-ups feel normal.",
+        "If back discomfort is worse than Monday's 3/10 or rises during warm-up, remain near 45 kg or reduce or stop according to symptoms.",
+        "With new numbness, weakness, radiating pain or another neurological symptom, do not perform loaded squats; reassess rather than training through it."
       ],
-      guardrail: "Ordinary stiffness that improves with movement is acceptable. Stop or modify for sharp or increasing pain, neurological symptoms, instability or movement compensation.",
-      setPlan: ["Empty-bar bench warm-up"]
+      guardrail: "The readiness result governs the squat recommendation. It does not need to affect symptom-free upper-body work unless position changes or setup provoke symptoms.",
+      setPlan: []
     },
     {
-      id: "bench-press-67-5kg-3x5",
-      block: "Primary strength",
-      name: "Bench press",
-      startMinute: 5,
-      endMinute: 17,
-      prescription: "Warm up as appropriate, then 67.5 kg for 3 sets of 5 at RPE 5–6. Rest approximately 2 minutes. Fallback: repeat 65 kg for 3 × 5 if warm-ups feel unexpectedly difficult or symptoms increase.",
-      technique: "Use a stable setup. Avoid exaggerated arching or aggressive leg drive while the back remains sensitive.",
-      guardrail: "Stop if back or shoulder discomfort rises or changes technique. No grinding; retain at least three sound repetitions in reserve.",
-      previousResult: "5 August: 65 kg for 3 × 5 at RPE 4.5. Note: Careful, spiky back.",
-      progression: "If 67.5 kg for 3 × 5 is completed at RPE 6 or below with stable technique and no adverse next-day response, consider 70 kg next time. At RPE 7–8 or with mild concern, repeat 67.5 kg. If symptoms or technique worsen, return to 65 kg or modify.",
+      id: "barbell-squat-47-5kg-3x5",
+      block: "Rehabilitative progression",
+      name: "Barbell squat",
+      startMinute: 3,
+      endMinute: 18,
+      prescription: "Warm up with 20 kg × 10, 30 kg × 5 and 40 kg × 5. If the readiness and warm-up checks remain reassuring, perform 47.5 kg for 3 sets of 5. Rest about 2 minutes between working sets.",
+      technique: "Use the same stable, controlled squat pattern as Monday. Treat every warm-up as another symptom check; do not force depth or grind repetitions.",
+      guardrail: "47.5 kg is appropriate only with back discomfort at 0–3/10, no neurological symptoms and normal-feeling warm-ups. If symptoms are worse than Monday or increase during warm-up, use about 45 kg or reduce or stop. Do not loaded-squat with neurological symptoms.",
+      previousResult: "10 August: 45 kg for 3 × 5 after warm-ups; back 3/10 and no neurological symptoms; session went well.",
+      progression: "This 2.5 kg increase is repeated symptom-stable exposure, not rapid restoration of former strength. Let the session and next-day response govern the next prescription.",
       restSeconds: 120,
-      setPlan: ["Warm-up 1", "Warm-up 2", "Working set 1", "Working set 2", "Working set 3"]
+      safetyGate: "squat",
+      setPlan: [
+        { label: "Warm-up 1", load: "20 kg", reps: "10", rpeRequired: false },
+        { label: "Warm-up 2", load: "30 kg", reps: "5", rpeRequired: false },
+        { label: "Warm-up 3", load: "40 kg", reps: "5", rpeRequired: false },
+        { label: "Working set 1", load: "47.5 kg", reps: "5", rpeRequired: true },
+        { label: "Working set 2", load: "47.5 kg", reps: "5", rpeRequired: true },
+        { label: "Working set 3", load: "47.5 kg", reps: "5", rpeRequired: true }
+      ]
     },
     {
-      id: "chest-supported-dumbbell-row-17kg-3x10",
-      block: "Supported pull",
-      name: "Chest-supported dumbbell row",
-      startMinute: 17,
-      endMinute: 25,
-      prescription: "17 kg for 3 sets of 10 at RPE 5–6. Rest 75–90 seconds.",
-      technique: "Keep the chest supported, pause briefly at the top and lower under control. Avoid shrugging, twisting or torso movement.",
-      guardrail: "Keep the neck comfortable and stop if back symptoms appear or support is lost.",
-      previousResult: "5 August: 17 kg for 10 repetitions at RPE 5; the set count was not recorded. Note: No response from back.",
-      progression: "Increase only after all three sets of 10 at 17 kg are clean and comfortably below RPE 7. Otherwise repeat 17 kg.",
-      restSeconds: 90,
-      setPlan: ["Set 1", "Set 2", "Set 3"]
+      id: "bench-press-72-5kg-3x5",
+      block: "Strength progression",
+      name: "Bench press",
+      startMinute: 18,
+      endMinute: 31,
+      prescription: "Warm up with 20 kg × 10, 40 kg × 5 and 60 kg × 5, then perform 72.5 kg for 3 sets of 5. Rest about 2 minutes between working sets.",
+      technique: "Use a repeatable setup and controlled descent. Keep each repetition technically sound and stop before grinding.",
+      guardrail: "Monday's 70 kg work was symptom-free, so a normal 2.5 kg increment is appropriate. Reduce or stop if shoulder or back symptoms appear or technique changes.",
+      previousResult: "10 August: 70 kg for 3 × 5 after warm-ups; no shoulder symptoms.",
+      progression: "Continue normal 2.5 kg increments while all working sets remain technically sound and symptom-free.",
+      restSeconds: 120,
+      setPlan: [
+        { label: "Warm-up 1", load: "20 kg", reps: "10", rpeRequired: false },
+        { label: "Warm-up 2", load: "40 kg", reps: "5", rpeRequired: false },
+        { label: "Warm-up 3", load: "60 kg", reps: "5", rpeRequired: false },
+        { label: "Working set 1", load: "72.5 kg", reps: "5", rpeRequired: true },
+        { label: "Working set 2", load: "72.5 kg", reps: "5", rpeRequired: true },
+        { label: "Working set 3", load: "72.5 kg", reps: "5", rpeRequired: true }
+      ]
     },
     {
-      id: "goblet-squat-reintroduction-12kg",
-      block: "Squat reintroduction",
-      name: "Bodyweight box squat and 12 kg goblet squat",
-      startMinute: 25,
-      endMinute: 33,
-      prescription: "Bodyweight box squat for 1 set of 8, then 12 kg goblet squat for 2 sets of 8 at a comfortable depth and no higher than RPE 5. Rest 75–90 seconds. Fallback: bodyweight box squats only if loaded squatting feels uncertain.",
-      technique: "Use a repeatable box or target, keep the whole foot planted and move only through a comfortable depth. Do not chase depth.",
-      guardrail: "Stop the loaded squat for sharp pain, spasm, protective leaning, altered movement or any symptom increase during either set.",
-      progression: "If both 12 kg sets are symptom-free during the session and the following morning, add either one set or repetitions next time—not load, sets and repetitions together. Do not return to barbell squats solely because this exposure succeeds.",
-      restSeconds: 90,
-      setPlan: ["Bodyweight set", "12 kg set 1", "12 kg set 2"]
-    },
-    {
-      id: "upper-back-shoulder-finish-2026-08-07",
-      block: "Finish",
-      name: "Upper-back and shoulder finish",
-      startMinute: 33,
-      endMinute: 37,
-      prescription: "Complete 10 band pull-aparts or repetitions of the existing upper-back movement; 10 shoulder-control or external-rotation repetitions each side; then a relaxed supported hang for up to 20 seconds only if comfortable.",
-      technique: "Use controlled repetitions and pain-free ranges. Keep the hang relaxed and supported.",
-      guardrail: "Do not force an overhead position. Stop for pinching, apprehension or altered shoulder movement.",
-      previousResult: "5 August: 10 each at RPE 3, with a 20-second hang; well tolerated.",
-      setPlan: ["Upper-back movement", "Shoulder control — left", "Shoulder control — right", "Supported hang"]
-    },
-    {
-      id: "optional-dead-bug-2x5",
-      block: "Optional trunk work",
-      name: "Dead bug or controlled brace",
-      startMinute: 37,
+      id: "chest-supported-row-baseline-3x10",
+      block: "Establish measurable baseline",
+      name: "Chest-supported row",
+      startMinute: 31,
       endMinute: 39,
-      prescription: "Only if time remains and the back feels unchanged: 2 sets of 5 slow repetitions per side.",
-      technique: "Use a comfortable range, breathe normally and keep the movement slow.",
-      guardrail: "Skip this block if the back is more noticeable than at the start or if control cannot be maintained.",
-      setPlan: ["Set 1", "Set 2"]
+      prescription: "Perform 3 sets of 10. Select and enter the resistance actually used; Monday's load was not recorded, so no load is prescribed or assumed. Rest 75–90 seconds.",
+      technique: "Keep the chest supported and use controlled repetitions without momentum. Pause briefly at the top and lower under control.",
+      guardrail: "Enter the resistance for every completed set so the next session can progress from a known baseline.",
+      previousResult: "10 August: 3 × 10 completed; resistance not recorded.",
+      progression: "Use today's recorded resistance and RPE as the baseline for subsequent sessions.",
+      restSeconds: 90,
+      setPlan: [
+        { label: "Set 1", load: "", reps: "10", loadRequired: true },
+        { label: "Set 2", load: "", reps: "10", loadRequired: true },
+        { label: "Set 3", load: "", reps: "10", loadRequired: true }
+      ]
     },
     {
-      id: "session-recap-2026-08-07",
+      id: "shoulder-prehab-2026-08-12",
+      block: "Maintain and rebuild tolerance",
+      name: "Shoulder and prehab",
+      startMinute: 39,
+      endMinute: 44,
+      prescription: "Use light resistance for band external rotation 2 × 12–15 and scapular work 2 × 10–15. Add optional gentle shoulder mobility only if useful.",
+      technique: "Use controlled, pain-free repetitions. Choose familiar scapular work and record what you performed in the notes.",
+      guardrail: "This is supportive prehab, not a progression exercise. Do not include standing overhead press yet.",
+      setPlan: [
+        { label: "Band external rotation — set 1", load: "light band", reps: "12–15" },
+        { label: "Band external rotation — set 2", load: "light band", reps: "12–15" },
+        { label: "Scapular work — set 1", load: "light", reps: "10–15" },
+        { label: "Scapular work — set 2", load: "light", reps: "10–15" },
+        { label: "Optional gentle mobility", load: "", reps: "" }
+      ]
+    },
+    {
+      id: "session-recap-2026-08-12",
       block: "Recap",
       name: "Record the session response",
-      startMinute: 39,
-      endMinute: 40,
-      prescription: "Record actual load, sets, repetitions and RPE; immediate back, shoulder, neck and ankle scores; overall session RPE; apprehension response; pain or technique changes; and the next-morning response.",
+      startMinute: 44,
+      endMinute: 45,
+      prescription: "Review completed sets, add exercise notes and finish the session to generate the copyable actual-work recap.",
       instructions: [
-        "Did apprehension reduce, remain unchanged or increase?",
-        "Was there any pain or technique alteration?",
-        "What should be repeated or modified next time?"
+        "Confirm the row resistance is recorded.",
+        "Record whether prehab was completed and what scapular movement was used.",
+        "Add overall notes, symptoms or technique changes that should inform the next session."
       ],
-      guardrail: "Record the response honestly. A fallback or skipped optional block is useful training information, not a failed session.",
+      guardrail: "Only sets explicitly marked complete appear as completed work in the recap; prescribed but unchecked values are not reported as performed.",
       setPlan: []
     }
   ]

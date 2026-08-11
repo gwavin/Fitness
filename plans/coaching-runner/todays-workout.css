@@ -130,6 +130,18 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus
   background: var(--green-soft);
 }
 
+.readiness-decision, .safety-alert {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+}
+
+.readiness-decision--proceed { border-color: #9bc8a7; color: var(--green-dark); background: var(--green-soft); }
+.readiness-decision--caution, .safety-alert--caution { border-color: #e2bd75; color: var(--amber); background: var(--amber-soft); }
+.readiness-decision--stop, .safety-alert--stop { border-color: #d79b9b; color: var(--red); background: var(--red-soft); }
+
 .safety-details {
   margin: 1rem 0;
   border: 1px solid #e7b9b9;
@@ -283,7 +295,7 @@ textarea { min-height: 6rem; resize: vertical; }
 .sets { container-type: inline-size; }
 .set-row {
   display: grid;
-  grid-template-columns: minmax(7rem, 1.2fr) repeat(3, minmax(4.5rem, 0.7fr));
+  grid-template-columns: minmax(7rem, 1.2fr) minmax(5.5rem, 0.55fr) repeat(3, minmax(4.5rem, 0.7fr));
   gap: 0.65rem;
   align-items: end;
   padding: 0.85rem 0;
@@ -292,12 +304,15 @@ textarea { min-height: 6rem; resize: vertical; }
 
 .set-row:first-child { border-top: 0; }
 .set-label { align-self: center; font-weight: 850; }
+.completion-field { display: flex; align-items: center; gap: 0.45rem; min-height: 2.7rem; font-size: 0.8rem; font-weight: 850; }
+.completion-field input { width: 1.35rem; min-height: 1.35rem; margin: 0; accent-color: var(--green); }
 .set-row .field span { font-size: 0.74rem; }
 .set-row input { min-height: 2.7rem; padding: 0.55rem; }
 
 @container (max-width: 520px) {
   .set-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .set-label { grid-column: 1 / -1; }
+  .set-label { grid-column: 1 / 3; }
+  .completion-field { justify-content: flex-end; }
 }
 
 .exercise-notes { margin-top: 0.8rem; }
@@ -383,6 +398,7 @@ audio { width: 100%; margin-top: 0.8rem; }
 .rest-dock .button { min-width: 3.3rem; min-height: 2.65rem; padding: 0.45rem 0.65rem; }
 
 .status { color: var(--muted); font-size: 0.9rem; }
+.status--error { color: var(--red); font-weight: 800; }
 .noscript { margin: 0; padding: 1rem; color: #fff; background: #842323; }
 
 @media (max-width: 560px) {
