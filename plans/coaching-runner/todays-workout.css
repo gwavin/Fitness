@@ -316,6 +316,19 @@ textarea { min-height: 6rem; resize: vertical; }
 }
 
 .exercise-notes { margin-top: 0.8rem; }
+.assessment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+}
+.follow-up-heading { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.follow-up-heading h3, .follow-up-heading p { margin: 0; }
+.follow-up-heading p { margin-top: 0.3rem; color: var(--muted); }
 
 .step-actions {
   display: grid;
@@ -405,6 +418,7 @@ audio { width: 100%; margin-top: 0.8rem; }
   .site-header { align-items: flex-start; }
   .privacy-note { max-width: 9rem; text-align: right; }
   .form-grid { grid-template-columns: 1fr; }
+  .assessment-grid { grid-template-columns: 1fr; }
   .field--wide { grid-column: auto; }
   .button-row { display: grid; grid-template-columns: 1fr; }
   .button-row .button { width: 100%; }

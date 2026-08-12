@@ -86,7 +86,7 @@
       readiness: { energy: "", back: "", shoulder: "", neck: "", ankle: "", neurological: "", notes: "" },
       exerciseLogs: {},
       outcome: {
-        back: "", shoulder: "", neck: "", ankle: "", sessionRpe: "", apprehension: "", painOrTechniqueChange: "", overallNotes: "", whatFeltStrong: "", whatLimitedSession: "", changeForNextTime: "", nextMorning: ""
+        back: "", shoulder: "", neck: "", ankle: "", sessionRpe: "", apprehension: "", painOrTechniqueChange: "", overallNotes: "", whatFeltStrong: "", whatLimitedSession: "", changeForNextTime: "", nextMorning: "", nextBack: "", nextShoulder: "", nextNeck: "", nextAnkle: "", nextNeurological: "", nextStiffness: "", nextDelayedReaction: ""
       }
     };
   }
@@ -231,10 +231,12 @@
       session.exerciseLogs[step.id] = {
         sets: (step.setPlan || []).map((item) => typeof item === "string"
           ? { label: item, load: "", reps: "", rpe: "", completed: false }
-          : { label: item.label, load: item.load || "", reps: item.reps || "", rpe: "", completed: false }),
-        notes: ""
+          : { label: item.label, load: item.load || "", reps: item.reps || "", rpe: "", rir: "", completed: false }),
+        notes: "",
+        assessments: {}
       };
     }
+    if (!session.exerciseLogs[step.id].assessments) session.exerciseLogs[step.id].assessments = {};
     return session.exerciseLogs[step.id];
   }
 
@@ -244,7 +246,7 @@
     if (!log?.sets?.length) return step.previousResult || "";
     const useful = log.sets.filter((set) => set.load || set.reps || set.rpe);
     if (!useful.length) return step.previousResult || "";
-    return useful.map((set) => `${set.label}: ${set.load || "—"} · ${set.reps || "—"} reps · RPE ${set.rpe || "—"}`).join(" | ");
+    return useful.map((set) => `${set.label}: ${set.load || "—"} · ${set.reps || "—"} reps${set.rir !== undefined && set.rir !== "" ? ` · RIR ${set.rir}` : ` · RPE ${set.rpe || "—"}`}`).join(" | ");
   }
 
   function renderWorkout() {
@@ -286,7 +288,8 @@
         <div class="exercise-card__body">
           <p class="prescription">${escapeText(step.prescription)}</p>
           ${squatBlocked ? '<div class="safety-alert safety-alert--stop"><strong>Loaded squatting is disabled.</strong> You reported neurological symptoms. Reassess rather than training through numbness, weakness, radiating pain or another neurological symptom.</div>' : ""}
-          ${squatCaution ? '<div class="safety-alert safety-alert--caution"><strong>Do not progress to 47.5 kg automatically.</strong> Back discomfort is above Monday\'s 3/10. Use about 45 kg only if warm-ups settle and feel normal, or reduce or stop.</div>' : ""}
+          ${squatCaution ? '<div class="safety-alert safety-alert--caution"><strong>Do not progress to 50 kg automatically.</strong> Back discomfort is elevated. Repeat 47.5 kg only if warm-ups settle and feel normal, or reduce or stop.</div>' : ""}
+          ${workout.rirGuide && step.setPlan?.some((item) => item.rirRequired) ? `<details class="details-box"><summary>How to record RIR</summary><div class="details-box__content"><p>${escapeText(workout.rirGuide)}</p></div></details>` : ""}
           ${Array.isArray(step.instructions) ? `<ol class="instruction-list">${step.instructions.map((item) => `<li>${escapeText(item)}</li>`).join("")}</ol>` : ""}
           ${(step.technique || step.guardrail || step.progression) ? `
             <details class="details-box">
@@ -307,9 +310,16 @@
                   <label class="completion-field"><input data-field="completed" type="checkbox" ${set.completed ? "checked" : ""} ${squatBlocked ? "disabled" : ""}><span>Completed</span></label>
                   <label class="field"><span>Actual load / resistance</span><input data-field="load" type="text" inputmode="decimal" value="${escapeText(set.load)}" ${squatBlocked ? "disabled" : ""}></label>
                   <label class="field"><span>Actual reps / result</span><input data-field="reps" type="text" inputmode="decimal" value="${escapeText(set.reps)}" ${squatBlocked ? "disabled" : ""}></label>
-                  <label class="field"><span>RPE${step.setPlan?.[index]?.rpeRequired ? " (required)" : ""}</span><input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal" value="${escapeText(set.rpe)}" ${squatBlocked ? "disabled" : ""}></label>
+                  ${step.setPlan?.[index]?.rirRequired
+                    ? `<label class="field"><span>RIR (required)</span><input data-field="rir" aria-label="How many additional clean reps could you genuinely have completed?" type="number" min="0" max="10" step="1" inputmode="numeric" value="${escapeText(set.rir)}" ${squatBlocked ? "disabled" : ""}></label>`
+                    : `<label class="field"><span>RPE${step.setPlan?.[index]?.rpeRequired ? " (required)" : ""}</span><input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal" value="${escapeText(set.rpe)}" ${squatBlocked ? "disabled" : ""}></label>`}
                 </div>`).join("")}
             </div>` : ""}
+
+          ${step.assessmentFields?.length ? `<div class="assessment-grid" id="assessment-fields">${step.assessmentFields.map((field) => `
+            <label class="field ${field.type === "textarea" ? "field--wide" : ""}"><span>${escapeText(field.label)}</span>${field.type === "select"
+              ? `<select data-assessment="${escapeText(field.key)}"><option value="">Select one</option>${field.options.map((option) => `<option value="${escapeText(option)}" ${log.assessments[field.key] === option ? "selected" : ""}>${escapeText(option)}</option>`).join("")}</select>`
+              : `<textarea data-assessment="${escapeText(field.key)}">${escapeText(log.assessments[field.key])}</textarea>`}</label>`).join("")}</div>` : ""}
 
           <label class="field exercise-notes"><span>Notes for this step</span><textarea id="exercise-notes" placeholder="Setup, symptoms, substitutions, what felt different…">${escapeText(log.notes)}</textarea></label>
           <p class="status" id="save-status">Saved automatically on this device.</p>
@@ -342,6 +352,12 @@
       saveDb("Notes saved");
     });
 
+    document.querySelector("#assessment-fields")?.addEventListener("input", (event) => {
+      if (!event.target.dataset.assessment) return;
+      log.assessments[event.target.dataset.assessment] = event.target.value;
+      saveDb("Assessment saved");
+    });
+
     document.querySelector("#previous-step").addEventListener("click", () => {
       activeStepIndex -= 1;
       renderWorkout();
@@ -350,10 +366,11 @@
 
     document.querySelector("#next-step").addEventListener("click", () => {
       const incompleteRpe = log.sets.some((set, index) => set.completed && step.setPlan?.[index]?.rpeRequired && !set.rpe);
+      const incompleteRir = log.sets.some((set, index) => set.completed && step.setPlan?.[index]?.rirRequired && set.rir === "");
       const missingLoad = log.sets.some((set, index) => set.completed && step.setPlan?.[index]?.loadRequired && !set.load.trim());
-      if (incompleteRpe || missingLoad) {
+      if (incompleteRpe || incompleteRir || missingLoad) {
         const status = document.querySelector("#save-status");
-        status.textContent = incompleteRpe ? "Add RPE for every completed working set before continuing." : "Enter the row resistance for every completed set before continuing.";
+        status.textContent = incompleteRir ? "Add RIR for every completed working set before continuing." : incompleteRpe ? "Add RPE for every completed working set before continuing." : "Enter the row resistance for every completed set before continuing.";
         status.classList.add("status--error");
         return;
       }
@@ -410,8 +427,12 @@
       const log = session.exerciseLogs?.[step.id];
       const entries = log?.sets?.filter((set) => set.completed) || [];
       lines.push(`\n${step.name}`);
-      if (entries.length) entries.forEach((set) => lines.push(`- ${set.label}: ${set.load || "—"}; ${set.reps || "—"}; RPE ${set.rpe || "—"}`));
+      if (entries.length) entries.forEach((set) => lines.push(`- ${set.label}: ${set.load || "—"}; ${set.reps || "—"}; ${set.rir !== undefined && set.rir !== "" ? `RIR ${set.rir}` : `RPE ${set.rpe || "—"}`}`));
       else lines.push("- No structured result recorded");
+      Object.entries(log?.assessments || {}).filter(([, value]) => value).forEach(([key, value]) => {
+        const field = step.assessmentFields?.find((item) => item.key === key);
+        lines.push(`- ${field?.label || key}: ${value}`);
+      });
       if (log?.notes) lines.push(`- Notes: ${log.notes}`);
     });
 
@@ -422,11 +443,20 @@
       `Shoulder: ${session.outcome.shoulder || "not recorded"}/10`,
       `Neck: ${session.outcome.neck || "not recorded"}/10`,
       `Ankle: ${session.outcome.ankle || "not recorded"}/10`,
-      `Overall session RPE: ${session.outcome.sessionRpe || "not recorded"}/10`,
+      `Overall effort: ${session.outcome.sessionRpe || "not recorded"}/10`,
       `Apprehension: ${session.outcome.apprehension || "not recorded"}`,
       `Pain or technique alteration: ${session.outcome.painOrTechniqueChange || "none recorded"}`,
       `Overall notes: ${session.outcome.overallNotes || "none recorded"}`,
-      `Next-morning response: ${session.outcome.nextMorning || "not yet recorded"}`,
+      "",
+      "NEXT-MORNING RESPONSE",
+      `Back: ${session.outcome.nextBack || "not recorded"}/10`,
+      `Shoulder: ${session.outcome.nextShoulder || "not recorded"}/10`,
+      `Neck: ${session.outcome.nextNeck || "not recorded"}/10`,
+      `Ankle: ${session.outcome.nextAnkle || "not recorded"}/10`,
+      `Neurological symptoms: ${session.outcome.nextNeurological || "not recorded"}`,
+      `General stiffness/DOMS: ${session.outcome.nextStiffness || "none recorded"}`,
+      `Delayed reaction: ${session.outcome.nextDelayedReaction || "none recorded"}`,
+      `Notes: ${session.outcome.nextMorning || "none recorded"}`,
       "",
       "COACHING REQUEST",
       `Please review this session, ask about anything clinically or practically important, and prepare my next workout. The current training window is ${workout.durationMinutes} minutes. Prefer progressive, repeatable work over novelty.`
@@ -440,27 +470,21 @@
     return {
       schemaVersion: 1,
       exportedAt: new Date().toISOString(),
-      source: { application: "Gavin Fitness Coaching Runner", runnerVersion: "1.1.0", workoutDefinitionId: workout.id, workoutDefinitionSchemaVersion: workout.schemaVersion },
+      source: { application: "Gavin Fitness Coaching Runner", runnerVersion: "1.2.0", workoutDefinitionId: workout.id, workoutDefinitionSchemaVersion: workout.schemaVersion },
       session: { sessionId: session.id, workoutDate: session.workoutDate || localDate(), startedAt: session.startedAt || null, completedAt, plannedDurationMinutes: workout.durationMinutes, actualDurationMinutes: durationMinutes, completedStepCount: completedExerciseCount(), totalStepCount: workout.steps.length, completionStatus: completedAt ? "completed" : "in-progress" },
       readiness: { energy: session.readiness.energy, backSymptoms: session.readiness.back || "", shoulderSymptoms: session.readiness.shoulder, neckStiffness: session.readiness.neck, ankleSymptoms: session.readiness.ankle, neurologicalSymptoms: session.readiness.neurological || "", context: session.readiness.notes },
       steps: workout.steps.map((step) => {
         const log = session.exerciseLogs?.[step.id] || { sets: [], notes: "" };
-        return { stepId: step.id, name: step.name, block: step.block, plannedStartMinute: step.startMinute, plannedEndMinute: step.endMinute, completed: Boolean(log.notes || log.sets?.some((set) => set.completed)), sets: (log.sets || []).filter((set) => set.completed).map((set) => ({ label: set.label, loadOrAssistance: set.load, repsOrResult: set.reps, rpe: set.rpe, notes: "" })), stepNotes: log.notes || "" };
+        return { stepId: step.id, name: step.name, block: step.block, plannedStartMinute: step.startMinute, plannedEndMinute: step.endMinute, completed: Boolean(log.notes || log.sets?.some((set) => set.completed)), sets: (log.sets || []).filter((set) => set.completed).map((set) => ({ label: set.label, loadOrAssistance: set.load, repsOrResult: set.reps, rir: set.rir ?? "", rpe: set.rpe, notes: "" })), assessments: log.assessments || {}, stepNotes: log.notes || "" };
       }),
-      outcome: { overallSessionRpe: session.outcome.sessionRpe, backSymptomsAfter: session.outcome.back || "", shoulderSymptomsAfter: session.outcome.shoulder, neckStiffnessAfter: session.outcome.neck, ankleSymptomsAfter: session.outcome.ankle, apprehensionResponse: session.outcome.apprehension || "", painOrTechniqueChange: session.outcome.painOrTechniqueChange || "", overallNotes: session.outcome.overallNotes || "", whatFeltStrong: session.outcome.whatFeltStrong, whatLimitedSession: session.outcome.whatLimitedSession, changeForNextTime: session.outcome.changeForNextTime, nextMorningResponse: session.outcome.nextMorning },
+      outcome: { overallEffort: session.outcome.sessionRpe, overallSessionRpe: session.outcome.sessionRpe, backSymptomsAfter: session.outcome.back || "", shoulderSymptomsAfter: session.outcome.shoulder, neckStiffnessAfter: session.outcome.neck, ankleSymptomsAfter: session.outcome.ankle, apprehensionResponse: session.outcome.apprehension || "", painOrTechniqueChange: session.outcome.painOrTechniqueChange || "", overallNotes: session.outcome.overallNotes || "", whatFeltStrong: session.outcome.whatFeltStrong, whatLimitedSession: session.outcome.whatLimitedSession, changeForNextTime: session.outcome.changeForNextTime, nextMorningResponse: { back: session.outcome.nextBack || "", shoulder: session.outcome.nextShoulder || "", neck: session.outcome.nextNeck || "", ankle: session.outcome.nextAnkle || "", neurologicalSymptoms: session.outcome.nextNeurological || "", stiffnessOrDoms: session.outcome.nextStiffness || "", delayedReaction: session.outcome.nextDelayedReaction || "", notes: session.outcome.nextMorning || "" } },
       audio: { recorded: Boolean(audioUrl), downloadedFilename: null, includedInJson: false },
       safetyFlags: { userReportedStopSignal: false, details: "" }
     };
   }
 
   function markdownRecap() {
-    const data = exportSession();
-    const value = (item) => item || "";
-    const work = data.steps.map((step) => {
-      const sets = step.sets.map((set) => `- ${set.label}: ${value(set.loadOrAssistance)}; ${value(set.repsOrResult)}; RPE ${value(set.rpe)}`).join("\n");
-      return `### ${step.name}\n${sets || "- No structured result recorded"}${step.stepNotes ? `\n- Notes: ${step.stepNotes}` : ""}`;
-    }).join("\n\n");
-    return `# Workout session handoff\n\n## Session\nWorkout: ${workout.title}\nDate: ${value(data.session.workoutDate)}\nPlanned duration: ${workout.durationMinutes} minutes\nActual duration: ${value(data.session.actualDurationMinutes)} minutes\n\n## Readiness\nEnergy: ${value(data.readiness.energy)}\nBack: ${value(data.readiness.backSymptoms)}\nShoulder: ${value(data.readiness.shoulderSymptoms)}\nNeck: ${value(data.readiness.neckStiffness)}\nAnkle: ${value(data.readiness.ankleSymptoms)}\nNeurological symptoms: ${value(data.readiness.neurologicalSymptoms)}\nContext: ${value(data.readiness.context)}\n\n## Completed work\n${work}\n\n## Immediate response\nOverall RPE: ${value(data.outcome.overallSessionRpe)}\nBack: ${value(data.outcome.backSymptomsAfter)}\nShoulder: ${value(data.outcome.shoulderSymptomsAfter)}\nNeck: ${value(data.outcome.neckStiffnessAfter)}\nAnkle: ${value(data.outcome.ankleSymptomsAfter)}\nApprehension: ${value(data.outcome.apprehensionResponse)}\nPain or technique alteration: ${value(data.outcome.painOrTechniqueChange)}\nOverall notes: ${value(data.outcome.overallNotes)}\n\n## What felt strong\n${value(data.outcome.whatFeltStrong)}\n\n## What limited the session\n${value(data.outcome.whatLimitedSession)}\n\n## What should change next time\n${value(data.outcome.changeForNextTime)}\n\n## Next-morning response\n${value(data.outcome.nextMorningResponse)}\n\n## Audio\nRecorded locally: ${data.audio.recorded ? "yes" : "no"}. Audio is separate and is not included in this handoff.`;
+    return `# Workout session handoff\n\n${buildRecap()}`;
   }
 
   function downloadText(filename, type, contents) {
@@ -498,14 +522,22 @@
           <label class="field"><span>Shoulder, 0–10</span><input data-outcome="shoulder" type="number" min="0" max="10" value="${escapeText(session.outcome.shoulder)}"></label>
           <label class="field"><span>Neck, 0–10</span><input data-outcome="neck" type="number" min="0" max="10" value="${escapeText(session.outcome.neck)}"></label>
           <label class="field"><span>Ankle, 0–10</span><input data-outcome="ankle" type="number" min="0" max="10" value="${escapeText(session.outcome.ankle)}"></label>
-          <label class="field"><span>Session RPE, 1–10</span><input data-outcome="sessionRpe" type="number" min="1" max="10" step="0.5" value="${escapeText(session.outcome.sessionRpe)}"></label>
+          <label class="field"><span>Overall effort, 1–10</span><input data-outcome="sessionRpe" type="number" min="1" max="10" step="0.5" value="${escapeText(session.outcome.sessionRpe)}"></label>
           <label class="field field--wide"><span>Apprehension response</span><select data-outcome="apprehension"><option value="">Select one</option><option value="reduced" ${session.outcome.apprehension === "reduced" ? "selected" : ""}>Reduced</option><option value="unchanged" ${session.outcome.apprehension === "unchanged" ? "selected" : ""}>Unchanged</option><option value="increased" ${session.outcome.apprehension === "increased" ? "selected" : ""}>Increased</option></select></label>
           <label class="field field--wide"><span>Any pain or technique alteration?</span><textarea data-outcome="painOrTechniqueChange">${escapeText(session.outcome.painOrTechniqueChange)}</textarea></label>
           <label class="field field--wide"><span>Overall session notes</span><textarea data-outcome="overallNotes" placeholder="Anything important not captured by the set or exercise notes.">${escapeText(session.outcome.overallNotes)}</textarea></label>
           <label class="field field--wide"><span>What felt strong?</span><textarea data-outcome="whatFeltStrong">${escapeText(session.outcome.whatFeltStrong)}</textarea></label>
           <label class="field field--wide"><span>What limited the session?</span><textarea data-outcome="whatLimitedSession">${escapeText(session.outcome.whatLimitedSession)}</textarea></label>
           <label class="field field--wide"><span>What should change next time?</span><textarea data-outcome="changeForNextTime">${escapeText(session.outcome.changeForNextTime)}</textarea></label>
-          <label class="field field--wide"><span>Next-morning response</span><textarea data-outcome="nextMorning" placeholder="Return tomorrow and add recovery, stiffness or symptoms.">${escapeText(session.outcome.nextMorning)}</textarea></label>
+          <div class="field--wide follow-up-heading"><h3>Next-morning response</h3><p>Return tomorrow to capture any delayed response while squat loading is restored.</p></div>
+          <label class="field"><span>Back, 0–10</span><input data-outcome="nextBack" type="number" min="0" max="10" value="${escapeText(session.outcome.nextBack)}"></label>
+          <label class="field"><span>Shoulder, 0–10</span><input data-outcome="nextShoulder" type="number" min="0" max="10" value="${escapeText(session.outcome.nextShoulder)}"></label>
+          <label class="field"><span>Neck, 0–10</span><input data-outcome="nextNeck" type="number" min="0" max="10" value="${escapeText(session.outcome.nextNeck)}"></label>
+          <label class="field"><span>Ankle, 0–10</span><input data-outcome="nextAnkle" type="number" min="0" max="10" value="${escapeText(session.outcome.nextAnkle)}"></label>
+          <label class="field"><span>Neurological symptoms?</span><select data-outcome="nextNeurological"><option value="">Select Yes or No</option><option value="No" ${session.outcome.nextNeurological === "No" ? "selected" : ""}>No</option><option value="Yes" ${session.outcome.nextNeurological === "Yes" ? "selected" : ""}>Yes</option></select></label>
+          <label class="field field--wide"><span>General stiffness / DOMS</span><textarea data-outcome="nextStiffness">${escapeText(session.outcome.nextStiffness)}</textarea></label>
+          <label class="field field--wide"><span>Any delayed reaction?</span><textarea data-outcome="nextDelayedReaction">${escapeText(session.outcome.nextDelayedReaction)}</textarea></label>
+          <label class="field field--wide"><span>Next-morning notes</span><textarea data-outcome="nextMorning">${escapeText(session.outcome.nextMorning)}</textarea></label>
         </div>
         <p class="status" id="save-status">Recap saves automatically.</p>
 
