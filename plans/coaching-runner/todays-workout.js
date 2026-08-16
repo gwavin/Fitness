@@ -31,6 +31,16 @@
   const escapeText = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[char]);
+  const EVENING_MOBILITY_URL = "return-barefoot-running-strength-training-plan.html#mobility-routine";
+  const eveningMobilityCard = () => `
+    <aside class="card evening-mobility" aria-labelledby="evening-mobility-title">
+      <div>
+        <p class="eyebrow">Tonight</p>
+        <h2 id="evening-mobility-title">15-minute shoulder &amp; ankle mobility</h2>
+        <p>Keep the evening recovery habit visible: shoulder mobility, ankle range, calf work and thoracic rotation.</p>
+      </div>
+      <a class="button button--large" href="${EVENING_MOBILITY_URL}">Open evening mobility &rarr;</a>
+    </aside>`;
 
   function loadDb() {
     try {
@@ -125,7 +135,7 @@
           <label class="field"><span>Back, 0–10</span><input id="back-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.back)}"></label>
           <label class="field"><span>Shoulder, 0–10</span><input id="shoulder-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.shoulder)}"></label>
           <label class="field"><span>Neck, 0–10</span><input id="neck-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.neck)}"></label>
-          <label class="field"><span>Ankle, 0–10</span><input id="ankle-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.ankle)}"></label>
+          <label class="field"><span>Ankle / foot, 0–10</span><input id="ankle-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.ankle)}"></label>
           <label class="field"><span>Neurological symptoms?</span><select id="neurological-before"><option value="">Select Yes or No</option><option value="No" ${session?.readiness?.neurological === "No" ? "selected" : ""}>No</option><option value="Yes" ${session?.readiness?.neurological === "Yes" ? "selected" : ""}>Yes</option></select></label>
           <label class="field field--wide"><span>Context and readiness notes</span><textarea id="readiness-notes" placeholder="Sleep, soreness, warm-up response, radiating pain, numbness, weakness, time pressure or equipment changes…">${escapeText(session?.readiness?.notes)}</textarea></label>
         </div>
@@ -136,6 +146,8 @@
         </div>
         <p class="status" id="save-status">Entries save automatically on this device.</p>
       </section>
+
+      ${eveningMobilityCard()}
 
       ${workout.previousSession ? `
         <section class="card panel">
@@ -330,6 +342,7 @@
           </div>
         </div>
       </article>
+      ${eveningMobilityCard()}
     `;
 
     const updateClock = () => {
@@ -416,7 +429,7 @@
       `Back: ${session.readiness.back || "not recorded"}/10`,
       `Shoulder: ${session.readiness.shoulder || "not recorded"}/10`,
       `Neck: ${session.readiness.neck || "not recorded"}/10`,
-      `Ankle: ${session.readiness.ankle || "not recorded"}/10`,
+      `Ankle / foot: ${session.readiness.ankle || "not recorded"}/10`,
       `Neurological symptoms: ${session.readiness.neurological || "not recorded"}`,
       `Context: ${session.readiness.notes || "none recorded"}`,
       "",
@@ -508,6 +521,8 @@
         <h1>You turned up.</h1>
         <p class="hero__purpose">Now capture enough truth for the next coaching conversation.</p>
       </section>
+
+      ${eveningMobilityCard()}
 
       <section class="card panel">
         <div class="recap-metrics">

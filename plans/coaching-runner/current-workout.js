@@ -1,52 +1,52 @@
 window.CURRENT_WORKOUT = {
   schemaVersion: 1,
-  id: "controlled-strength-progression-2026-08-14-v1",
-  publishedFor: "2026-08-14",
-  durationMinutes: 50,
-  title: "Friday controlled strength progression",
-  purpose: "Continue conservative squat and bench progression, consolidate the new rowing load, and complete explicitly prescribed shoulder and scapular work.",
-  targetEffort: "Submaximal, technically sound work. Record genuine reps in reserve without testing failure.",
-  safetySummary: "Do not train through new numbness, weakness, radiating pain, meaningful pain increase, or symptom-driven technique alteration. Friday is controlled progression, not a strength test.",
-  coachNote: "Squat progresses only if Wednesday produced no meaningful delayed back reaction and warm-ups feel normal. Bench stops at 75 kg today even if easy. Row stays at 21.6 kg. Complete all three prescribed scapular exercises.",
-  rirGuide: "How many additional clean reps could you genuinely have completed? 5+ RIR is very submaximal; 4 RIR is about RPE 6; 3 about RPE 7; 2 about RPE 8; 1 about RPE 9; 0 about RPE 10. Do not deliberately test failure.",
+  id: "controlled-strength-progression-2026-08-17-v1",
+  publishedFor: "2026-08-17",
+  durationMinutes: 42,
+  title: "Monday controlled strength progression",
+  purpose: "Add one squat working set at Friday's load, progress bench conditionally, repeat the supported row, and finish with brief low-back-friendly conditioning and trunk work.",
+  targetEffort: "Controlled, technically sound work with approximately 3–5 reps in reserve. No grinding or maximal efforts.",
+  safetySummary: "Stop or modify for new neurological disturbance, substantial deterioration, pain clearly aggravated during warm-up, meaningful symptom increase across sets, or symptom-driven technique alteration. Stopping squat work early is a valid training decision, not a failed workout.",
+  coachNote: "Change only one squat variable: keep 50 kg and add the third working set. Bench may use 75 kg, with 72.5 kg available if difficulty or technique says so. Keep the one-arm row supported.",
+  rirGuide: "How many additional clean reps could you genuinely have completed? Record RIR without deliberately testing failure. Target about 4–5 RIR for squat and 3–5 RIR for bench.",
   previousSession: {
-    date: "2026-08-12",
-    title: "Well-tolerated strength progression",
-    context: "Squats improved across sets with mild muscular back awareness and 0/10 back pain after training. Shoulder, neck and ankle were 0/10; apprehension reduced; overall RPE 3; everything felt strong.",
+    date: "2026-08-14",
+    title: "Controlled Friday strength session",
+    context: "Energy 4/5; back 2/10; no significant shoulder, neck or ankle symptoms. The recent muscular lower-back flare has been steadily improving.",
     results: [
-      "Squat — 47.5 kg × 5 × 3; RPE 3, 4 and 3.",
-      "Bench press — 72.5 kg × 5 × 3; RPE 5 throughout and about 5 clean reps in reserve.",
-      "Chest-supported row — 21.6 kg × 10 × 3 at RPE 4.",
-      "Wall slides, internal/external rotation and face pulls completed."
+      "Squat — 50 kg × 5 × 2 working sets at approximately 5 RIR after 20/30/40 kg warm-ups.",
+      "Bench press — 72.5 kg × 5 × 2 working sets at approximately 5 RIR after 20/40/60 kg warm-ups.",
+      "Supported one-arm dumbbell row — 20 kg × 8 × 3 each side.",
+      "Finisher — 2-minute march and 1-minute side plank each side."
     ]
   },
   steps: [
     {
-      id: "readiness-2026-08-14",
+      id: "readiness-2026-08-17",
       block: "Readiness",
-      name: "Readiness and delayed-response check",
+      name: "Readiness and back check",
       startMinute: 0,
       endMinute: 3,
-      prescription: "Record readiness and specifically note any delayed back reaction following Wednesday's squats.",
+      prescription: "Record readiness and note any delayed or morning back response before beginning the squat warm-up.",
       instructions: [
-        "If the back is essentially at baseline, neurological symptoms are absent and warm-ups feel normal, proceed towards 50 kg.",
-        "If Wednesday produced a meaningful adverse back reaction, repeat 47.5 kg rather than progressing.",
+        "Proceed only while symptoms remain stable and warm-ups feel normal.",
+        "If there is substantial deterioration or pain is clearly aggravated during warm-up, reduce or stop rather than pushing through.",
         "Do not loaded-squat with new numbness, weakness, radiating pain or another neurological symptom."
       ],
-      guardrail: "The scheduled 50 kg is conditional, not automatic.",
+      guardrail: "The readiness result and warm-up response govern the squat. Ending squat work early does not invalidate the rest of the session.",
       setPlan: []
     },
     {
-      id: "barbell-squat-50kg-3x5",
+      id: "barbell-squat-50kg-3x5-2026-08-17",
       block: "Rehabilitative progression",
       name: "Barbell squat",
       startMinute: 3,
       endMinute: 18,
-      prescription: "Warm up with 20 kg × 10, 30 kg × 5 and 40 kg × 5. If readiness and warm-ups are reassuring, perform 50 kg for 3 sets of 5. Otherwise repeat 47.5 kg or reduce or stop according to symptoms.",
-      technique: "Use controlled repetitions and the same stable pattern as Wednesday. Record actual reps and genuine RIR after each working set.",
-      guardrail: "Do not automatically progress because 50 kg is scheduled. Stop or escalate appropriately for neurological symptoms, meaningful pain increase or symptom-driven technique alteration.",
-      previousResult: "12 August: 47.5 kg × 5 × 3; RPE 3/4/3. Mild muscular back awareness; sets felt progressively better; back 0/10 afterward.",
-      progression: "When working sets consistently approach 2–3 RIR, reassess the simple 2.5 kg progression rather than pushing towards failure.",
+      prescription: "Warm up with 20 kg × 10, 30 kg × 5 and 40 kg × 5, then perform 50 kg for 3 sets of 5 at roughly 4–5 RIR. Keep the same load as Friday; the third working set is the only progression.",
+      technique: "Use controlled repetitions and monitor the back through each successive set. Record actual reps and RIR separately.",
+      guardrail: "Do not increase squat weight. If the back becomes meaningfully worse during warm-up or successive sets, stop squat work and continue only with exercises that remain comfortable.",
+      previousResult: "14 August: 50 kg × 5 × 2 at approximately 5 RIR after 20/30/40 kg warm-ups.",
+      progression: "Change only one squat variable at a time. Today's additional set is enough progression.",
       restSeconds: 120,
       safetyGate: "squat",
       setPlan: [
@@ -58,22 +58,21 @@ window.CURRENT_WORKOUT = {
         { label: "Working set 3", load: "50 kg", reps: "5", rirRequired: true }
       ],
       assessmentFields: [
-        { key: "finalRepSlowing", label: "Obvious slowing of final rep?", type: "select", options: ["No", "Yes"] },
-        { key: "backResponse", label: "Back response", type: "select", options: ["Better", "Same", "Worse"] },
-        { key: "technique", label: "Technique comments", type: "textarea" }
+        { key: "backResponse", label: "Back response across sets", type: "select", options: ["Better", "Same", "Worse"] },
+        { key: "technique", label: "Technique or symptom comments", type: "textarea" }
       ]
     },
     {
-      id: "bench-press-75kg-3x5",
+      id: "bench-press-75kg-3x5-2026-08-17",
       block: "Strength progression",
       name: "Bench press",
       startMinute: 18,
       endMinute: 31,
-      prescription: "Warm up with 20 kg × 10, 40 kg × 5 and 60 kg × 5, then perform 75 kg for 3 sets of 5. Do not increase the load during this session even if it feels very easy.",
-      technique: "Use a repeatable setup and controlled descent. Record actual reps and genuine RIR after each working set.",
-      guardrail: "Complete the prescribed sets without grinding or failure testing. Stop or reduce if shoulder symptoms or technique changes appear.",
-      previousResult: "12 August: 72.5 kg × 5 × 3 at RPE 5, subsequently estimated at about 5 clean reps in reserve; shoulder comfortable.",
-      progression: "Use today's RIR, rep slowing, technique and symptom response to determine the next increment.",
+      prescription: "Warm up with 20 kg × 10, 40 kg × 5 and 60 kg × 5, then perform 75 kg for 3 sets of 5 at approximately 3–5 RIR. Use 72.5 kg instead if 75 kg feels unexpectedly difficult or technique deteriorates.",
+      technique: "Use a repeatable setup and controlled descent. Record the actual load, reps and RIR for every working set.",
+      guardrail: "No grinding repetitions. The 72.5 kg fallback is an appropriate adjustment, not a missed target.",
+      previousResult: "14 August: 72.5 kg × 5 × 2 at approximately 5 RIR after 20/40/60 kg warm-ups.",
+      progression: "Use actual RIR and technique quality to guide the next session rather than forcing the scheduled load.",
       restSeconds: 120,
       setPlan: [
         { label: "Warm-up 1", load: "20 kg", reps: "10" },
@@ -84,84 +83,42 @@ window.CURRENT_WORKOUT = {
         { label: "Working set 3", load: "75 kg", reps: "5", rirRequired: true }
       ],
       assessmentFields: [
-        { key: "finalRepSlowing", label: "Obvious slowing of final rep?", type: "select", options: ["No", "Yes"] },
-        { key: "shoulderConfidence", label: "Shoulder confidence", type: "select", options: ["Better", "Same", "Worse"] },
+        { key: "usedFallback", label: "Used 72.5 kg fallback?", type: "select", options: ["No", "Yes"] },
         { key: "technique", label: "Technique comments", type: "textarea" }
       ]
     },
     {
-      id: "chest-supported-row-21-6kg-3x10",
-      block: "Consolidate load",
-      name: "Chest-supported row",
+      id: "supported-one-arm-row-20kg-3x8",
+      block: "Supported pull",
+      name: "Supported one-arm dumbbell row",
       startMinute: 31,
-      endMinute: 39,
-      prescription: "Hold at 21.6 kg for 3 sets of 10. Record actual reps and RIR for every set. Rest 75–90 seconds.",
-      technique: "Keep the chest supported and use controlled repetitions without momentum. Pause briefly and lower under control.",
-      guardrail: "Do not increase the load today; consolidate the recent increase while squat and bench progress.",
-      previousResult: "12 August: 21.6 kg × 10 × 3 at RPE 4; comfortable after the recent load increase.",
+      endMinute: 38,
+      prescription: "Use 20 kg for 3 sets of 8 each side. Keep the torso supported to minimise unnecessary lower-back loading.",
+      technique: "Brace against a stable bench or support, avoid torso rotation and lower the dumbbell under control.",
+      guardrail: "Stop or change the setup if back loading becomes noticeable or support is lost.",
+      previousResult: "14 August: 20 kg × 8 × 3 each side.",
       restSeconds: 90,
       setPlan: [
-        { label: "Set 1", load: "21.6 kg", reps: "10", rirRequired: true },
-        { label: "Set 2", load: "21.6 kg", reps: "10", rirRequired: true },
-        { label: "Set 3", load: "21.6 kg", reps: "10", rirRequired: true }
+        { label: "Set 1 — each side", load: "20 kg", reps: "8" },
+        { label: "Set 2 — each side", load: "20 kg", reps: "8" },
+        { label: "Set 3 — each side", load: "20 kg", reps: "8" }
       ]
     },
     {
-      id: "wall-slides-2x10",
-      block: "Prescribed scapular work",
-      name: "Wall slides",
-      startMinute: 39,
+      id: "march-and-side-planks-2026-08-17",
+      block: "Finisher and trunk work",
+      name: "March and side planks",
+      startMinute: 38,
       endMinute: 42,
-      prescription: "Complete 2 sets of 10 with controlled, comfortable movement.",
-      technique: "Prioritise movement quality and confidence rather than fatigue.",
-      guardrail: "Use a comfortable range and stop for pinching or altered movement.",
+      prescription: "March for 2 minutes, then hold a side plank for 1 minute on the left and 1 minute on the right. Use the workout timer or adjustable rest timer to time each interval.",
+      technique: "Keep the march easy. Use a side-plank variation that allows steady breathing and comfortable trunk control.",
+      guardrail: "Shorten or stop a hold if the back becomes more noticeable or position deteriorates.",
+      restSeconds: 60,
       setPlan: [
-        { label: "Set 1", load: "bodyweight", reps: "10" },
-        { label: "Set 2", load: "bodyweight", reps: "10" }
+        { label: "March", load: "bodyweight", reps: "2 minutes" },
+        { label: "Side plank — left", load: "bodyweight", reps: "1 minute" },
+        { label: "Side plank — right", load: "bodyweight", reps: "1 minute" }
       ]
-    },
-    {
-      id: "band-external-rotation-2x12-15",
-      block: "Prescribed scapular work",
-      name: "Band external rotation",
-      startMinute: 42,
-      endMinute: 45,
-      prescription: "Complete 2 sets of 12–15 each side using light resistance and controlled movement.",
-      technique: "Keep the shoulder position comfortable and record the band used if useful.",
-      guardrail: "This is movement-quality work, not progressive overload.",
-      setPlan: [
-        { label: "Set 1 — each side", load: "light band", reps: "12–15" },
-        { label: "Set 2 — each side", load: "light band", reps: "12–15" }
-      ]
-    },
-    {
-      id: "face-pulls-2x12-15",
-      block: "Prescribed scapular work",
-      name: "Face pulls",
-      startMinute: 45,
-      endMinute: 48,
-      prescription: "Complete 2 sets of 12–15 with controlled, comfortable repetitions.",
-      technique: "Keep the neck relaxed and finish each repetition without momentum.",
-      guardrail: "Prioritise shoulder and scapular movement quality rather than fatigue.",
-      setPlan: [
-        { label: "Set 1", load: "light band", reps: "12–15" },
-        { label: "Set 2", load: "light band", reps: "12–15" }
-      ]
-    },
-    {
-      id: "session-recap-2026-08-14",
-      block: "Recap",
-      name: "End-of-session and next-morning response",
-      startMinute: 48,
-      endMinute: 50,
-      prescription: "Review completed sets and exercise assessments, then finish to record the immediate and next-morning response.",
-      instructions: [
-        "Confirm RIR for every completed working strength set.",
-        "Confirm final-rep slowing and symptom/confidence response for squat and bench.",
-        "Return the next morning to record symptoms, stiffness or DOMS and any delayed reaction."
-      ],
-      guardrail: "Only explicitly completed sets are exported as performed work.",
-      setPlan: []
     }
   ]
 };

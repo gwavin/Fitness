@@ -77,6 +77,28 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus
 
 .loading-card { padding: 2rem; text-align: center; }
 
+.evening-mobility {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: clamp(1rem, 4vw, 1.4rem);
+  border-color: #acd2b6;
+  background: linear-gradient(135deg, #f7fff9, #e6f3e9);
+}
+
+.evening-mobility h2 { margin: 0.1rem 0 0.35rem; }
+.evening-mobility p:not(.eyebrow) { margin: 0; color: var(--muted); }
+.evening-mobility .eyebrow { color: var(--green); }
+.evening-mobility .button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .hero {
   padding: clamp(1.35rem, 5vw, 2.5rem);
   color: #fff;
@@ -427,6 +449,8 @@ audio { width: 100%; margin-top: 0.8rem; }
   .rest-dock { align-items: center; }
   .rest-dock__actions { gap: 0.3rem; }
   .rest-dock .button { min-width: 2.8rem; padding-inline: 0.45rem; }
+  .evening-mobility { align-items: stretch; flex-direction: column; }
+  .evening-mobility .button { width: 100%; }
 }
 
 @media print {
