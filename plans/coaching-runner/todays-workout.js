@@ -8,6 +8,8 @@
   const restToggle = document.querySelector("#rest-toggle");
   const restMinus = document.querySelector("#rest-minus");
   const restPlus = document.querySelector("#rest-plus");
+  const soundTest = document.querySelector("#sound-test");
+  const soundToggle = document.querySelector("#sound-toggle");
 
   if (!workout || !Array.isArray(workout.steps)) {
     app.innerHTML = '<section class="card panel"><h1>Workout unavailable</h1><p>The daily workout definition could not be loaded.</p></section>';
@@ -15,6 +17,7 @@
   }
 
   const STORAGE_KEY = "fitness-coaching-runner-v1";
+  const SOUND_KEY = "fitness-coaching-runner-sound-v1";
   const MAX_SESSIONS = 30;
   const localDate = () => {
     const now = new Date();
@@ -66,6 +69,46 @@
   let mediaStream;
   let audioChunks = [];
   let audioUrl = "";
+  let alarmContext;
+  let soundOn = localStorage.getItem(SOUND_KEY) !== "off";
+  let inlineTimerCleanups = [];
+
+  function ensureAlarmContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    if (!alarmContext) alarmContext = new AudioContextClass();
+    if (alarmContext.state === "suspended") alarmContext.resume();
+    return alarmContext;
+  }
+
+  function notifyTimerComplete() {
+    navigator.vibrate?.([220, 100, 220, 100, 360]);
+    if (!soundOn) return;
+    try {
+      const context = ensureAlarmContext();
+      if (!context) return;
+      const start = context.currentTime + 0.03;
+      [0, 0.34, 0.68].forEach((offset, index) => {
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.type = "square";
+        oscillator.frequency.value = index === 2 ? 980 : 820;
+        gain.gain.setValueAtTime(0.0001, start + offset);
+        gain.gain.exponentialRampToValueAtTime(0.22, start + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + offset + 0.24);
+        oscillator.connect(gain).connect(context.destination);
+        oscillator.start(start + offset);
+        oscillator.stop(start + offset + 0.25);
+      });
+    } catch {
+      // Vibration and the visible timer remain available if audio is blocked.
+    }
+  }
+
+  function clearInlineTimers() {
+    inlineTimerCleanups.forEach((cleanup) => cleanup());
+    inlineTimerCleanups = [];
+  }
 
   function saveDb(statusText) {
     if (session) {
@@ -106,6 +149,7 @@
   }
 
   function renderLanding() {
+    clearInlineTimers();
     clearInterval(workoutTicker);
     restDock.hidden = true;
     const today = localDate();
@@ -174,6 +218,7 @@
         document.querySelector("#save-status").classList.add("status--error");
         return;
       }
+      ensureAlarmContext();
       if (!session) session = newSession();
       session.readiness = {
         energy: document.querySelector("#energy").value,
@@ -217,10 +262,10 @@
         target.innerHTML = "<strong>Do not perform loaded squats.</strong> New neurological symptoms require reassessment rather than training through them.";
       } else if (document.querySelector("#back-before").value && back > 3) {
         target.classList.add("readiness-decision--caution");
-        target.innerHTML = "<strong>Do not progress the squat today.</strong> Back discomfort is worse than Monday's 3/10. Use about 45 kg only if warm-ups settle and feel normal; otherwise reduce or stop.";
+        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Use the 55 kg fallback only if warm-ups settle and feel normal; otherwise reduce or stop.";
       } else if (neurological === "No" && document.querySelector("#back-before").value && back <= 3) {
         target.classList.add("readiness-decision--proceed");
-        target.innerHTML = "<strong>47.5 kg may be appropriate</strong> if the squat warm-ups also feel normal and symptoms do not increase.";
+        target.innerHTML = "<strong>57.5 kg may be appropriate</strong> if the squat warm-ups also feel normal and symptoms do not increase.";
       } else {
         target.textContent = "Enter back discomfort and neurological symptom status to receive the squat recommendation.";
       }
@@ -262,6 +307,7 @@
   }
 
   function renderWorkout() {
+    clearInlineTimers();
     if (!session) return renderLanding();
     restDock.hidden = false;
     activeStepIndex = Math.max(0, Math.min(activeStepIndex, workout.steps.length - 1));
@@ -300,7 +346,7 @@
         <div class="exercise-card__body">
           <p class="prescription">${escapeText(step.prescription)}</p>
           ${squatBlocked ? '<div class="safety-alert safety-alert--stop"><strong>Loaded squatting is disabled.</strong> You reported neurological symptoms. Reassess rather than training through numbness, weakness, radiating pain or another neurological symptom.</div>' : ""}
-          ${squatCaution ? '<div class="safety-alert safety-alert--caution"><strong>Do not progress to 50 kg automatically.</strong> Back discomfort is elevated. Repeat 47.5 kg only if warm-ups settle and feel normal, or reduce or stop.</div>' : ""}
+          ${squatCaution ? '<div class="safety-alert safety-alert--caution"><strong>Do not progress automatically.</strong> Back discomfort is elevated. Use the 55 kg fallback only if warm-ups settle and feel normal, or reduce or stop.</div>' : ""}
           ${workout.rirGuide && step.setPlan?.some((item) => item.rirRequired) ? `<details class="details-box"><summary>How to record RIR</summary><div class="details-box__content"><p>${escapeText(workout.rirGuide)}</p></div></details>` : ""}
           ${Array.isArray(step.instructions) ? `<ol class="instruction-list">${step.instructions.map((item) => `<li>${escapeText(item)}</li>`).join("")}</ol>` : ""}
           ${(step.technique || step.guardrail || step.progression) ? `
@@ -317,7 +363,7 @@
           ${log.sets.length ? `
             <div class="sets" id="set-list">
               ${log.sets.map((set, index) => `
-                <div class="set-row" data-set-index="${index}">
+                <div class="set-row ${set.completed ? "set-row--complete" : ""}" data-set-index="${index}">
                   <div class="set-label">${escapeText(set.label)}</div>
                   <label class="completion-field"><input data-field="completed" type="checkbox" ${set.completed ? "checked" : ""} ${squatBlocked ? "disabled" : ""}><span>Completed</span></label>
                   <label class="field"><span>Actual load / resistance</span><input data-field="load" type="text" inputmode="decimal" value="${escapeText(set.load)}" ${squatBlocked ? "disabled" : ""}></label>
@@ -325,6 +371,11 @@
                   ${step.setPlan?.[index]?.rirRequired
                     ? `<label class="field"><span>RIR (required)</span><input data-field="rir" aria-label="How many additional clean reps could you genuinely have completed?" type="number" min="0" max="10" step="1" inputmode="numeric" value="${escapeText(set.rir)}" ${squatBlocked ? "disabled" : ""}></label>`
                     : `<label class="field"><span>RPE${step.setPlan?.[index]?.rpeRequired ? " (required)" : ""}</span><input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal" value="${escapeText(set.rpe)}" ${squatBlocked ? "disabled" : ""}></label>`}
+                  ${step.setPlan?.[index]?.timerSeconds ? `<div class="set-timer" data-set-timer data-duration="${step.setPlan[index].timerSeconds}">
+                    <strong data-timer-display>${formatClock(step.setPlan[index].timerSeconds)}</strong>
+                    <button class="button" type="button" data-timer-action="toggle">Start</button>
+                    <button class="button button--quiet" type="button" data-timer-action="reset">Reset</button>
+                  </div>` : ""}
                 </div>`).join("")}
             </div>` : ""}
 
@@ -357,7 +408,44 @@
       const row = event.target.closest("[data-set-index]");
       if (!row || !event.target.dataset.field) return;
       log.sets[Number(row.dataset.setIndex)][event.target.dataset.field] = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+      if (event.target.type === "checkbox") {
+        row.classList.toggle("set-row--complete", event.target.checked);
+        if (event.target.checked) {
+          row.querySelector('[data-field="rir"], [data-field="rpe"]')?.focus({ preventScroll: true });
+        }
+      }
       saveDb("Set saved");
+    });
+
+    document.querySelectorAll("[data-set-timer]").forEach((timer) => {
+      const display = timer.querySelector("[data-timer-display]");
+      const toggle = timer.querySelector('[data-timer-action="toggle"]');
+      const reset = timer.querySelector('[data-timer-action="reset"]');
+      const duration = Number(timer.dataset.duration);
+      let remaining = duration;
+      let endAt = 0;
+      let ticker;
+      const draw = () => { display.textContent = formatClock(remaining); };
+      const stop = () => { clearInterval(ticker); ticker = undefined; toggle.textContent = remaining <= 0 ? "Again" : "Start"; };
+      const tick = () => {
+        remaining = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
+        draw();
+        if (remaining <= 0) {
+          stop();
+          notifyTimerComplete();
+        }
+      };
+      toggle.addEventListener("click", () => {
+        ensureAlarmContext();
+        if (ticker) { stop(); return; }
+        if (remaining <= 0) remaining = duration;
+        endAt = Date.now() + remaining * 1000;
+        toggle.textContent = "Pause";
+        ticker = setInterval(tick, 250);
+        tick();
+      });
+      reset.addEventListener("click", () => { stop(); remaining = duration; draw(); });
+      inlineTimerCleanups.push(() => clearInterval(ticker));
     });
 
     document.querySelector("#exercise-notes").addEventListener("input", (event) => {
@@ -509,6 +597,7 @@
   }
 
   function renderRecap() {
+    clearInlineTimers();
     clearInterval(workoutTicker);
     restDock.hidden = true;
     if (!session.completedAt) session.completedAt = new Date().toISOString();
@@ -707,21 +796,7 @@
     if (restSeconds <= 0) {
       stopRest("Rest complete");
       restToggle.textContent = "Again";
-      navigator.vibrate?.([140, 70, 140]);
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const context = new AudioContext();
-        const oscillator = context.createOscillator();
-        const gain = context.createGain();
-        oscillator.frequency.value = 700;
-        gain.gain.setValueAtTime(0.08, context.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.35);
-        oscillator.connect(gain).connect(context.destination);
-        oscillator.start();
-        oscillator.stop(context.currentTime + 0.35);
-      } catch {
-        // Visible timer remains the fallback.
-      }
+      notifyTimerComplete();
     }
   }
 
@@ -751,9 +826,21 @@
     updateRestDisplay();
   });
 
+  soundToggle.checked = soundOn;
+  soundToggle.addEventListener("change", () => {
+    soundOn = soundToggle.checked;
+    localStorage.setItem(SOUND_KEY, soundOn ? "on" : "off");
+    if (soundOn) ensureAlarmContext();
+  });
+  soundTest.addEventListener("click", () => {
+    ensureAlarmContext();
+    notifyTimerComplete();
+  });
+
   window.addEventListener("beforeunload", () => {
     mediaStream?.getTracks().forEach((track) => track.stop());
     if (audioUrl) URL.revokeObjectURL(audioUrl);
+    clearInlineTimers();
   });
 
   updateRestDisplay();

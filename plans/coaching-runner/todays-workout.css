@@ -61,6 +61,18 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus
 }
 
 .privacy-note { color: var(--muted); }
+.header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 0.55rem; }
+.sound-test {
+  min-height: 2.5rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  color: var(--green-dark);
+  background: var(--surface);
+  font-weight: 800;
+}
+.sound-toggle { display: flex; align-items: center; gap: 0.35rem; white-space: nowrap; color: var(--green-dark); font-weight: 800; }
+.sound-toggle input { width: 1.2rem; min-height: 1.2rem; accent-color: var(--green); }
 
 .app-shell {
   width: min(var(--content), calc(100% - 1.5rem));
@@ -325,11 +337,21 @@ textarea { min-height: 6rem; resize: vertical; }
 }
 
 .set-row:first-child { border-top: 0; }
+.set-row--complete { margin-inline: -0.45rem; padding-inline: 0.45rem; border-radius: 0.65rem; background: var(--green-soft); }
 .set-label { align-self: center; font-weight: 850; }
 .completion-field { display: flex; align-items: center; gap: 0.45rem; min-height: 2.7rem; font-size: 0.8rem; font-weight: 850; }
 .completion-field input { width: 1.35rem; min-height: 1.35rem; margin: 0; accent-color: var(--green); }
 .set-row .field span { font-size: 0.74rem; }
 .set-row input { min-height: 2.7rem; padding: 0.55rem; }
+.set-timer {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(5rem, 1fr) 1.25fr 1fr;
+  gap: 0.55rem;
+  align-items: center;
+}
+.set-timer strong { font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.set-timer .button { min-height: 3rem; }
 
 @container (max-width: 520px) {
   .set-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -438,7 +460,8 @@ audio { width: 100%; margin-top: 0.8rem; }
 
 @media (max-width: 560px) {
   .site-header { align-items: flex-start; }
-  .privacy-note { max-width: 9rem; text-align: right; }
+  .header-actions { flex-wrap: wrap; max-width: 16rem; }
+  .privacy-note { width: 100%; text-align: right; }
   .form-grid { grid-template-columns: 1fr; }
   .assessment-grid { grid-template-columns: 1fr; }
   .field--wide { grid-column: auto; }
