@@ -207,9 +207,21 @@
             <div class="history-item">
               <strong>${escapeText(formatDate(item.workoutDate || localDate()))}</strong>
               <span>Session RPE ${escapeText(item.outcome?.sessionRpe || "not recorded")} · ${escapeText(item.completedAt ? new Date(item.completedAt).toLocaleTimeString("en-IE", { hour: "2-digit", minute: "2-digit" }) : "")}</span>
+              ${item.workoutId === workout.id ? `<button class="button button--quiet" type="button" data-open-recap="${escapeText(item.id)}">Open recap</button>` : ""}
             </div>`).join("")}</div>
         </section>` : ""}
     `;
+
+    document.querySelectorAll("[data-open-recap]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const completed = db.sessions.find((item) => item.id === button.dataset.openRecap && item.workoutId === workout.id && item.completedAt);
+        if (!completed) return;
+        session = completed;
+        activeStepIndex = session.activeStepIndex || 0;
+        renderRecap();
+        window.scrollTo(0, 0);
+      });
+    });
 
     document.querySelector("#begin-workout").addEventListener("click", () => {
       const requiredReadiness = ["#energy", "#back-before", "#shoulder-before", "#neck-before", "#ankle-before", "#neurological-before"];
@@ -262,10 +274,10 @@
         target.innerHTML = "<strong>Do not perform loaded squats.</strong> New neurological symptoms require reassessment rather than training through them.";
       } else if (document.querySelector("#back-before").value && back > 3) {
         target.classList.add("readiness-decision--caution");
-        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Use the 55 kg fallback only if warm-ups settle and feel normal; otherwise reduce or stop.";
+        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Use the 57.5 kg fallback only if warm-ups settle and feel normal; otherwise reduce or stop.";
       } else if (neurological === "No" && document.querySelector("#back-before").value && back <= 3) {
         target.classList.add("readiness-decision--proceed");
-        target.innerHTML = "<strong>57.5 kg may be appropriate</strong> if the squat warm-ups also feel normal and symptoms do not increase.";
+        target.innerHTML = "<strong>60 kg may be appropriate</strong> if recovery and squat warm-ups feel normal and symptoms do not increase.";
       } else {
         target.textContent = "Enter back discomfort and neurological symptom status to receive the squat recommendation.";
       }
@@ -346,7 +358,7 @@
         <div class="exercise-card__body">
           <p class="prescription">${escapeText(step.prescription)}</p>
           ${squatBlocked ? '<div class="safety-alert safety-alert--stop"><strong>Loaded squatting is disabled.</strong> You reported neurological symptoms. Reassess rather than training through numbness, weakness, radiating pain or another neurological symptom.</div>' : ""}
-          ${squatCaution ? '<div class="safety-alert safety-alert--caution"><strong>Do not progress automatically.</strong> Back discomfort is elevated. Use the 55 kg fallback only if warm-ups settle and feel normal, or reduce or stop.</div>' : ""}
+          ${squatCaution ? '<div class="safety-alert safety-alert--caution"><strong>Do not progress automatically.</strong> Back discomfort is elevated. Use the 57.5 kg fallback only if warm-ups settle and feel normal, or reduce or stop.</div>' : ""}
           ${workout.rirGuide && step.setPlan?.some((item) => item.rirRequired) ? `<details class="details-box"><summary>How to record RIR</summary><div class="details-box__content"><p>${escapeText(workout.rirGuide)}</p></div></details>` : ""}
           ${Array.isArray(step.instructions) ? `<ol class="instruction-list">${step.instructions.map((item) => `<li>${escapeText(item)}</li>`).join("")}</ol>` : ""}
           ${(step.technique || step.guardrail || step.progression) ? `
@@ -633,7 +645,7 @@
           <label class="field field--wide"><span>What felt strong?</span><textarea data-outcome="whatFeltStrong">${escapeText(session.outcome.whatFeltStrong)}</textarea></label>
           <label class="field field--wide"><span>What limited the session?</span><textarea data-outcome="whatLimitedSession">${escapeText(session.outcome.whatLimitedSession)}</textarea></label>
           <label class="field field--wide"><span>What should change next time?</span><textarea data-outcome="changeForNextTime">${escapeText(session.outcome.changeForNextTime)}</textarea></label>
-          <div class="field--wide follow-up-heading"><h3>Next-morning response</h3><p>Return tomorrow to capture any delayed response while squat loading is restored.</p></div>
+          <div class="field--wide follow-up-heading"><h3>Next-morning response</h3><p><strong>After conventional deadlifts, check back stiffness and neurological symptoms in particular.</strong> Record any delayed reaction below. Do not progress the deadlift after a meaningful delayed adverse response; reassess first.</p></div>
           <label class="field"><span>Back, 0–10</span><input data-outcome="nextBack" type="number" min="0" max="10" value="${escapeText(session.outcome.nextBack)}"></label>
           <label class="field"><span>Shoulder, 0–10</span><input data-outcome="nextShoulder" type="number" min="0" max="10" value="${escapeText(session.outcome.nextShoulder)}"></label>
           <label class="field"><span>Neck, 0–10</span><input data-outcome="nextNeck" type="number" min="0" max="10" value="${escapeText(session.outcome.nextNeck)}"></label>

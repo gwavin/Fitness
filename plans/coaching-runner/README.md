@@ -20,3 +20,9 @@ ChatGPT provides coaching synthesis and the next reviewed prescription; Codex pe
 ## Updating a prescription
 
 Run `node scripts/validate-coaching-workout.mjs plans/coaching-runner/current-workout.js`. For a replacement: validate it first, archive the existing prescription under `workout-archive/`, replace the file, validate again, then run the static checks.
+
+The current prescription keeps a 42-minute window, with separate squat, bench and conventional deadlift sets followed by three row/carry rounds. Each row pair and carry has its own load, result, effort and completion entry; carries retain their 30-second timers. Default accessory loads are 24 kg/arm and 25 kg/hand, subject to safe equipment increments. Omit accessory sets if necessary rather than rush main lifts or shorten needed rest.
+
+Progression guidance is reviewed text, not an automatic calculation from logged RPE or RIR. Bench progression also requires controlled effort and normal recovery; deadlift progression requires review of delayed response. The prescription date is its preparation date, not a requirement to train that day. Private session recaps remain outside this repository.
+
+Recent completed sessions using the current prescription have an **Open recap** button for next-morning updates after reloading. Older prescription records remain stored but cannot be reopened against a different exercise definition; download the handoff before replacing a prescription.
