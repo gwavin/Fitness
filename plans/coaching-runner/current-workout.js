@@ -2,12 +2,13 @@ window.CURRENT_WORKOUT = {
   schemaVersion: 1,
   id: "controlled-strength-progression-2026-09-05-v1",
   publishedFor: "2026-09-05",
-  durationMinutes: 42,
+  durationMinutes: 45,
+  trainingWindow: "40–50 minutes (45-minute planning target)",
   title: "Next controlled strength progression",
   purpose: "Progress the squat, supported row and carries; consolidate bench technique; use conventional deadlifts with a delayed-response check.",
   targetEffort: "Main lifts: at least 3 clean reps in reserve where possible. No grinding or rushed repetitions.",
   safetySummary: "Stop or modify for new neurological symptoms, meaningful symptom increase, or symptom-driven technique changes. A meaningful delayed adverse back response means reassess the deadlift before increasing it.",
-  coachNote: "Squat 60 kg; bench stays at 80 kg; conventional deadlift 65 kg only if recovery and warm-ups are normal. Then pair rows and carries. The 42-minute window is a limit, not a reason to rush: omit remaining accessory sets and record why if needed.",
+  coachNote: "Squat 60 kg; bench stays at 80 kg; conventional deadlift 65 kg only if recovery and warm-ups are normal. Then pair rows and carries. Allow 40–50 minutes, aiming for about 45. The clock counts against that planning target; use up to five extra minutes for warm-ups, rest or transitions without rushing.",
   rirGuide: "RIR means additional clean reps available, without testing failure. RPE is perceived effort out of 10, not reps remaining. Accidental warm-up effort entries must not determine progression.",
   steps: [
     {
@@ -82,7 +83,7 @@ window.CURRENT_WORKOUT = {
       block: "Controlled hinge",
       name: "Conventional deadlift",
       startMinute: 27,
-      endMinute: 34,
+      endMinute: 37,
       prescription: "Use gradual warm-up sets as needed, then 65 kg × 5 × 3 at RIR ≥3 only if recovery and warm-ups are normal. Log warm-ups in the notes.",
       technique: "Brace, lift smoothly and reset on the floor between repetitions. Use a comfortable, repeatable setup without forcing a prolonged back arch.",
       guardrail: "Do not superset these sets. Allow at least two minutes between working sets and more if needed. Reduce to 60 kg if effort exceeds target; stop for meaningful back deterioration, new neurological symptoms or technique alteration.",
@@ -102,14 +103,14 @@ window.CURRENT_WORKOUT = {
       id: "paired-rows-carries-2026-09-05",
       block: "Paired accessories",
       name: "Supported one-arm dumbbell row + Farmer’s carries",
-      startMinute: 34,
-      endMinute: 42,
+      startMinute: 37,
+      endMinute: 45,
       prescription: "Three rounds: row left → row right → farmer’s carry → rest. Rows: nearest safe 24–25 kg per arm × 8 each side, RPE 5–7. Carries: nearest safe 25–26 kg per hand × 30 seconds, RPE 5–6. Record the actual load for each entry.",
       instructions: [
         "Defaults are 24 kg per arm for rows and 25 kg per hand for carries; use the nearest securely configurable load within the stated range.",
         "If those loads are unavailable, repeat 23 kg rows or 23.6 kg carries; do not round above the range or compromise the equipment setup.",
         "Log each row pair and carry separately below. Rest 75 seconds after each round, longer if needed. Rest between exercises too if grip or technique needs it.",
-        "Pair only when changing equipment is practical. Otherwise perform them separately. Stop at 42 minutes, leave omitted sets unchecked and explain in notes."
+        "Pair only when changing equipment is practical. Otherwise perform them separately. Finishing around 40 minutes is fine if work is complete without rushing; use up to 50 minutes when needed. If time runs out, leave omitted sets unchecked and explain in notes."
       ],
       technique: "Rows: keep the torso supported without momentum. Carries: walk tall with controlled turns and secure grip.",
       guardrail: "Reduce or stop for symptoms, loss of grip control or altered technique. Do not shorten needed rest to complete all rounds.",

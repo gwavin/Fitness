@@ -161,7 +161,7 @@
         <p class="eyebrow">Today’s workout · ${escapeText(formatDate(workout.publishedFor || today))}</p>
         <h1>${escapeText(workout.title)}</h1>
         <p class="hero__purpose">${escapeText(workout.purpose)}</p>
-        <p class="hero__meta">${workout.durationMinutes} minutes · ${escapeText(workout.targetEffort)}</p>
+        <p class="hero__meta">${escapeText(workout.trainingWindow || `${workout.durationMinutes} minutes`)} · ${escapeText(workout.targetEffort)}</p>
         ${stale ? `<div class="stale-banner">This workout was prepared for ${escapeText(formatDate(workout.publishedFor))}, not today. Continue only if that is intentional.</div>` : ""}
       </section>
 
@@ -520,6 +520,7 @@
       `Workout: ${workout.title}`,
       `Date: ${session.workoutDate || localDate()}`,
       `Planned duration: ${workout.durationMinutes} minutes`,
+      `Training window: ${workout.trainingWindow || `${workout.durationMinutes} minutes`}`,
       `Actual duration: ${actualDurationMinutes() ? `${actualDurationMinutes()} minutes` : "session still in progress"}`,
       `Started: ${new Date(session.startedAt).toLocaleString("en-IE")}`,
       `Completed: ${session.completedAt ? new Date(session.completedAt).toLocaleString("en-IE") : "Not yet marked complete"}`,
@@ -572,7 +573,7 @@
       `Notes: ${session.outcome.nextMorning || "none recorded"}`,
       "",
       "COACHING REQUEST",
-      `Please review this session, ask about anything clinically or practically important, and prepare my next workout. The current training window is ${workout.durationMinutes} minutes. Prefer progressive, repeatable work over novelty.`
+      `Please review this session, ask about anything clinically or practically important, and prepare my next workout. The current training window is ${workout.trainingWindow || `${workout.durationMinutes} minutes`}. Prefer progressive, repeatable work over novelty.`
     );
     return lines.join("\n");
   }
@@ -583,6 +584,7 @@
     return {
       schemaVersion: 1,
       exportedAt: new Date().toISOString(),
+      trainingWindow: workout.trainingWindow || `${workout.durationMinutes} minutes`,
       source: { application: "Gavin Fitness Coaching Runner", runnerVersion: "1.2.0", workoutDefinitionId: workout.id, workoutDefinitionSchemaVersion: workout.schemaVersion },
       session: { sessionId: session.id, workoutDate: session.workoutDate || localDate(), startedAt: session.startedAt || null, completedAt, plannedDurationMinutes: workout.durationMinutes, actualDurationMinutes: durationMinutes, completedStepCount: completedExerciseCount(), totalStepCount: workout.steps.length, completionStatus: completedAt ? "completed" : "in-progress" },
       readiness: { energy: session.readiness.energy, backSymptoms: session.readiness.back || "", shoulderSymptoms: session.readiness.shoulder, neckStiffness: session.readiness.neck, ankleSymptoms: session.readiness.ankle, neurologicalSymptoms: session.readiness.neurological || "", context: session.readiness.notes },
