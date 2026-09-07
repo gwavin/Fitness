@@ -1,7 +1,7 @@
 window.CURRENT_WORKOUT = {
   schemaVersion: 1,
   id: "controlled-strength-progression-2026-09-05-v1",
-  publishedFor: "2026-09-05",
+  publishedFor: "2026-09-09",
   durationMinutes: 45,
   trainingWindow: "40–50 minutes (45-minute planning target)",
   title: "Next controlled strength progression",
