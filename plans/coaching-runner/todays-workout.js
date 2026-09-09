@@ -18,7 +18,6 @@
 
   const STORAGE_KEY = "fitness-coaching-runner-v1";
   const SOUND_KEY = "fitness-coaching-runner-sound-v1";
-  const MAX_SESSIONS = 30;
   const localDate = () => {
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
@@ -116,7 +115,6 @@
       if (index >= 0) db.sessions[index] = session;
       else db.sessions.unshift(session);
     }
-    db.sessions = db.sessions.slice(0, MAX_SESSIONS);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
       const status = document.querySelector("#save-status");
@@ -180,7 +178,7 @@
           <label class="field"><span>Shoulder, 0–10</span><input id="shoulder-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.shoulder)}"></label>
           <label class="field"><span>Neck, 0–10</span><input id="neck-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.neck)}"></label>
           <label class="field"><span>Ankle / foot, 0–10</span><input id="ankle-before" type="number" min="0" max="10" inputmode="numeric" value="${escapeText(session?.readiness?.ankle)}"></label>
-          <label class="field"><span>Neurological symptoms?</span><select id="neurological-before"><option value="">Select Yes or No</option><option value="No" ${session?.readiness?.neurological === "No" ? "selected" : ""}>No</option><option value="Yes" ${session?.readiness?.neurological === "Yes" ? "selected" : ""}>Yes</option></select></label>
+          <label class="field"><span>Neurological or radiating symptoms?</span><select id="neurological-before"><option value="">Select Yes or No</option><option value="No" ${session?.readiness?.neurological === "No" ? "selected" : ""}>No</option><option value="Yes" ${session?.readiness?.neurological === "Yes" ? "selected" : ""}>Yes</option></select></label>
           <label class="field field--wide"><span>Context and readiness notes</span><textarea id="readiness-notes" placeholder="Sleep, soreness, warm-up response, radiating pain, numbness, weakness, time pressure or equipment changes…">${escapeText(session?.readiness?.notes)}</textarea></label>
         </div>
         <div class="readiness-decision" id="squat-readiness" role="status" aria-live="polite"></div>
@@ -272,12 +270,12 @@
       if (neurological === "Yes") {
         target.classList.add("readiness-decision--stop");
         target.innerHTML = "<strong>Do not perform loaded squats.</strong> New neurological symptoms require reassessment rather than training through them.";
-      } else if (document.querySelector("#back-before").value && back > 3) {
+      } else if (document.querySelector("#back-before").value && back > 2) {
         target.classList.add("readiness-decision--caution");
-        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Use the 57.5 kg fallback only if warm-ups settle and feel normal; otherwise reduce or stop.";
-      } else if (neurological === "No" && document.querySelector("#back-before").value && back <= 3) {
+        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Back is above 2/10. Use the 60 kg fallback only if warm-ups settle and feel normal; otherwise reduce or stop.";
+      } else if (neurological === "No" && document.querySelector("#back-before").value && back <= 2) {
         target.classList.add("readiness-decision--proceed");
-        target.innerHTML = "<strong>60 kg may be appropriate</strong> if recovery and squat warm-ups feel normal and symptoms do not increase.";
+        target.innerHTML = "<strong>62.5 kg may be appropriate</strong> if recovery and squat warm-ups feel normal. If back symptoms materially worsen, do not progress automatically: use 60 kg only if symptoms settle and technique is normal; otherwise reduce or stop.";
       } else {
         target.textContent = "Enter back discomfort and neurological symptom status to receive the squat recommendation.";
       }
@@ -329,8 +327,7 @@
     const step = workout.steps[activeStepIndex];
     const log = ensureExerciseLog(step);
     const previous = previousFor(step);
-    const squatBlocked = step.safetyGate === "squat" && session.readiness.neurological === "Yes";
-    const squatCaution = step.safetyGate === "squat" && !squatBlocked && Number(session.readiness.back) > 3;
+    const squatBlocked = step.safetyGate === "squat" && (session.readiness.neurological === "Yes" || log.assessments.warmupResponse === "Neurological / radiating symptoms");
     if (!restRunning) {
       restSeconds = Number(step.restSeconds) || 60;
       updateRestDisplay();
@@ -357,8 +354,7 @@
         </header>
         <div class="exercise-card__body">
           <p class="prescription">${escapeText(step.prescription)}</p>
-          ${squatBlocked ? '<div class="safety-alert safety-alert--stop"><strong>Loaded squatting is disabled.</strong> You reported neurological symptoms. Reassess rather than training through numbness, weakness, radiating pain or another neurological symptom.</div>' : ""}
-          ${squatCaution ? '<div class="safety-alert safety-alert--caution"><strong>Do not progress automatically.</strong> Back discomfort is elevated. Use the 57.5 kg fallback only if warm-ups settle and feel normal, or reduce or stop.</div>' : ""}
+          ${step.safetyGate === "squat" ? '<div id="squat-safety" role="status" aria-live="polite"></div>' : ""}
           ${workout.rirGuide && step.setPlan?.some((item) => item.rirRequired) ? `<details class="details-box"><summary>How to record RIR</summary><div class="details-box__content"><p>${escapeText(workout.rirGuide)}</p></div></details>` : ""}
           ${Array.isArray(step.instructions) ? `<ol class="instruction-list">${step.instructions.map((item) => `<li>${escapeText(item)}</li>`).join("")}</ol>` : ""}
           ${(step.technique || step.guardrail || step.progression) ? `
@@ -372,6 +368,7 @@
             </details>` : ""}
           ${previous ? `<p class="previous-result"><strong>Last comparable session:</strong> ${escapeText(previous)}</p>` : ""}
 
+          ${step.safetyGate === "squat" ? `<label class="field"><span>Back response during warm-ups</span><select data-assessment="warmupResponse"><option value="">Select after warm-ups</option>${["Normal / settled", "Materially worse", "Neurological / radiating symptoms"].map((option) => `<option value="${escapeText(option)}" ${log.assessments.warmupResponse === option ? "selected" : ""}>${escapeText(option)}</option>`).join("")}</select></label>` : ""}
           ${log.sets.length ? `
             <div class="sets" id="set-list">
               ${log.sets.map((set, index) => `
@@ -391,7 +388,7 @@
                 </div>`).join("")}
             </div>` : ""}
 
-          ${step.assessmentFields?.length ? `<div class="assessment-grid" id="assessment-fields">${step.assessmentFields.map((field) => `
+          ${step.assessmentFields?.length ? `<div class="assessment-grid" id="assessment-fields">${step.assessmentFields.filter((field) => field.key !== "warmupResponse").map((field) => `
             <label class="field ${field.type === "textarea" ? "field--wide" : ""}"><span>${escapeText(field.label)}</span>${field.type === "select"
               ? `<select data-assessment="${escapeText(field.key)}"><option value="">Select one</option>${field.options.map((option) => `<option value="${escapeText(option)}" ${log.assessments[field.key] === option ? "selected" : ""}>${escapeText(option)}</option>`).join("")}</select>`
               : `<textarea data-assessment="${escapeText(field.key)}">${escapeText(log.assessments[field.key])}</textarea>`}</label>`).join("")}</div>` : ""}
@@ -465,10 +462,26 @@
       saveDb("Notes saved");
     });
 
-    document.querySelector("#assessment-fields")?.addEventListener("input", (event) => {
-      if (!event.target.dataset.assessment) return;
-      log.assessments[event.target.dataset.assessment] = event.target.value;
-      saveDb("Assessment saved");
+    function updateSquatSafety() {
+      const target = document.querySelector("#squat-safety");
+      if (!target) return;
+      const blocked = session.readiness.neurological === "Yes" || log.assessments.warmupResponse === "Neurological / radiating symptoms";
+      const caution = Number(session.readiness.back) > 2 || log.assessments.warmupResponse === "Materially worse" || log.assessments.backResponse === "Worse";
+      target.className = blocked ? "safety-alert safety-alert--stop" : "safety-alert safety-alert--caution";
+      target.hidden = !blocked && !caution;
+      target.innerHTML = blocked
+        ? "<strong>Loaded squatting is disabled.</strong> You reported neurological or radiating symptoms. Stop loaded work and reassess."
+        : "<strong>Do not progress automatically.</strong> Back is above 2/10 or symptoms have worsened. Use the 60 kg fallback only if symptoms settle and technique feels normal; otherwise reduce or stop. Record the actual load and whether fallback was used.";
+      document.querySelectorAll("#set-list input").forEach((input) => { input.disabled = blocked; });
+    }
+    updateSquatSafety();
+
+    document.querySelectorAll("[data-assessment]").forEach((input) => {
+      input.addEventListener("input", (event) => {
+        log.assessments[event.target.dataset.assessment] = event.target.value;
+        updateSquatSafety();
+        saveDb("Assessment saved");
+      });
     });
 
     document.querySelector("#previous-step").addEventListener("click", () => {
