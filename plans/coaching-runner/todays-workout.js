@@ -275,7 +275,7 @@
         target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Back is above 2/10. Use the 60 kg fallback only if warm-ups settle and feel normal; otherwise reduce or stop.";
       } else if (neurological === "No" && document.querySelector("#back-before").value && back <= 2) {
         target.classList.add("readiness-decision--proceed");
-        target.innerHTML = "<strong>62.5 kg may be appropriate</strong> if recovery and squat warm-ups feel normal. If back symptoms materially worsen, do not progress automatically: use 60 kg only if symptoms settle and technique is normal; otherwise reduce or stop.";
+        target.innerHTML = "<strong>65 kg may be appropriate</strong> if recovery and squat warm-ups feel normal. If back symptoms materially worsen, do not progress automatically: use 60 kg only if symptoms settle and technique is normal; otherwise reduce or stop.";
       } else {
         target.textContent = "Enter back discomfort and neurological symptom status to receive the squat recommendation.";
       }
