@@ -125,6 +125,45 @@
     }
   }
 
+  function validateRpe(input) {
+    const value = input.value;
+    const valid = !input.validity.badInput && (value === "" || (Number.isFinite(Number(value)) && Number(value) >= 0 && Number(value) <= 10));
+    const message = valid ? "" : "Enter an RPE from 0 to 10. This value has not been saved.";
+    input.setCustomValidity(message);
+    input.setAttribute("aria-invalid", String(!valid));
+    let error = input.parentElement.querySelector("[data-rpe-error]");
+    if (!error) {
+      error = document.createElement("small");
+      error.dataset.rpeError = "";
+      error.setAttribute("role", "alert");
+      input.parentElement.appendChild(error);
+    }
+    error.textContent = message;
+    error.hidden = valid;
+    return valid;
+  }
+
+  function validateVisibleRpe() {
+    const inputs = [...document.querySelectorAll('[data-field="rpe"], [data-outcome="sessionRpe"]')];
+    const invalid = inputs.filter((input) => !validateRpe(input));
+    if (invalid.length) { invalid[0].focus(); invalid[0].reportValidity(); }
+    return invalid.length === 0;
+  }
+
+  function unrecordedWorkingSets() {
+    return workout.steps.flatMap((step) => (step.setPlan || []).flatMap((plan, index) => {
+      if (!plan.rirRequired && !plan.rpeRequired) return [];
+      const set = session.exerciseLogs?.[step.id]?.sets?.[index];
+      const effort = plan.rirRequired ? set?.rir : set?.rpe;
+      const complete = set?.completed && String(set.load ?? "").trim() && String(set.reps ?? "").trim()
+        && effort !== undefined && effort !== "";
+      return complete ? [] : [{
+        stepId: step.id, exercise: step.name, label: plan.label,
+        reason: set?.completed ? "Incomplete structured result" : "Not marked completed"
+      }];
+    }));
+  }
+
   function newSession() {
     const now = new Date().toISOString();
     return {
@@ -272,10 +311,10 @@
         target.innerHTML = "<strong>Do not perform loaded squats.</strong> New neurological symptoms require reassessment rather than training through them.";
       } else if (document.querySelector("#back-before").value && back > 2) {
         target.classList.add("readiness-decision--caution");
-        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Back is above 2/10. Use the 60 kg fallback only if warm-ups settle and feel normal; otherwise reduce or stop.";
+        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Back is above 2/10. Review warm-up response before progressing. Use 70 kg if discomfort progressively worsens and movement remains comfortable; otherwise reduce or stop. Mild stiffness that settles does not by itself require fallback.";
       } else if (neurological === "No" && document.querySelector("#back-before").value && back <= 2) {
         target.classList.add("readiness-decision--proceed");
-        target.innerHTML = "<strong>65 kg may be appropriate</strong> if recovery and squat warm-ups feel normal. If back symptoms materially worsen, do not progress automatically: use 60 kg only if symptoms settle and technique is normal; otherwise reduce or stop.";
+        target.innerHTML = "<strong>72.5 kg may be appropriate</strong> if recovery and squat warm-ups feel normal. Use 70 kg if warm-up discomfort progressively worsens and movement remains comfortable; otherwise reduce or stop. Transient mild stiffness that settles does not by itself require fallback.";
       } else {
         target.textContent = "Enter back discomfort and neurological symptom status to receive the squat recommendation.";
       }
@@ -368,7 +407,7 @@
             </details>` : ""}
           ${previous ? `<p class="previous-result"><strong>Last comparable session:</strong> ${escapeText(previous)}</p>` : ""}
 
-          ${step.safetyGate === "squat" ? `<label class="field"><span>Back response during warm-ups</span><select data-assessment="warmupResponse"><option value="">Select after warm-ups</option>${["Normal / settled", "Materially worse", "Neurological / radiating symptoms"].map((option) => `<option value="${escapeText(option)}" ${log.assessments.warmupResponse === option ? "selected" : ""}>${escapeText(option)}</option>`).join("")}</select></label>` : ""}
+          ${step.safetyGate === "squat" ? `<label class="field"><span>Back response during warm-ups</span><select data-assessment="warmupResponse"><option value="">Select after warm-ups</option>${["Normal / settled", "Progressively worse", "Neurological / radiating symptoms"].map((option) => `<option value="${escapeText(option)}" ${log.assessments.warmupResponse === option ? "selected" : ""}>${escapeText(option)}</option>`).join("")}</select></label>` : ""}
           ${log.sets.length ? `
             <div class="sets" id="set-list">
               ${log.sets.map((set, index) => `
@@ -379,7 +418,7 @@
                   <label class="field"><span>Actual reps / result</span><input data-field="reps" type="text" inputmode="decimal" value="${escapeText(set.reps)}" ${squatBlocked ? "disabled" : ""}></label>
                   ${step.setPlan?.[index]?.rirRequired
                     ? `<label class="field"><span>RIR (required)</span><input data-field="rir" aria-label="How many additional clean reps could you genuinely have completed?" type="number" min="0" max="10" step="1" inputmode="numeric" value="${escapeText(set.rir)}" ${squatBlocked ? "disabled" : ""}></label>`
-                    : `<label class="field"><span>RPE${step.setPlan?.[index]?.rpeRequired ? " (required)" : ""}</span><input data-field="rpe" type="number" min="1" max="10" step="0.5" inputmode="decimal" value="${escapeText(set.rpe)}" ${squatBlocked ? "disabled" : ""}></label>`}
+                    : `<label class="field"><span>RPE${step.setPlan?.[index]?.rpeRequired ? " (required)" : ""}</span><input data-field="rpe" type="number" min="0" max="10" step="any" inputmode="decimal" value="${escapeText(set.rpe)}" ${squatBlocked ? "disabled" : ""}></label>`}
                   ${step.setPlan?.[index]?.timerSeconds ? `<div class="set-timer" data-set-timer data-duration="${step.setPlan[index].timerSeconds}">
                     <strong data-timer-display>${formatClock(step.setPlan[index].timerSeconds)}</strong>
                     <button class="button" type="button" data-timer-action="toggle">Start</button>
@@ -394,7 +433,7 @@
               : `<textarea data-assessment="${escapeText(field.key)}">${escapeText(log.assessments[field.key])}</textarea>`}</label>`).join("")}</div>` : ""}
 
           <label class="field exercise-notes"><span>Notes for this step</span><textarea id="exercise-notes" placeholder="Setup, symptoms, substitutions, what felt different…">${escapeText(log.notes)}</textarea></label>
-          <p class="status" id="save-status">Saved automatically on this device.</p>
+          <p class="status" id="save-status">Fields save as you type. Tick Completed to include a set in the recap.</p>
 
           <div class="step-actions">
             <button class="button button--quiet" type="button" id="previous-step" ${activeStepIndex === 0 ? "disabled" : ""}>Previous</button>
@@ -416,6 +455,7 @@
     document.querySelector("#set-list")?.addEventListener("input", (event) => {
       const row = event.target.closest("[data-set-index]");
       if (!row || !event.target.dataset.field) return;
+      if (event.target.dataset.field === "rpe" && !validateRpe(event.target)) return;
       log.sets[Number(row.dataset.setIndex)][event.target.dataset.field] = event.target.type === "checkbox" ? event.target.checked : event.target.value;
       if (event.target.type === "checkbox") {
         row.classList.toggle("set-row--complete", event.target.checked);
@@ -466,12 +506,12 @@
       const target = document.querySelector("#squat-safety");
       if (!target) return;
       const blocked = session.readiness.neurological === "Yes" || log.assessments.warmupResponse === "Neurological / radiating symptoms";
-      const caution = Number(session.readiness.back) > 2 || log.assessments.warmupResponse === "Materially worse" || log.assessments.backResponse === "Worse";
+      const caution = Number(session.readiness.back) > 2 || log.assessments.warmupResponse === "Progressively worse" || log.assessments.backResponse === "Worse";
       target.className = blocked ? "safety-alert safety-alert--stop" : "safety-alert safety-alert--caution";
       target.hidden = !blocked && !caution;
       target.innerHTML = blocked
         ? "<strong>Loaded squatting is disabled.</strong> You reported neurological or radiating symptoms. Stop loaded work and reassess."
-        : "<strong>Do not progress automatically.</strong> Back is above 2/10 or symptoms have worsened. Use the 60 kg fallback only if symptoms settle and technique feels normal; otherwise reduce or stop. Record the actual load and whether fallback was used.";
+        : "<strong>Do not progress automatically.</strong> Review back response before progressing. Use the 70 kg fallback if warm-up discomfort progressively worsens and movement remains comfortable; otherwise reduce or stop. Settling mild stiffness alone does not require fallback. Record the actual load and fallback choice.";
       document.querySelectorAll("#set-list input").forEach((input) => { input.disabled = blocked; });
     }
     updateSquatSafety();
@@ -485,12 +525,14 @@
     });
 
     document.querySelector("#previous-step").addEventListener("click", () => {
+      if (!validateVisibleRpe()) return;
       activeStepIndex -= 1;
       renderWorkout();
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
     document.querySelector("#next-step").addEventListener("click", () => {
+      if (!validateVisibleRpe()) return;
       const incompleteRpe = log.sets.some((set, index) => set.completed && step.setPlan?.[index]?.rpeRequired && !set.rpe);
       const incompleteRir = log.sets.some((set, index) => set.completed && step.setPlan?.[index]?.rirRequired && set.rir === "");
       const missingLoad = log.sets.some((set, index) => set.completed && step.setPlan?.[index]?.loadRequired && !set.load.trim());
@@ -501,6 +543,8 @@
         return;
       }
       if (activeStepIndex >= workout.steps.length - 1) {
+        const missing = unrecordedWorkingSets();
+        if (missing.length && !confirm(`${missing.length} prescribed working set${missing.length === 1 ? " has" : "s have"} no recorded result. Complete workout anyway?`)) return;
         renderRecap();
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
@@ -563,6 +607,12 @@
       if (log?.notes) lines.push(`- Notes: ${log.notes}`);
     });
 
+    const missing = unrecordedWorkingSets();
+    if (missing.length) {
+      lines.push("", "UNRECORDED PRESCRIBED SETS");
+      missing.forEach((item) => lines.push(`- ${item.exercise} — ${item.label}: ${item.reason}`));
+    }
+
     lines.push(
       "",
       "IMMEDIATE RESPONSE",
@@ -596,6 +646,7 @@
     const durationMinutes = actualDurationMinutes();
     return {
       schemaVersion: 1,
+      unrecordedPrescribedSets: unrecordedWorkingSets(),
       exportedAt: new Date().toISOString(),
       trainingWindow: workout.trainingWindow || `${workout.durationMinutes} minutes`,
       source: { application: "Gavin Fitness Coaching Runner", runnerVersion: "1.2.0", workoutDefinitionId: workout.id, workoutDefinitionSchemaVersion: workout.schemaVersion },
@@ -653,7 +704,7 @@
           <label class="field"><span>Shoulder, 0–10</span><input data-outcome="shoulder" type="number" min="0" max="10" value="${escapeText(session.outcome.shoulder)}"></label>
           <label class="field"><span>Neck, 0–10</span><input data-outcome="neck" type="number" min="0" max="10" value="${escapeText(session.outcome.neck)}"></label>
           <label class="field"><span>Ankle, 0–10</span><input data-outcome="ankle" type="number" min="0" max="10" value="${escapeText(session.outcome.ankle)}"></label>
-          <label class="field"><span>Overall effort, 1–10</span><input data-outcome="sessionRpe" type="number" min="1" max="10" step="0.5" value="${escapeText(session.outcome.sessionRpe)}"></label>
+          <label class="field"><span>Overall effort, 0–10</span><input data-outcome="sessionRpe" type="number" min="0" max="10" step="any" value="${escapeText(session.outcome.sessionRpe)}"></label>
           <label class="field field--wide"><span>Apprehension response</span><select data-outcome="apprehension"><option value="">Select one</option><option value="reduced" ${session.outcome.apprehension === "reduced" ? "selected" : ""}>Reduced</option><option value="unchanged" ${session.outcome.apprehension === "unchanged" ? "selected" : ""}>Unchanged</option><option value="increased" ${session.outcome.apprehension === "increased" ? "selected" : ""}>Increased</option></select></label>
           <label class="field field--wide"><span>Any pain or technique alteration?</span><textarea data-outcome="painOrTechniqueChange">${escapeText(session.outcome.painOrTechniqueChange)}</textarea></label>
           <label class="field field--wide"><span>Overall session notes</span><textarea data-outcome="overallNotes" placeholder="Anything important not captured by the set or exercise notes.">${escapeText(session.outcome.overallNotes)}</textarea></label>
@@ -708,12 +759,14 @@
     document.querySelector("#outcome-form").addEventListener("input", (event) => {
       const key = event.target.dataset.outcome;
       if (!key) return;
+      if (key === "sessionRpe" && !validateRpe(event.target)) return;
       session.outcome[key] = event.target.value;
       saveDb("Recap saved");
       refreshRecap();
     });
 
     document.querySelector("#copy-recap").addEventListener("click", async () => {
+      if (!validateVisibleRpe()) return;
       const text = document.querySelector("#recap-output").value;
       try {
         await navigator.clipboard.writeText(text);
@@ -726,17 +779,20 @@
     });
 
     document.querySelector("#download-json").addEventListener("click", () => {
+      if (!validateVisibleRpe()) return;
       const date = exportSession().session.workoutDate || "undated";
       downloadText(`workout-session-${date}.json`, "application/json", JSON.stringify(exportSession(), null, 2));
       document.querySelector("#copy-status").textContent = "Coaching handoff downloaded.";
     });
     document.querySelector("#download-markdown").addEventListener("click", () => {
+      if (!validateVisibleRpe()) return;
       const date = exportSession().session.workoutDate || "undated";
       downloadText(`workout-session-${date}.md`, "text/markdown", markdownRecap());
       document.querySelector("#copy-status").textContent = "Readable recap downloaded.";
     });
 
     document.querySelector("#back-to-workout").addEventListener("click", () => {
+      if (!validateVisibleRpe()) return;
       session.completedAt = "";
       activeStepIndex = Math.max(0, workout.steps.length - 1);
       session.activeStepIndex = activeStepIndex;
@@ -745,6 +801,7 @@
     });
 
     document.querySelector("#new-session").addEventListener("click", () => {
+      if (!validateVisibleRpe()) return;
       if (!confirm("Start a fresh copy of this workout? The completed session will remain in local history.")) return;
       session = null;
       activeStepIndex = 0;
