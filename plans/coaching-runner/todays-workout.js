@@ -311,10 +311,10 @@
         target.innerHTML = "<strong>Do not perform loaded squats.</strong> New neurological symptoms require reassessment rather than training through them.";
       } else if (document.querySelector("#back-before").value && back > 2) {
         target.classList.add("readiness-decision--caution");
-        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Back is above 2/10. Review warm-up response before progressing. Use 70 kg if discomfort progressively worsens and movement remains comfortable; otherwise reduce or stop. Mild stiffness that settles does not by itself require fallback.";
+        target.innerHTML = "<strong>Do not progress the squat automatically.</strong> Back is above 2/10. Review recovery and warm-up response before progressing. Use the 72.5 kg fallback if movement remains comfortable; otherwise reduce or stop.";
       } else if (neurological === "No" && document.querySelector("#back-before").value && back <= 2) {
         target.classList.add("readiness-decision--proceed");
-        target.innerHTML = "<strong>72.5 kg may be appropriate</strong> if recovery and squat warm-ups feel normal. Use 70 kg if warm-up discomfort progressively worsens and movement remains comfortable; otherwise reduce or stop. Transient mild stiffness that settles does not by itself require fallback.";
+        target.innerHTML = "<strong>75 kg may be appropriate</strong> if recovery and squat warm-ups feel normal. Use the 72.5 kg fallback if recovery, performance or symptoms warrant it; otherwise reduce or stop.";
       } else {
         target.textContent = "Enter back discomfort and neurological symptom status to receive the squat recommendation.";
       }
@@ -511,7 +511,7 @@
       target.hidden = !blocked && !caution;
       target.innerHTML = blocked
         ? "<strong>Loaded squatting is disabled.</strong> You reported neurological or radiating symptoms. Stop loaded work and reassess."
-        : "<strong>Do not progress automatically.</strong> Review back response before progressing. Use the 70 kg fallback if warm-up discomfort progressively worsens and movement remains comfortable; otherwise reduce or stop. Settling mild stiffness alone does not require fallback. Record the actual load and fallback choice.";
+        : "<strong>Do not progress automatically.</strong> Review recovery and back response before progressing. Use the 72.5 kg fallback if warm-up performance or symptoms warrant it and movement remains comfortable; otherwise reduce or stop. Record the actual load and fallback choice.";
       document.querySelectorAll("#set-list input").forEach((input) => { input.disabled = blocked; });
     }
     updateSquatSafety();
