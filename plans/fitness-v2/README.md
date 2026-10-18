@@ -2,6 +2,8 @@
 
 Buildless, local-first workout runner. Entry: `plans/fitness-v2/index.html`; public `plans/todays-workout.html` forwards here. No package install/build/backend is required. Serve the repository over localhost for testing or HTTPS for installation. Use the same deployed origin/browser profile to access existing history; localhost cannot read GitHub Pages storage.
 
+The opening screen names the current Dublin weekday and time of day (for example, Tuesday evening), the scheduled workout, and the equipment to gather for the selected session. Manual session changes update the equipment list. Each launch opens Today; unfinished sessions remain available through Resume rather than hiding the current day's direction. This does not change the weekly schedule, optional Tuesday preference, loads or stored history.
+
 ## Audit and source of truth
 
 Baseline: `58f416e`, `main`, with pre-existing untracked `.playwright-cli/`, `apps/todays-workout-site/`, `mcps/`, `output/`. Those folders are outside this implementation. No `.github/` directory/workflow was present. The existing site is static and its source paths match GitHub Pages project hosting; the actual remote Pages settings/deployed revision were not inspected or changed.

@@ -1,6 +1,6 @@
 // Bump the shell version whenever a cached asset changes. No skipWaiting: an
 // active workout keeps its current shell until every v2 tab has closed.
-const CACHE = 'fitness-v2-shell-1';
+const CACHE = 'fitness-v2-shell-2';
 const ASSETS = ['./', './index.html', './style.css', './app.mjs', './model.mjs', './manifest.webmanifest', './README.md', '../coaching-runner/current-workout.js', '../../icons/icon-192.png', '../../icons/icon-512.png', '../../icons/maskable-512.png'];
 self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS))); });
 self.addEventListener('activate', event => {

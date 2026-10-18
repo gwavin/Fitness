@@ -6,6 +6,7 @@ const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&
 const clock = ms => { const n = Math.ceil(Math.max(0, ms) / 1000); return `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`; };
 const stamp = v => new Date(v).toLocaleString('en-IE', { timeZone: 'Europe/Dublin', dateStyle: 'medium', timeStyle: 'short' });
 let db, templates, activeId = null, view = 'today', selected = null, expectedRevision, conflict = false;
+let displayedDate = null, displayedDirection = null;
 let context, audioReady = false, wakeLock, wakePending = false, anchor = null, registration;
 const offlineStatus = document.querySelector('#offline-status');
 
@@ -14,7 +15,7 @@ try {
   db = loadDb(localStorage);
   expectedRevision = db.revision;
   const draft = db.sessions.find(s => s.status === 'in_progress');
-  if (draft) { activeId = draft.id; view = 'exercise'; }
+  if (draft) activeId = draft.id;
   render();
 } catch (error) {
   status.classList.add('error');
@@ -65,13 +66,17 @@ function go(next) { view = next; render(true); }
 function holdNotice() { return `<p class="callout">Flat barbell loads: ${esc(db.settings.holdStart)} to ${esc(holdEnd(db.settings.holdStart))} (end exclusive). No automatic increases, during or after this period. Manual changes are recorded.</p>`; }
 function todayView() {
   const rec = recommendation(new Date(), db.settings.tuesdayEnabled);
+  const date = dublinDate();
+  if (displayedDate && displayedDate !== date) selected = null;
+  displayedDate = date; displayedDirection = rec.dayLabel;
   selected ||= rec.template;
   const template = templates.find(t => t.id === selected);
+  const recommended = templates.find(t => t.id === rec.template);
   const drafts = db.sessions.filter(s => s.status === 'in_progress');
-  app.innerHTML = `<section class="card hero"><p class="eyebrow">${esc(dublinDate())} · Europe/Dublin</p><h1>A little stronger.<br>One set at a time.</h1><p>${esc(rec.note)}</p><p class="muted">Your plan. Your pace. Saved as you go.</p></section>
+  app.innerHTML = `<section class="card hero"><p class="eyebrow">${esc(dublinDate())} · Europe/Dublin</p><h1>${esc(rec.dayLabel)}</h1><h2>Today: ${esc(recommended?.label || 'Recovery / rest')}${recommended?.optional ? ' · optional' : ''}</h2><p>${esc(rec.note)}</p><p class="muted">Choose a different session below whenever you need to.</p></section>
     ${drafts.map(s => `<section class="card"><h2>Pick up where you left off</h2><p>${esc(s.label)} · ${esc(stamp(s.startedAt))}</p><button class="primary wide large" data-resume="${esc(s.id)}">Resume workout</button></section>`).join('')}
     <section class="card"><p class="eyebrow">Choose your session</p><label>Workout<select id="choose"><option value="rest" ${selected === 'rest' ? 'selected' : ''}>Rest / walking / easy cycling</option>${templates.map(t => `<option value="${t.id}" ${selected === t.id ? 'selected' : ''}>${esc(t.label)}${t.optional ? ' · optional' : ''}</option>`).join('')}</select></label>
-    ${template ? `<h2 style="margin-top:20px">${esc(template.label)}</h2><p class="muted">${esc(template.minutes)} · ${template.exercises.length} exercise screens</p><ol>${template.exercises.map(e => `<li><strong>${esc(e.label)}</strong><br><small>${esc(e.prescription)}</small></li>`).join('')}</ol>${template.optional ? '<p class="callout">Start with Saturday B only. Two sets each for at least the first fortnight. Targets are guidance; add sets manually only when ready.</p>' : `<details><summary>Reviewed programme & safety guidance</summary><p>Source: ${esc(window.CURRENT_WORKOUT.publishedFor)}. This is the existing prescription, not a new progression or a newly reviewed programme.</p><p>${esc(window.CURRENT_WORKOUT.safetySummary)}</p></details>`}<button class="primary wide large" id="start">Start workout →</button>` : '<h2 style="margin-top:20px">Room to recover</h2><p>No logging needed. You can choose any session above.</p>'}</section>${holdNotice()}`;
+    ${template ? `<h2 style="margin-top:20px">${esc(template.label)}</h2><p class="muted">${esc(template.minutes)} · ${template.exercises.length} exercise screens</p><section aria-labelledby="equipment-title"><h3 id="equipment-title">Gather your equipment</h3><ul id="equipment-list">${template.equipmentChecklist.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section><h3>Your exercises</h3><ol>${template.exercises.map(e => `<li><strong>${esc(e.label)}</strong><br><small>${esc(e.prescription)}</small></li>`).join('')}</ol>${template.optional ? '<p class="callout">Start with Saturday B only. Two sets each for at least the first fortnight. Targets are guidance; add sets manually only when ready.</p>' : `<details><summary>Reviewed programme & safety guidance</summary><p>Source: ${esc(window.CURRENT_WORKOUT.publishedFor)}. This is the existing prescription, not a new progression or a newly reviewed programme.</p><p>${esc(window.CURRENT_WORKOUT.safetySummary)}</p></details>`}<button class="primary wide large" id="start">Start workout →</button>` : '<h2 style="margin-top:20px">Room to recover</h2><p>No logging needed. You can choose any session above.</p>'}</section>${holdNotice()}`;
   document.querySelector('#choose').onchange = e => { selected = e.target.value; render(); };
   document.querySelector('#start')?.addEventListener('click', async () => {
     if (conflict) return alert('Reload after exporting your work; another tab changed the data.');
@@ -302,8 +307,11 @@ for (const [id, delta] of [['minus', -15000], ['plus', 15000]]) document.querySe
   if (db.timer.state === 'running') db.timer.endAt = Date.now() + effectiveRemaining();
   db.timer = adjustTimer(db.timer, delta); setAnchor(); save(); drawTimer();
 };
-document.addEventListener('visibilitychange', () => { drawTimer(); manageWake(); });
-window.addEventListener('pageshow', () => { drawTimer(); manageWake(); });
+function refreshDayDirection() {
+  if (db && view === 'today' && document.visibilityState === 'visible' && (displayedDate !== dublinDate() || displayedDirection !== recommendation().dayLabel)) render();
+}
+document.addEventListener('visibilitychange', () => { refreshDayDirection(); drawTimer(); manageWake(); });
+window.addEventListener('pageshow', () => { refreshDayDirection(); drawTimer(); manageWake(); });
 window.addEventListener('pagehide', () => { wakeLock?.release().catch(() => {}); });
 window.addEventListener('storage', e => { if (e.key === KEY && db) { conflict = true; status.classList.add('error'); status.textContent = 'Another tab changed workout data. Export this tab’s unsaved work, then reload before continuing.'; } });
 setInterval(drawTimer, 250);

@@ -11,7 +11,10 @@ export function dublinDate(now = new Date()) {
 }
 export function recommendation(now = new Date(), tuesdayEnabled = false) {
   const day = new Date(`${dublinDate(now)}T12:00:00Z`).getUTCDay();
-  return { template: ({ 1: 'sbd', 2: 'indoor-a', 3: 'sbd', 5: 'sbd', 6: 'indoor-b' })[day] || 'rest',
+  const weekday = new Intl.DateTimeFormat('en-IE', { timeZone: 'Europe/Dublin', weekday: 'long' }).format(now);
+  const hour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Dublin', hour: '2-digit', hourCycle: 'h23' }).format(now));
+  const period = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+  return { dayLabel: `${weekday} ${period}`, template: ({ 1: 'sbd', 2: 'indoor-a', 3: 'sbd', 5: 'sbd', 6: 'indoor-b' })[day] || 'rest',
     note: ({ 0: 'Rest, walking or easy cycling.', 1: 'SBD this morning · Karate this evening.', 2: tuesdayEnabled ? 'Optional shoulders & biceps.' : 'Optional shoulders & biceps. Begin with Saturday B only; add Tuesday when recovery allows.', 3: 'SBD this morning.', 4: 'Karate this evening. No workout logging required.', 5: 'SBD this morning.', 6: 'Optional arms, shoulders & chest. Start here when easing into the plan.' })[day] };
 }
 export function holdEnd(start) {
@@ -34,7 +37,12 @@ export function catalogue(source) {
   const push = indoor('push-up', 'Standard push-ups', 'Floor', '8–20', 'Regular floor push-ups, without unstable kettlebell supports. Skip if chest recovery suffers.', { workingTarget: '2 × 8–20; optional.' });
   const concentration = indoor('concentration-curl', 'Supported concentration curls', '10 kg adjustable dumbbell or comfortable alternative', '10–15 / arm', 'Support the arm comfortably. One set includes both sides; optional right-side reps can differ.', { sideSpecific: true, workingTarget: '3 × 10–15 per arm after introduction; add a set only manually.' });
   const triceps = indoor('triceps', 'Comfortable triceps extensions', 'Adjustable dumbbell or long band', '10–20', 'Choose a comfortable variant and lower load. Overhead tolerance is not assumed.', { variations: ['Comfortable band extension', 'Comfortable dumbbell extension'], workingTarget: '3 × 10–20 after introduction; add a set only manually.' });
-  const template = (id, label, exercises, minutes, optional = false) => ({ id, label, version: id === 'sbd' ? source.id : 1, exercises, minutes, optional });
+  const equipment = {
+    sbd: ['Barbell and plates for the listed loads', 'Your usual safe squat setup and stable bench', 'Dumbbell and stable support for one-arm rows', 'Pair of carry weights and a clear walking space'],
+    'indoor-a': ['Light / long resistance band for lateral raises', 'Two adjustable dumbbells (currently about 10 kg each; adjust as needed)', 'Comfortable long or short band for pull-aparts'],
+    'indoor-b': ['Clear floor space for standard push-ups', 'One adjustable dumbbell (currently about 10 kg; adjust as needed)', 'Stable seat / sofa for supported concentration curls', 'Comfortable dumbbell or long band for triceps extensions', 'Light / long resistance band for lateral raises']
+  };
+  const template = (id, label, exercises, minutes, optional = false) => ({ id, label, version: id === 'sbd' ? source.id : 1, exercises, minutes, optional, equipmentChecklist: equipment[id] });
   return [template('sbd', 'Squat · Bench · Deadlift', sbd, source.trainingWindow || '40–50 minutes'), template('indoor-a', 'Indoor A · Shoulders & biceps', [lateral, curls, apart], '10–12 minutes', true), template('indoor-b', 'Indoor B · Arms, shoulders & chest', [push, concentration, triceps, lateral], '15–20 minutes', true)];
 }
 export function freshDb(legacyRaw = null) {

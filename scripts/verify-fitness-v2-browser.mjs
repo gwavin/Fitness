@@ -8,7 +8,24 @@ async (page) => {
   const check = (ok, name) => { if (!ok) throw Error(name); passed.push(name); };
   const db = () => p.evaluate(() => JSON.parse(localStorage.getItem('fitness-v2')));
   const url = 'http://127.0.0.1:8765/Fitness/plans/fitness-v2/index.html';
+  const reloadWorkout = async () => { await p.reload(); await p.locator('[data-resume]').first().click(); };
   try {
+    const tuesday = await context.newPage();
+    await tuesday.clock.install({ time: new Date('2026-10-20T18:00:00Z') });
+    await tuesday.goto(url);
+    check(await tuesday.locator('h1').textContent() === 'Tuesday evening', 'opening screen gives the Dublin weekday and time of day');
+    check((await tuesday.locator('.hero').textContent()).includes('Indoor A · Shoulders & biceps'), 'Tuesday evening names the recommended workout');
+    check(await tuesday.locator('#choose').inputValue() === 'indoor-a', 'Tuesday workout selected automatically');
+    check((await tuesday.locator('#equipment-list').textContent()).includes('Two adjustable dumbbells'), 'Tuesday equipment list includes dumbbells');
+    check((await tuesday.locator('#equipment-list').textContent()).includes('band'), 'Tuesday equipment list includes bands');
+    await tuesday.screenshot({path:'output/playwright/fitness-v2-tuesday-direction-320.png', fullPage:true});
+    await tuesday.locator('#choose').selectOption('indoor-b');
+    check((await tuesday.locator('#equipment-list').textContent()).includes('Clear floor space'), 'manual selection updates equipment checklist');
+    await tuesday.clock.setSystemTime(new Date('2026-10-21T07:00:00Z'));
+    await tuesday.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    check(await tuesday.locator('h1').textContent() === 'Wednesday morning' && await tuesday.locator('#choose').inputValue() === 'sbd', 'returning after midnight refreshes the day and recommended selection');
+    check((await tuesday.locator('#equipment-list').textContent()).includes('Barbell'), 'SBD equipment checklist follows the new day');
+    await tuesday.close();
     await p.clock.install();
     await p.goto(url);
     await p.waitForFunction(() => document.querySelector('#offline-status').textContent.includes('Offline cache ready'));
@@ -28,6 +45,8 @@ async (page) => {
     await p.locator('[id="0-reps"]').fill('10');
     await p.locator('[data-set="0"][data-action="complete"]').click();
     await p.reload();
+    check(await p.locator('#choose').isVisible() && await p.locator('[data-resume]').count() === 1, 'reopening shows today with saved draft available to resume');
+    await p.locator('[data-resume]').click();
     check(await p.locator('.set.done').count() === 1 && await p.locator('[id="0-load"]').inputValue() === '18.5 kg', 'field and completion survive reload');
     await p.locator('[data-set="0"][data-action="undo"]').click();
     check(await p.locator('.set.done').count() === 0, 'undo completion');
@@ -54,10 +73,10 @@ async (page) => {
     check((await db()).timer.endAt === end, 'subtract 15 seconds');
     await p.locator('#next').click();
     check((await db()).timer.endAt === end, 'navigation does not change timer');
-    await p.reload(); check((await db()).timer.endAt === end, 'timer survives refresh');
+    await reloadWorkout(); check((await db()).timer.endAt === end, 'timer survives refresh');
     await p.locator('#timer-toggle').click(); timer = (await db()).timer;
     check(timer.state === 'paused' && timer.pausedRemainingMs > 0, 'timer pause persisted');
-    await p.reload(); check((await db()).timer.state === 'paused', 'paused timer survives reload');
+    await reloadWorkout(); check((await db()).timer.state === 'paused', 'paused timer survives reload');
     await p.locator('#timer-toggle').click(); check((await db()).timer.state === 'running', 'timer resumes');
     await p.locator('#timer-reset').click(); check((await db()).timer.pausedRemainingMs === 90000, 'timer reset uses saved default');
     await p.locator('#timer-toggle').click(); await p.clock.fastForward(5000);
@@ -78,7 +97,7 @@ async (page) => {
     check((await db()).timer.state === 'expired', 'active-page expiry at absolute deadline');
     check(await p.evaluate(() => window.__cues) === 3, 'Web Audio oscillator cues scheduled on active page');
     const alertId = (await db()).timer.alertedId;
-    await p.reload(); check((await db()).timer.alertedId === alertId && (await db()).timer.state === 'expired', 'expiry ID retained without repeated resume cue');
+    await reloadWorkout(); check((await db()).timer.alertedId === alertId && (await db()).timer.state === 'expired', 'expiry ID retained without repeated resume cue');
     await p.clock.resume();
     await p.locator('#summary').click();
     check(await p.locator('textarea').count() === 1, 'summary has exactly one optional Comments field');
@@ -138,7 +157,7 @@ async (page) => {
     check((await db()).sessions[0].comments === '', 'empty comment saves successfully');
     await p.getByRole('button', { name:'Today', exact:true }).click(); await p.locator('#choose').selectOption('indoor-a'); await p.locator('#start').click();
     check(await p.locator('h1').textContent() === 'Band lateral raises', 'indoor A manually selectable');
-    await context.setOffline(true); await p.reload();
+    await context.setOffline(true); await reloadWorkout();
     check(await p.locator('h1').textContent() === 'Band lateral raises', 'offline cached reload at GitHub Pages subpath with draft');
     await p.locator('[id="0-reps"]').fill('15');
     check((await db()).sessions[0].exercises[0].sets[0].reps === '15', 'offline edits persist');
@@ -146,10 +165,11 @@ async (page) => {
     const other = await context.newPage(); await other.goto('http://127.0.0.1:8765/Fitness/plans/todays-workout.html');
     await other.waitForURL('**/fitness-v2/index.html');
     check(other.url() === url, 'existing public workout entry resolves to v2 at project subpath');
+    await other.locator('[data-resume]').first().click();
     await other.locator('[id="0-reps"]').fill('16');
     await p.waitForFunction(() => document.querySelector('#storage-status').textContent.includes('Another tab'));
     check(await p.locator('#storage-status').evaluate(e => e.classList.contains('error')), 'concurrent-tab conflict is visible');
-    await other.close(); await p.reload();
+    await other.close(); await reloadWorkout();
     // Deliberate quota failure affects this isolated test context only.
     await p.evaluate(() => { const set = Storage.prototype.setItem; window.__set = set; Storage.prototype.setItem = function(k,v) { if(k === 'fitness-v2') throw new DOMException('Test quota exceeded','QuotaExceededError'); return set.call(this,k,v); }; });
     await p.locator('[id="0-reps"]').fill('17');

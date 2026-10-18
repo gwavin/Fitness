@@ -18,6 +18,17 @@ test('Dublin schedule, UTC midnight, DST boundaries, manual catalogue', () => {
   assert.equal(holdEnd('2026-10-18'), '2026-11-15');
   assert.deepEqual(templates.map(t => t.id), ['sbd','indoor-a','indoor-b']);
 });
+test('day directions use Dublin weekday/time and templates supply equipment lists', () => {
+  assert.equal(recommendation(new Date('2026-10-20T18:00:00Z')).dayLabel, 'Tuesday evening');
+  assert.equal(recommendation(new Date('2026-10-19T23:30:00Z')).dayLabel, 'Tuesday morning');
+  assert.equal(recommendation(new Date('2026-10-20T12:00:00Z')).dayLabel, 'Tuesday afternoon');
+  assert.equal(recommendation(new Date('2026-10-25T23:30:00Z')).dayLabel, 'Sunday evening');
+  assert.equal(recommendation(new Date('2026-10-20T18:00:00Z')).template, 'indoor-a');
+  assert.ok(templates.every(t => t.equipmentChecklist.length > 0));
+  assert.ok(templates[1].equipmentChecklist.some(item => item.includes('Two adjustable dumbbells')));
+  assert.ok(templates[1].equipmentChecklist.some(item => item.includes('band')));
+  assert.ok(!templates[1].equipmentChecklist.some(item => item.includes('bench')));
+});
 test('all original SBD sets, warmups, accessories and guidance survive the adapter', () => {
   const steps = source.steps.filter(s => s.setPlan.length);
   assert.equal(templates[0].exercises.length, steps.length);

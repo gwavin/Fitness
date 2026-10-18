@@ -1,5 +1,11 @@
 # Verification record — 18 October 2026
 
+## Day and equipment follow-up
+
+Added Dublin weekday/time-of-day directions, the recommended workout heading, and equipment lists that follow manual session selection. Startup now shows Today with explicit draft resume; returning to Today after midnight refreshes the date and schedule. No schema, stored history, loads, prescription or timer-alarm capability changed. Worker shell version advanced to 2 for this update.
+
+Follow-up verification: `node --test scripts/fitness-v2.test.mjs` PASS (9 tests); Playwright CLI browser regression PASS (65 checks); `node --check plans/fitness-v2/app.mjs` PASS; `git diff --check` PASS. No failures in these runs. New checks simulate Tuesday evening at 320px, confirm Indoor A and its bands/dumbbells, manual equipment changes, Wednesday/midnight refresh, and explicit resume without losing draft sets/timer state. Reviewed `output/playwright/fitness-v2-tuesday-direction-320.png` visually. Existing real-device alert limitations below still apply.
+
 Implementation branch: `codex/fitness-v2`, baseline `58f416e`. Tests use synthetic records only, in memory or an isolated automated-browser context. Gavin's real phone history was not accessed, migrated or independently backed up during development. The on-device migration runs when v2 is first opened on the existing origin/browser profile.
 
 ## Automated results
