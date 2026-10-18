@@ -1,5 +1,9 @@
 # Verification record — 18 October 2026
 
+## Optional Google Clock bridge follow-up
+
+Native bridge and preview APK are in `../../android/clock-bridge/` and `downloads/`. See [its complete verification record](../../android/clock-bridge/README.md#verification--18-october-2026). Build and APK signature checks passed; 20 emulator instrumentation checks, 11 Node tests, 65 existing browser checks and 10 bridge browser checks passed. Manual API 34 emulator testing observed Chrome → bridge 01:30 confirmation → Google Clock 7.4 timer counting down at 1:29. Repeated request ID was suppressed with the launch button disabled. A native expired-timer notification appeared over Chrome in an earlier test. No physical device was connected, and the emulator was muted: **Spotify/audio/screen-off reliability on the target phone is NOT TESTED.** There is no web/native timer synchronisation or start acknowledgement. No workout schema, history, prescription or load changes. The worker shell version is now 3; install the bridge separately and reopen all v2 tabs after the update waits/activates.
+
 ## Day and equipment follow-up
 
 Added Dublin weekday/time-of-day directions, the recommended workout heading, and equipment lists that follow manual session selection. Startup now shows Today with explicit draft resume; returning to Today after midnight refreshes the date and schedule. No schema, stored history, loads, prescription or timer-alarm capability changed. Worker shell version advanced to 2 for this update.

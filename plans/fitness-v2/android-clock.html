@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Fitness · Google Clock setup</title><link rel="stylesheet" href="./style.css"></head>
+<body><main style="padding-bottom:32px"><p><a href="./index.html">← Return to Fitness</a></p><section class="card"><p class="eyebrow">Android preview · Google Clock</p><h1>Let Clock handle the alarm.</h1><p>This experimental bridge passes a duration from Fitness to Google Clock. <strong>It has not been verified with Spotify on your phone.</strong></p>
+<ol><li>Install the Fitness Clock Bridge preview on your Android phone.</li><li>Open Fitness in Chrome and adjust the web timer to the duration you want.</li><li>Tap <strong>Google Clock</strong>, then confirm the duration in the bridge.</li><li>Verify Google Clock shows a running countdown before switching to Spotify.</li></ol>
+<p><a class="button primary" href="./downloads/fitness-clock-bridge-preview.apk" download>Download Android preview APK</a></p><p>This is a development-signed test build for Android 8 or newer, not a Play Store release. Android may ask you to allow this installation. The app only requests permission to set alarms/timers; it has no network or workout-data access.</p>
+<h2>If the handoff did not open</h2><p>Chrome may have opened this page because the bridge is not installed or the app launch was blocked. <strong>No native timer is confirmed.</strong> Open Google Clock manually and set the duration. Installing the bridge does not automatically replay the request; return to Fitness and tap Google Clock again.</p>
+<h2>Two separate timers</h2><p>The web timer pauses before a handoff attempt to avoid duplicate cues. Its display is not synced with Google Clock. Pause, reset and dismiss the native timer in Google Clock. If you return to web timing, check and stop any native timer first.</p>
+<h2>First test</h2><p>Try 15 seconds while watching Clock, then repeat with Spotify foregrounded, then with the screen off. Check your alarm volume, headphones/speaker and Do Not Disturb settings. A correct web countdown on return is not proof of an audible native alarm.</p>
+<p><a href="../../android/clock-bridge/README.md">Source, build instructions and verification limitations</a></p></section></main></body>
+</html>

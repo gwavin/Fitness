@@ -1,4 +1,5 @@
 import { KEY, LEGACY_KEY, IMPORT_BACKUP_KEY, clone, uid, dublinDate, recommendation, holdEnd, catalogue, loadDb, makeSession, audit, emptyTimer, remaining, startTimer, adjustTimer, expireTimer, validateDb, mergeDb } from './model.mjs';
+import { clockBridgeLink } from './android-clock.mjs';
 
 const app = document.querySelector('#app');
 const status = document.querySelector('#storage-status');
@@ -278,6 +279,9 @@ function drawTimer() {
   document.querySelector('#timer-state').textContent = t.state === 'expired' ? 'TIMER COMPLETE' : t.state === 'paused' ? 'REST PAUSED' : 'REST TIMER';
   document.querySelector('#timer-toggle').textContent = ({ idle: 'Start', running: 'Pause', paused: 'Resume', expired: 'Start again' })[t.state];
   document.querySelector('#timer').classList.toggle('expired', t.state === 'expired');
+  const clockLink = document.querySelector('#android-clock-start');
+  clockLink.textContent = `Google Clock · ${clock(ms)} ↗`;
+  clockLink.setAttribute('aria-disabled', String(ms < 15000 || ms > 3600000 || conflict));
 }
 async function manageWake() {
   if (!('wakeLock' in navigator)) return;
@@ -302,6 +306,21 @@ document.querySelector('#timer-toggle').onclick = () => {
   setAnchor(); save(); drawTimer();
 };
 document.querySelector('#timer-reset').onclick = () => { if (!db) return; db.timer = emptyTimer(db.settings.restSeconds); anchor = null; save(); drawTimer(); };
+document.querySelector('#android-clock-actions').hidden = !/Android/i.test(navigator.userAgent);
+document.querySelector('#android-clock-start').addEventListener('click', event => {
+  try {
+    if (!db || conflict) throw Error('Resolve the storage warning before sending a timer.');
+    const ms = effectiveRemaining(), seconds = Math.ceil(ms / 1000);
+    const href = clockBridgeLink(seconds, uid(), Date.now(), new URL('./android-clock.html', location.href).href);
+    // Pause the web timer before leaving so it cannot issue a competing cue.
+    // This is an attempted handoff, not evidence that Android started anything.
+    db.timer.state = 'paused'; db.timer.endAt = null; db.timer.pausedRemainingMs = ms; anchor = null;
+    if (!save('Web timer paused for Clock handoff. Check Google Clock; no start confirmation received.')) throw Error('Could not save the paused web timer. No handoff attempted.');
+    document.querySelector('#clock-handoff-status').textContent = 'Handoff attempted. Verify Google Clock’s countdown. Website Pause/Reset does not control it.';
+    event.currentTarget.href = href; drawTimer();
+    // Keep the browser's default anchor navigation in this explicit user gesture.
+  } catch (error) { event.preventDefault(); document.querySelector('#clock-handoff-status').textContent = error.message; }
+});
 for (const [id, delta] of [['minus', -15000], ['plus', 15000]]) document.querySelector(`#timer-${id}`).onclick = () => {
   if (!db) return;
   if (db.timer.state === 'running') db.timer.endAt = Date.now() + effectiveRemaining();

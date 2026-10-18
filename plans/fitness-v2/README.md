@@ -41,13 +41,17 @@ Primary references:
 - [Android alarm scheduling and exact-alarm permissions](https://developer.android.com/develop/background-work/services/alarms)
 - [Android audio focus and Android 15 foreground restrictions](https://developer.android.com/media/optimize/audio-focus)
 
-### Native alternative (documentation only)
+### Native Google Clock handoff preview
+
+An optional Android bridge is now implemented in `../../android/clock-bridge/`. Android browsers expose an explicit **Google Clock** button in the timer dock, plus a setup/download page at `android-clock.html`. Install the preview APK, tap the web button, confirm the duration in the bridge and verify Clock's countdown. The web timer pauses before handoff; website Pause/Reset does not control the separate native timer. Chrome → bridge → Google Clock countdown was observed on an API 34 emulator; Spotify/physical-phone audio remains unverified. See [build instructions, security scope and test results](../../android/clock-bridge/README.md). No automatic background app launch, workout-data transfer or backend is added.
+
+### Other native alternatives (documentation only)
 
 For reliable practical use now, start the **native Android Clock timer** alongside the workout. Verify its audible behaviour with Spotify, the actual headphones/speaker, alarm volume, Do Not Disturb and battery saver on the target phone. Do not assume every device setting allows sound.
 
 If an integrated timer is required, the smallest custom path is a native Android companion (or a wrapper with a real native timer bridge) that schedules a user-requested system alarm, persists timer IDs/deadlines, cancels/replaces alarms on pause/reset and posts an appropriate local notification with alarm sound. A WebView alone does not solve suspension. A native alarm receiver/appropriately declared foreground service can deliver the audible phase; audio attributes/focus, notification channels and user settings must be handled explicitly. Android 12+ exact alarms need the applicable exact-alarm capability; Android 13+ notification permission and exact-alarm permission/policy choices must be reviewed. Permission availability differs by target SDK/install state; `SCHEDULE_EXACT_ALARM` may require user-granted special access. `USE_EXACT_ALARM` is restricted to qualifying use cases and distribution policy. Do not choose it casually for a workout app. Reboot cancels system alarms unless a permitted reboot receiver restores them from durable state. Force-stop, user-disabled alarms/notifications, DND and OEM policy still require explicit testing and truthful capability reporting. Android 15+ audio-focus requests require the top app or a foreground service. A short audible alarm service must obey current service types/start restrictions; no continuous silent playback.
 
-This introduces an Android toolchain, signed APK/install updates, native bridge maintenance, version-specific permission UX, and possible Play distribution review. No native build/backend is introduced here; obtain Gavin's approval before that separate project. Even a native path should only claim tested reliability under stated device/settings conditions, not unconditional sound delivery.
+An independent native alarm engine would introduce additional platform permissions, lifecycle handling and possible Play distribution review beyond the current Clock handoff bridge. Obtain Gavin's approval before that separate scope. Any native path should only claim tested reliability under stated device/settings conditions, not unconditional sound delivery.
 
 ## Offline and updates
 
