@@ -36,6 +36,7 @@ test('migration backs up exact original text, keeps all records and reloads with
   assert.equal(storage.getItem(LEGACY_KEY), raw); assert.equal(storage.getItem(LEGACY_BACKUP_KEY), raw);
   assert.equal(db.legacyRaw, raw); assert.equal(db.legacySessions.length, 1);
   assert.deepEqual(loadDb(storage), db);
+  const muted = memory(); muted.setItem('fitness-coaching-runner-sound-v1', 'off'); assert.equal(loadDb(muted).settings.sound, false);
   const s = makeSession(templates[0], db); assert.equal(s.exercises[0].sets[0].load, '19.5 kg'); assert.equal(s.exercises[0].sets[0].completedAt, null);
   const large = legacyDb(); large.sessions = Array.from({length:55}, (_,i) => ({ ...large.sessions[0], id:`fake-${i}` }));
   assert.equal(freshDb(JSON.stringify(large)).legacySessions.length, 55);
@@ -55,7 +56,7 @@ test('draft/snapshot + Unicode export/import roundtrip, manual changes do not ch
 });
 test('malformed imports, unsupported schemas, duplicate IDs, bad state and unsafe keys rejected', () => {
   const good = freshDb(); good.sessions.push(makeSession(templates[1], good));
-  for (const mutate of [d => d.schemaVersion = 99, d => d.settings.restSeconds = -1, d => d.settings.holdStart = '2026-02-30', d => d.timer.state = 'unknown', d => d.timer.endAt = 'tomorrow', d => d.sessions.push(clone(d.sessions[0])), d => d.sessions[0].activeIndex = -1, d => d.sessions[0].exercises[0].sets[0].load = {}, d => d.sessions[0].exercises[0].sets[0].completedAt = 'bad']) {
+  for (const mutate of [d => d.schemaVersion = 99, d => d.settings.restSeconds = -1, d => d.settings.holdStart = '2026-02-30', d => d.timer.state = 'unknown', d => d.timer.endAt = 'tomorrow', d => d.sessions.push(clone(d.sessions[0])), d => d.sessions[0].activeIndex = -1, d => d.sessions[0].exercises[0].sets[0].load = {}, d => d.sessions[0].exercises[0].sets[0].completedAt = 'bad', d => d.sessions[0].exercises[0].previous = [null], d => d.sessions[0].exercises[0].sets[0].timerSeconds = '<script>']) {
     const d = clone(good); mutate(d); assert.throws(() => validateDb(d));
   }
   assert.throws(() => validateDb(JSON.parse('{"__proto__":{"polluted":true}}')), /unsafe property/);

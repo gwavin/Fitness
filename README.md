@@ -19,7 +19,8 @@ This repository hosts a static fitness and health website. It includes workout t
 - **demo/** – interactive prototype showing theme switching and JSON-driven content.
 
 ### `plans/`
-- **todays-workout.html** – public entry point for the current coaching workout, with exercise guidance, local logging, rest timers and recap export.
+- **todays-workout.html** – entry point for Fitness v2: mobile exercise screens, local history, optional indoor sessions, persistent timer and JSON backup. See [v2 setup, storage, timer limitations and rollback](plans/fitness-v2/README.md).
+- **todays-workout-classic.html** – preserved original coaching runner, with its existing storage, questionnaires and recap exports. V2 never overwrites Classic records.
 - **august-rehab/** – twelve-week shoulder & barefoot running rehab program (`week01.html` through `week12.html`).
 - **workouts/** – detailed session write-ups, ankle rehab routines and rest-day templates.
 - **exercise-plan.html**, **fitness-plan-index.html**, **fitness-index.html**, **workout-template.html** – additional planning frameworks and indices.

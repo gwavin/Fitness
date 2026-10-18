@@ -48,6 +48,7 @@ export function loadDb(storage) {
   if (raw !== null) { const db = JSON.parse(raw); validateDb(db); return db; }
   const legacyRaw = storage.getItem(LEGACY_KEY);
   const db = freshDb(legacyRaw);
+  db.settings.sound = storage.getItem('fitness-coaching-runner-sound-v1') !== 'off';
   // Backup must succeed before any new database can be written. Never rewrite Classic.
   if (legacyRaw !== null && storage.getItem(LEGACY_BACKUP_KEY) === null) storage.setItem(LEGACY_BACKUP_KEY, legacyRaw);
   validateDb(db);
@@ -122,9 +123,11 @@ export function validateDb(db) {
     session.exercises.forEach(e => {
       assert(text(e.id) && text(e.label) && text(e.prescription) && text(e.instructions) && text(e.equipment), 'exercise snapshot');
       assert(typeof e.skipped === 'boolean' && Array.isArray(e.previous) && Array.isArray(e.sets) && e.sets.length > 0 && e.sets.length <= 100, 'exercise sets');
+      assert(e.previous.every(s => s && text(s.label) && text(s.load) && text(s.reps) && (s.rightReps === undefined || text(s.rightReps))), 'previous set snapshots');
       assert(Number.isFinite(e.restSeconds) && e.restSeconds >= 0, 'exercise rest');
       if (e.variations !== undefined) assert(Array.isArray(e.variations) && e.variations.every(text), 'variations');
       e.sets.forEach(set => {
+        if (set.timerSeconds !== undefined) assert(Number.isFinite(set.timerSeconds) && set.timerSeconds > 0 && set.timerSeconds <= 3600, 'set timer duration');
         assert(['label', 'load', 'reps', 'rightReps', 'variation', 'target'].every(k => text(set[k])), 'set values');
         assert(typeof set.skipped === 'boolean' && (set.completedAt === null || iso(set.completedAt)), 'set state');
         assert(set.planned && text(set.planned.load) && text(set.planned.reps), 'planned values');
