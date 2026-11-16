@@ -3,9 +3,10 @@ import { decodeMeasurement } from './telemetry.mjs';
 const panel = document.querySelector('#hr-panel');
 const button = document.querySelector('#hr-connect');
 const status = document.querySelector('#hr-status');
+const details = document.querySelector('#hr-reading');
 const available = window.isSecureContext && Boolean(navigator.bluetooth);
 const captures = new Map();
-let sessionId = null, device, characteristic, busy = false, message = '';
+let sessionId = null, device, characteristic, busy = false, message = '', firstNewSample = 0, step = '';
 
 function capture(id) {
   if (!captures.has(id)) {
@@ -44,10 +45,13 @@ function paint() {
   if (!sessionId) return;
   const item = capture(sessionId);
   const connected = Boolean(device?.gatt.connected && characteristic);
-  const last = item.samples.at(-1);
-  const label = item.error || (!available ? 'Bluetooth unavailable in this browser' : message ||
-    (connected ? (!last || Date.now() - last.t > 5000 ? 'Waiting for readings' : last.contact === false ? 'Check strap contact' : 'Recording HR in this workout') : 'Garmin optional'));
+  const last = item.samples.length > firstNewSample ? item.samples.at(-1) : null;
+  const label = item.error || (!available ? 'Bluetooth unavailable here · open v4 in a Bluetooth-capable browser' : message ||
+    (connected ? (!last ? 'Connected · waiting for first reading' : Date.now() - last.t > 5000 ? 'No recent readings · check strap or reconnect' : last.contact === false || !last.bpm ? 'Check strap contact' : 'Recording HR') : 'Garmin optional'));
   if (status.textContent !== label) status.textContent = label;
+  const reading = last?.bpm && last.contact !== false && Date.now() - last.t <= 5000 ? `${last.bpm} bpm · ` : '';
+  const detail = `${reading}${item.samples.length} readings captured`;
+  if (details.textContent !== detail) details.textContent = detail;
   button.textContent = busy ? 'Connecting…' : connected ? 'Disconnect HRM' : 'Add Garmin HRM';
   button.disabled = busy || !available;
 }
@@ -77,6 +81,9 @@ function lost() { disconnect('Strap disconnected · reconnect to resume'); }
 button.onclick = async () => {
   if (device?.gatt.connected) { disconnect(); return; }
   const requestedSession = sessionId;
+  if (!requestedSession) return;
+  firstNewSample = capture(requestedSession).samples.length;
+  step = 'select strap';
   busy = true;
   message = '';
   paint();
@@ -85,15 +92,18 @@ button.onclick = async () => {
     if (sessionId !== requestedSession) return;
     device = selected;
     device.addEventListener('gattserverdisconnected', lost);
+    step = 'connect to strap';
     const server = await selected.gatt.connect();
+    step = 'open heart-rate service';
     const service = await server.getPrimaryService('heart_rate');
     const stream = await service.getCharacteristic('heart_rate_measurement');
     if (device !== selected || sessionId !== requestedSession) { if (selected.gatt.connected) selected.gatt.disconnect(); return; }
     characteristic = stream;
     stream.addEventListener('characteristicvaluechanged', receive);
+    step = 'subscribe to readings';
     await stream.startNotifications();
   } catch (error) {
-    if (sessionId === requestedSession) disconnect(error.name === 'NotFoundError' ? 'No strap selected' : 'Could not connect · check the strap');
+    if (sessionId === requestedSession) disconnect(step === 'select strap' && error.name === 'NotFoundError' ? 'No strap selected or found' : `Could not ${step} (${error.name || 'error'})`);
   } finally { busy = false; paint(); }
 };
 
@@ -101,6 +111,7 @@ export function collectFor(id) {
   if (id === sessionId) return;
   disconnect();
   sessionId = id;
+  firstNewSample = id ? capture(id).samples.length : 0;
   paint();
 }
 export function readCapture(id) {
