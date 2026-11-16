@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172721">
+  <title>Fitness v5 · Karate</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header><a href="../../">Fitness</a><span>V5 · KARATE</span></header>
+  <main>
+    <h1>Karate class</h1>
+    <p class="subtitle">20:15–21:00 · 45 minutes</p>
+    <p id="notice" role="status"></p>
+    <section class="card" id="class-controls">
+      <p id="elapsed" class="elapsed">00:00</p>
+      <button class="primary" id="start">Start class</button>
+      <button class="primary" id="finish" hidden>Finish class</button>
+      <p id="instructions">Start the session, then add your Garmin. Leave this page visible while recording.</p>
+      <section id="hr-panel" hidden aria-label="Garmin recording">
+        <button id="hr-connect" type="button">Add Garmin HRM</button>
+        <p id="hr-status" role="status">Garmin optional</p>
+        <p id="hr-reading"></p>
+      </section>
+      <div id="markers" hidden>
+        <p>Optional phase marks</p>
+        <div class="actions">
+          <button data-phase="Warm-up">Warm-up</button><button data-phase="Kihon">Kihon</button>
+          <button data-phase="Kata">Kata</button><button data-phase="Kumite">Kumite</button>
+          <button data-phase="Break">Break</button>
+        </div>
+        <p id="current-phase"></p>
+      </div>
+    </section>
+    <section id="report" class="card" hidden>
+      <h2>Class summary</h2>
+      <p id="metrics"></p>
+      <p id="coverage"></p>
+      <div class="table-wrap"><table><caption>Heart rate by five-minute block</caption>
+        <thead><tr><th scope="col">Elapsed</th><th scope="col">Median BPM</th><th scope="col">Coverage</th></tr></thead>
+        <tbody id="blocks"></tbody>
+      </table></div>
+      <p id="phase-summary"></p>
+      <label for="effort">Session effort (optional, 0–10)</label>
+      <input id="effort" type="number" min="0" max="10" step="1" inputmode="numeric">
+      <button class="primary" id="download">Download class + HR data</button>
+    </section>
+    <section class="card"><h2>History</h2><p id="empty">No saved classes yet.</p><ul id="history"></ul></section>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
