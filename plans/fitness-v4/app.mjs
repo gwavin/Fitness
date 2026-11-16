@@ -11,6 +11,14 @@ let db, templates, activeId = null, view = 'today', selected = null, expectedRev
 let displayedDate = null, displayedDirection = null;
 let context, audioReady = false, wakeLock, wakePending = false, anchor = null, registration;
 const offlineStatus = document.querySelector('#offline-status');
+const strapTest = {
+  id: 'garmin-recording-test', version: 1, label: 'Garmin recording test',
+  exercises: [{
+    id: 'garmin-recording-test', label: 'One-minute recording', prescription: 'Sit or stand comfortably.',
+    equipment: 'Garmin HRM', instructions: 'Connect the strap and wait for readings.', restSeconds: 0,
+    sets: [{ label: 'Recording', load: 'No load', reps: '1', target: 'Around one minute' }]
+  }]
+};
 
 try {
   templates = catalogue(window.CURRENT_WORKOUT);
@@ -75,7 +83,7 @@ function exportWorkout(session) {
   download(`fitness-v4-workout-${session.startedAt.slice(0, 10)}.json`, JSON.stringify({
     format: 'fitness-v4-workout-v1', workout: session,
     measurement: { source: 'Bluetooth Heart Rate Measurement', timestamp: 'phone/browser receipt time, Unix ms', rrUnit: '1/1024 second', sampleCount: samples.length, samples },
-    completedSets: recoveryReport(session, samples),
+    completedSets: session.templateId === strapTest.id ? [] : recoveryReport(session, samples),
     interpretation: 'Recovery windows use Complete set tap time. Without a marked next-set start, a later effort may overlap. Missing measurements are null.'
   }, null, 2));
 }
@@ -103,6 +111,7 @@ function todayView() {
   const recommended = templates.find(t => t.id === rec.template);
   const drafts = db.sessions.filter(s => s.status === 'in_progress');
   app.innerHTML = `<section class="card hero"><p class="eyebrow">${esc(dublinDate())} · Europe/Dublin</p><h1>${esc(rec.dayLabel)}</h1><h2>Today: ${esc(recommended?.label || 'Recovery / rest')}${recommended?.optional ? ' · optional' : ''}</h2><p>${esc(rec.note)}</p><p class="muted">Choose a different session below whenever you need to.</p></section>
+    <section class="card"><h2>Test your Garmin</h2><p>Record a minute of heart rate and check that it reaches History and the download.</p><button id="strap-test">Start Garmin recording test</button></section>
     ${drafts.map(s => `<section class="card"><h2>Pick up where you left off</h2><p>${esc(s.label)} · ${esc(stamp(s.startedAt))}</p><button class="primary wide large" data-resume="${esc(s.id)}">Resume workout</button></section>`).join('')}
     <section class="card"><p class="eyebrow">Choose your session</p><label>Workout<select id="choose"><option value="rest" ${selected === 'rest' ? 'selected' : ''}>Rest / walking / easy cycling</option>${templates.map(t => `<option value="${t.id}" ${selected === t.id ? 'selected' : ''}>${esc(t.label)}${t.optional ? ' · optional' : ''}</option>`).join('')}</select></label>
     ${template ? `<h2 style="margin-top:20px">${esc(template.label)}</h2><p class="muted">${esc(template.minutes)} · ${template.exercises.length} exercise screens</p><section aria-labelledby="equipment-title"><h3 id="equipment-title">Gather your equipment</h3><ul id="equipment-list">${template.equipmentChecklist.map(item => `<li>${esc(item)}</li>`).join('')}</ul></section><h3>Your exercises</h3><ol>${template.exercises.map(e => `<li><strong>${esc(e.label)}</strong><br><small>${esc(e.prescription)}</small></li>`).join('')}</ol>${template.optional ? '<p class="callout">Start with Saturday B only. Two sets each for at least the first fortnight. Targets are guidance; add sets manually only when ready.</p>' : `<details><summary>Reviewed programme & safety guidance</summary><p>Source: ${esc(window.CURRENT_WORKOUT.publishedFor)}. This is the existing prescription, not a new progression or a newly reviewed programme.</p><p>${esc(window.CURRENT_WORKOUT.safetySummary)}</p></details>`}<button class="primary wide large" id="start">Start workout →</button>` : '<h2 style="margin-top:20px">Room to recover</h2><p>No logging needed. You can choose any session above.</p>'}</section>${holdNotice()}`;
@@ -114,6 +123,18 @@ function todayView() {
     else { const s = makeSession(template, db); db.sessions.unshift(s); activeId = s.id; save(); }
     unlockAudio(); go('exercise');
   });
+  document.querySelector('#strap-test').onclick = () => {
+    if (conflict) return alert('Reload after exporting your work; another tab changed the data.');
+    const draft = drafts.find(s => s.templateId === strapTest.id);
+    if (draft) activeId = draft.id;
+    else {
+      const session = makeSession(strapTest, db);
+      db.sessions.unshift(session);
+      activeId = session.id;
+      save();
+    }
+    go('exercise');
+  };
   bindResume();
 }
 function bindResume() {
@@ -125,6 +146,21 @@ function field(set, index, key, label, numeric = false) {
 }
 function exerciseView() {
   const session = current(); if (!session) return go('today');
+  if (session.templateId === strapTest.id && session.status === 'in_progress') {
+    app.innerHTML = `<section class="card"><h1>Garmin recording test</h1>
+      <ol><li>Put on the strap and tap <strong>Add Garmin HRM</strong> above. Select it in the Bluetooth picker.</li>
+      <li>Wait for <strong>Recording HR</strong> and a BPM value. Check the reading count rises, then leave this screen open for about a minute.</li>
+      <li>Tap <strong>Review test</strong>, then <strong>Save &amp; finish</strong>. Open the test in History to check and download the recording.</li></ol>
+      <div class="actions"><button class="primary" id="review-test">Review test</button><button id="pause-test">Pause test</button></div></section>`;
+    document.querySelector('#review-test').onclick = () => {
+      checkpointCapture();
+      session.exercises[0].sets[0].completedAt = new Date().toISOString();
+      save();
+      go('summary');
+    };
+    document.querySelector('#pause-test').onclick = () => go('today');
+    return;
+  }
   const index = session.activeIndex, exercise = session.exercises[index];
   const numericLoad = exercise.programme === 'sbd' || exercise.equipment.includes('10 kg');
   app.innerHTML = `<div class="row"><p class="eyebrow">${index + 1} of ${session.exercises.length} · ${esc(session.label)}</p><span class="badge">${session.status === 'completed' ? 'Editing history' : 'Auto-save on'}</span></div><div class="progress" role="progressbar" aria-label="Exercise position" aria-valuemin="0" aria-valuemax="${session.exercises.length}" aria-valuenow="${index + 1}"><span style="width:${(index + 1) / session.exercises.length * 100}%"></span></div>
@@ -189,6 +225,15 @@ function paintRecoveryReport() {
   const overview = document.querySelector('#hr-overview');
   if (!overview || !session) return;
   const samples = readCapture(session.id);
+  if (session.templateId === strapTest.id) {
+    const usable = samples.filter(sample => sample.bpm > 0 && sample.contact !== false);
+    const rrCount = usable.reduce((count, sample) => count + sample.rr1024.length, 0);
+    const seconds = usable.length > 1 ? Math.round((usable.at(-1).t - usable[0].t) / 1000) : 0;
+    overview.textContent = usable.length
+      ? `${usable.length} usable HR readings over ${seconds}s · ${rrCount} beat-to-beat intervals`
+      : 'No usable Garmin readings. You can return to the test and reconnect, or save this result in History.';
+    return;
+  }
   const report = recoveryReport(session, samples);
   overview.textContent = samples.length ? `${samples.length} readings · drops from the near-set peak. If the next set’s start wasn’t marked, its effort may overlap a recovery window.` : 'No Garmin readings for this workout.';
   const details = document.querySelector('#hr-details');
@@ -331,14 +376,14 @@ function drawTimer() {
 }
 async function manageWake() {
   if (!('wakeLock' in navigator)) return;
-  const should = document.visibilityState === 'visible' && view === 'exercise' && current()?.status === 'in_progress';
+  const should = document.visibilityState === 'visible' && ['exercise', 'summary'].includes(view) && current()?.status === 'in_progress';
   if (!should && wakeLock) { await wakeLock.release().catch(() => {}); wakeLock = null; }
   else if (should && !wakeLock && !wakePending) {
     wakePending = true;
     try {
       wakeLock = await navigator.wakeLock.request('screen');
       wakeLock.addEventListener('release', () => { wakeLock = null; });
-      if (!(document.visibilityState === 'visible' && view === 'exercise' && current()?.status === 'in_progress')) { await wakeLock.release(); wakeLock = null; }
+      if (!(document.visibilityState === 'visible' && ['exercise', 'summary'].includes(view) && current()?.status === 'in_progress')) { await wakeLock.release(); wakeLock = null; }
     } catch { /* Battery saver and browser policy may refuse a visible-screen lock. */ }
     finally { wakePending = false; }
   }
