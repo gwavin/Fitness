@@ -1,0 +1,10 @@
+{
+  "id": "./",
+  "name": "Fitness v6 · Garmin Pilot",
+  "short_name": "Fitness v6",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f5ef",
+  "theme_color": "#123e35"
+}
