@@ -1,0 +1,27 @@
+// Bump the shell version whenever a cached asset changes. No skipWaiting: an
+// active workout keeps its current shell until every v7 tab has closed.
+const CACHE = 'fitness-v7-pilot-shell-1';
+const ASSETS = ['./', './index.html', './style.css', './app.mjs', './model.mjs', './heart-rate.mjs', './telemetry.mjs', './pilot.mjs', './pilot-ui.mjs', './manifest.webmanifest', './current-workout.js', './hr-autopilot.mjs', './autopilot-ui.mjs'];
+const OPTIONAL = []; // replay demo data is not published (private HR); replay asks for an exported file
+self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(async cache => { await cache.addAll(ASSETS); await Promise.all(OPTIONAL.map(u => cache.add(u).catch(() => {}))); })); });
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    // Only this app's old shell caches; never touch other apps or browser records.
+    for (const key of await caches.keys()) if (key.startsWith('fitness-v7-pilot-shell-') && key !== CACHE) await caches.delete(key);
+    await self.clients.claim();
+  })());
+});
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
+  event.respondWith(caches.open(CACHE).then(async cache => (await cache.match(event.request, { ignoreSearch: true })) || fetch(event.request)));
+});
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil((async () => {
+    const url = new URL('./index.html', self.location.href).href;
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const existing = clients.find(client => client.url.startsWith(new URL('./', self.location.href).href));
+    if (existing) return existing.focus();
+    return self.clients.openWindow(url);
+  })());
+});
