@@ -83,7 +83,7 @@ export function createSetDetector(options = {}) {
       const early = restS < expectation.restTargetS * o.earlyRestFraction;
       let needRise = o.onRise * (early ? o.earlyFactor : 1);
       if (t < motionUntil) needRise *= o.motionBoost;
-      if (slope >= o.onSlope && ema - trough >= needRise && t - lastEndAt >= o.minRestS * 1000) {
+      if (slope >= o.onSlope && ema - trough >= needRise && t - lastEndAt >= (expectation.minRestS ?? o.minRestS) * 1000) {
         state = 'work'; onsetAt = t; onsetEst = Math.min(t, troughAt - o.startLeadS * 1000);
         peak = ema; peakAt = t; fallCount = 0;
         out.push({ type: 'start', at: onsetEst, detectedAt: t, hr: Math.round(ema), trough: Math.round(trough), early });
@@ -164,9 +164,12 @@ export const ZONE_DEFAULTS = Object.freeze({
   warmup: { amp: 10, durS: 10 },
   accessory: { amp: 10, durS: 10 },
   promoteAmp: 24, promoteRatio: 1.35,
+  warmupSetS: 30,       // one continuous warm-up bout ≈ one warm-up per 30 s (no rest between warm-ups)
   demoteRatio: 0.6, moveOnExtraS: 45,
   bothSidesMergeS: 35   // rows: second side counts as the same set
 });
+
+const short = label => String(label || '').split(' — ')[0];
 
 export function createSession(plan, { zones = {}, now = Date.now(), checks = true } = {}) {
   const z = { ...ZONE_DEFAULTS, ...zones };
@@ -214,6 +217,12 @@ export function createSession(plan, { zones = {}, now = Date.now(), checks = tru
       return;
     }
     if (!next) { announceNext(t); return; }
+    if ((finished.restAfterS ?? finished.restS) === 0) {
+      // Warm-ups run back to back: no rest timer, no HR gate, straight on to the next one.
+      s.restEnd = at; enter('ready', t);
+      say.push(`Next: ${describe(next)}.`);
+      return;
+    }
     s.restEnd = at + (finished.restAfterS ?? finished.restS) * 1000;
     enter('rest', t);
     const restS = Math.round((s.restEnd - t) / 1000);
@@ -300,6 +309,23 @@ export function createSession(plan, { zones = {}, now = Date.now(), checks = tru
           say.push('That looked like a working set. Logging it as working set 1.');
         }
         if (p.kind === 'row' && p.bothSides) { s.pendingMerge = { at: t, ev }; enter('rest', t); s.restEnd = t + z.bothSidesMergeS * 1000; say.push('Other side.'); return; }
+        if (verdict === 'accept' && !p.working && p.kind === 'lift') {
+          // Back-to-back warm-ups often show as one continuous HR bout. Count ~1 warm-up per
+          // z.warmupSetS seconds of bout (at least 1), never past the last warm-up. Tap/undo corrects.
+          const remaining = s.plan.slice(s.index).filter((q, i, a) => q.exerciseIndex === p.exerciseIndex && !q.working && a.slice(0, i).every(r => !r.working)).length;
+          const n = Math.max(1, Math.min(remaining, Math.round((ev.at - ev.startAt) / 1000 / z.warmupSetS)));
+          if (n > 1) {
+            const first = item();
+            for (let k = 0; k < n - 1; k++) {
+              const w = item(), at = ev.startAt + (ev.at - ev.startAt) * (k + 1) / n;
+              w.startAt ??= k === 0 ? ev.startAt : null; w.doneAt = at; w.endSource = 'hr-block';
+              emit('set-complete', { at, source: 'hr-block', key: w.key, startAt: w.startAt, peak: null });
+              s.index++;
+            }
+            item().startAt = ev.startAt + (ev.at - ev.startAt) * (n - 1) / n; item().startSource = 'hr';
+            say.push(`${n} warm-ups in one go: ${short(first.label)} to ${short(item().label)} logged.`);
+          }
+        }
         finish(t, 'hr', ev.at, ev);
         const ex = s.plan[s.index - 1];
         if (ex && !ex.working) { s.warmAmp[ex.exerciseIndex] = Math.max(s.warmAmp[ex.exerciseIndex] || 0, ev.amp); }
@@ -371,7 +397,7 @@ export function createSession(plan, { zones = {}, now = Date.now(), checks = tru
 }
 
 // Build the autopilot plan from a v6/v7 session object (model.mjs makeSession shape).
-export function planFromSession(session, { squatBenchRestS = 90, warmupRestS = 75, accessoryRestS = 75 } = {}) {
+export function planFromSession(session, { squatBenchRestS = 90, warmupToWorkS = 60, accessoryRestS = 75 } = {}) {
   const out = [];
   session.exercises.forEach((ex, exerciseIndex) => {
     if (ex.skipped) return;
@@ -385,7 +411,12 @@ export function planFromSession(session, { squatBenchRestS = 90, warmupRestS = 7
       const deadlift = /deadlift/i.test(ex.id);
       // Plan rule kept: deadlift working sets ≥ 2 min. Squat/bench working rest is the
       // v6 setting (default 90 s). Warm-ups and accessories: his usual 75 s.
-      const restS = working ? (deadlift ? Math.max(120, ex.restSeconds || 120) : squatBenchRestS) : (row || carry ? accessoryRestS : warmupRestS);
+      // Warm-ups: back to back (0 s), except one short rest (default 60 s + HR gate) after the last
+      // warm-up before the first working set.
+      const nextSet = ex.sets[setIndex + 1];
+      const lastWarmup = !working && !row && !carry && Boolean(nextSet) && /^working\b/i.test(nextSet.planned?.label ?? nextSet.label ?? '');
+      const restS = working ? (deadlift ? Math.max(120, ex.restSeconds || 120) : squatBenchRestS)
+        : (row || carry) ? accessoryRestS : lastWarmup ? warmupToWorkS : 0;
       out.push({ key: `${exerciseIndex}:${setIndex}`, exerciseIndex, setIndex, exercise: ex.label, label, load: set.load, reps: set.reps,
         working, kind: carry ? 'carry' : row ? 'row' : 'lift', bothSides: row && /both sides/i.test(label), timerS: set.timerSeconds || null,
         restS, restAfterS: row ? 5 : undefined, rirAsk: working && /squat|bench|deadlift/i.test(ex.id), gate: gate && setIndex === 0,
@@ -395,4 +426,11 @@ export function planFromSession(session, { squatBenchRestS = 90, warmupRestS = 7
     });
   });
   return out;
+}
+
+// What the detector should expect after plan[index - 1] finished (sequence prior).
+export function expectationFor(plan, index) {
+  const last = plan[index - 1];
+  const rest = last ? (last.restAfterS ?? last.restS ?? 75) : 75;
+  return { restTargetS: rest, minRestS: rest === 0 ? 8 : DETECTOR_DEFAULTS.minRestS };
 }

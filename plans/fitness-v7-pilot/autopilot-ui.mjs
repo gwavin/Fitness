@@ -1,6 +1,6 @@
 // Fitness v7 · hands-free overlay. Full-screen colour, voice, wake lock, one-tap override,
 // replay demo. Detection and the session state machine live in hr-autopilot.mjs.
-import { createSetDetector, createSession, planFromSession, COLOURS, ZONE_DEFAULTS } from './hr-autopilot.mjs';
+import { createSetDetector, createSession, planFromSession, expectationFor, COLOURS, ZONE_DEFAULTS } from './hr-autopilot.mjs';
 
 const COLOUR_EXTRA = { maybe: { bg: '#a8661c', label: 'Effort starting?' } };
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -161,8 +161,7 @@ export function createAutopilotUI(host) {
       afterEvents(before);
     }
     // Sequence prior for the detector: the planned rest of the set just finished.
-    const last = run.plan[run.sess.state.index - 1];
-    run.detector.expect({ restTargetS: last?.restAfterS ?? last?.restS ?? 75 });
+    run.detector.expect(expectationFor(run.plan, run.sess.state.index));
   }
 
   function loop() {

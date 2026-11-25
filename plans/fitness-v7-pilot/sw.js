@@ -1,6 +1,6 @@
 // Bump the shell version whenever a cached asset changes. No skipWaiting: an
 // active workout keeps its current shell until every v7 tab has closed.
-const CACHE = 'fitness-v7-pilot-shell-1';
+const CACHE = 'fitness-v7-pilot-shell-2';
 const ASSETS = ['./', './index.html', './style.css', './app.mjs', './model.mjs', './heart-rate.mjs', './telemetry.mjs', './pilot.mjs', './pilot-ui.mjs', './manifest.webmanifest', './current-workout.js', './hr-autopilot.mjs', './autopilot-ui.mjs'];
 const OPTIONAL = []; // replay demo data is not published (private HR); replay asks for an exported file
 self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(async cache => { await cache.addAll(ASSETS); await Promise.all(OPTIONAL.map(u => cache.add(u).catch(() => {}))); })); });
